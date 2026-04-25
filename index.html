@@ -3809,31 +3809,38 @@ header {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 10px 6px 14px !important;
+    padding: 8px 2px 12px !important;
     z-index: 30 !important;
     margin: 0 !important;
     box-sizing: border-box;
+    overflow: hidden !important;
   }
-  /* Klavye tuşları BÜYÜK ve okunaklı */
+  /* Klavye tuşları — 11 tuş bile sığsın diye sıkı paketleme */
   .kb-row {
-    gap: 4px !important;
+    display: flex !important;
+    gap: 3px !important;
     margin-bottom: 5px !important;
     width: 100%;
-    padding: 0 4px !important;
+    padding: 0 2px !important;
+    box-sizing: border-box;
   }
   .kb-key {
     flex: 1 1 0 !important;
     min-width: 0 !important;
-    height: 52px !important;
-    font-size: 15px !important;
+    width: 0 !important;
+    height: 50px !important;
+    font-size: 14px !important;
     font-weight: 600 !important;
-    border-radius: 7px !important;
+    border-radius: 6px !important;
     padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .kb-key.wide,
   .kb-key[data-special="true"] {
-    flex: 1.3 1 0 !important;
-    font-size: 11px !important;
+    flex: 1.2 1 0 !important;
+    font-size: 10px !important;
     font-weight: 700 !important;
   }
 
@@ -3861,6 +3868,42 @@ header {
 /* Hamburger masaüstünde gizli */
 @media (min-width: 721px) {
   .hamburger-btn { display: none !important; }
+}
+
+/* Çok küçük telefonlar (≤380px) — klavye daha sıkı */
+@media (max-width: 380px) {
+  .keyboard {
+    padding: 6px 1px 10px !important;
+  }
+  .kb-row {
+    gap: 2px !important;
+    padding: 0 1px !important;
+    margin-bottom: 4px !important;
+  }
+  .kb-key {
+    height: 46px !important;
+    font-size: 13px !important;
+    border-radius: 5px !important;
+  }
+  .kb-key.wide,
+  .kb-key[data-special="true"] {
+    flex: 1.15 1 0 !important;
+    font-size: 9px !important;
+  }
+}
+
+/* Mini ekranlar (≤340px) — eski telefonlar */
+@media (max-width: 340px) {
+  .kb-row { gap: 2px !important; padding: 0 !important; }
+  .kb-key {
+    height: 44px !important;
+    font-size: 12px !important;
+  }
+  .kb-key.wide,
+  .kb-key[data-special="true"] {
+    flex: 1.1 1 0 !important;
+    font-size: 8px !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -15568,27 +15611,33 @@ const Cipher = (() => {
     setCheck('cc-number', numDone);
     setCheck('cc-mystery', mysteryDone);
 
-    // ŞİFRE HER ZAMAN AÇIK — kullanıcı 3 modu bitirmemiş olsa bile cevabı göster
+    // 🔒 Önce 3 modu da DENEMEK gerekir (kazanmak şart değil)
+    // Hiç denenmediyse kilit görünür
+    if (!allDone) {
+      document.getElementById('cipher-locked').style.display = 'block';
+      document.getElementById('cipher-unlocked').style.display = 'none';
+      return;
+    }
+
+    // 3 modu da denedi → cevap her durumda gösterilir (kazansa da kaybetse de)
     document.getElementById('cipher-locked').style.display = 'none';
     document.getElementById('cipher-unlocked').style.display = 'block';
 
     const dayIdx = getDayIndex() % MYSTERY_DATA.length;
     const myst = MYSTERY_DATA[dayIdx];
     document.getElementById('cipher-final-word').textContent = myst.word;
-    // Zengin etymology paneli
     try { Etymology.showCipher(myst); } catch(e) {}
     document.getElementById('cipher-meaning').textContent = myst.etymology;
 
-    // Tebrik mesajı: 3 senaryo
+    // Tebrik mesajı: hepsini doğru yaptıysa övgü, yoksa "yarına" mesajı
     const wordWon = TODAY.wordWon || false;
     const mysteryAllCorrect = TODAY.mysteryAllCorrect || false;
-    const allPerfect = allDone && wordWon && mysteryAllCorrect;
+    const allPerfect = wordWon && mysteryAllCorrect;
 
     const dateStr = new Date().toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long'});
 
     let msg;
     if (allPerfect) {
-      // Mükemmel — hepsini doğru yaptı
       const congratsMessages = [
         '🏆 Mükemmel! Bugün her şeyi çözdün!',
         '🌟 Hepsini bildin — gerçek bir zihin ustası!',
@@ -15597,8 +15646,7 @@ const Cipher = (() => {
         '💎 Zihin Üssü\'nün gözdesi sensin bugün'
       ];
       msg = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
-    } else if (allDone) {
-      // 3 modu bitirdi ama bazıları yanlış
+    } else {
       const tryAgainMessages = [
         'Bugün bulamadın — ama şifre yine de senin. Yarın yeniden!',
         'Hepsini çözemedin, sorun değil. Yarın daha iyisi olacak.',
@@ -15606,15 +15654,6 @@ const Cipher = (() => {
         'Şifre açıldı ama bir kısmı kaçtı. Yarın tekrar deneyeceksin.'
       ];
       msg = tryAgainMessages[Math.floor(Math.random() * tryAgainMessages.length)];
-    } else {
-      // 3 modu bile tamamlamadı — yine de cevap göster
-      const incompleteMessages = [
-        'Bugün hepsini denemedin — ama şifre senin. Yarın hepsi seni bekliyor!',
-        'Tüm modları bitiremedin, olsun. Cevap burada — yarın tekrar gel.',
-        'Bugün biraz eksik kaldı. Şifre hediyemiz olsun, yarın görüşürüz!',
-        'Bugün modlar yarım — ama şifre yine senin. Yarın tam başlayalım.'
-      ];
-      msg = incompleteMessages[Math.floor(Math.random() * incompleteMessages.length)];
     }
     document.getElementById('cipher-congrats').textContent = `${dateStr} · ${msg}`;
   }
