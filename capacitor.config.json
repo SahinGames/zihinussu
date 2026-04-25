@@ -1,0 +1,32 @@
+{
+  "appId": "com.zihinussu.app",
+  "appName": "Zihin Üssü",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "launchAutoHide": true,
+      "backgroundColor": "#07070d",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSpinnerStyle": "large",
+      "spinnerColor": "#d4a645"
+    },
+    "StatusBar": {
+      "backgroundColor": "#07070d",
+      "style": "DARK"
+    }
+  },
+  "server": {
+    "androidScheme": "https",
+    "hostname": "zihinussu.app",
+    "cleartext": false
+  }
+}

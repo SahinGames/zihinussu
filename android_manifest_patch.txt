@@ -1,0 +1,90 @@
+<!--
+  ANDROIDMANIFEST.XML — v1.2.0 PATCH
+  ====================================================
+  Bu kod parçalarını android/app/src/main/AndroidManifest.xml dosyasına EKLE.
+-->
+
+<!-- ════════════════════════════════════════════════════════════════
+     1. İZİNLER — <manifest> tag'inin İÇİNDE, <application> ÜSTÜNE EKLE
+     ════════════════════════════════════════════════════════════════ -->
+<!--
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+<!- v1.2.0 — Lokal bildirim için (sabah 09:00 günlük kelime hatırlatma) ->
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
+<!- AdMob için (yayında AdConfig.enabled=true yapılınca) ->
+<uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+-->
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     2. DEEP LINK — MainActivity bölümüne EKLE
+     ════════════════════════════════════════════════════════════════ -->
+<!--
+<activity
+    android:name="com.zihinussu.app.MainActivity"
+    ...>
+    
+    <!- ZATEN VAR (LAUNCHER) ->
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+
+    <!- ⬇️ YENİ EKLENECEKLER ⬇️ ->
+
+    <!- GitHub Pages düello linki ->
+    <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="https"
+            android:host="sefa4334.github.io"
+            android:pathPattern="/zihinussu/.*" />
+    </intent-filter>
+
+    <!- Custom scheme (zihinussu://) ->
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="zihinussu" />
+    </intent-filter>
+
+</activity>
+-->
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     3. ADMOB APP ID — <application> tag'inin İÇİNE EKLE
+     (Sefa'nın gerçek AdMob App ID'si ile değiştir!)
+     ════════════════════════════════════════════════════════════════ -->
+<!--
+<meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX" />
+-->
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     ÖNEMLI NOTLAR
+     ════════════════════════════════════════════════════════════════
+
+  1. POST_NOTIFICATIONS Android 13+ için zorunlu. v1.2.0 izni isteyecek.
+
+  2. Domain'in (sefa4334.github.io) deep link'i çalışsın diye:
+     https://sefa4334.github.io/zihinussu/.well-known/assetlinks.json
+     dosyası sunulmalı (bu pakette zaten var).
+
+  3. AdMob App ID'sini test ID'siyle bırakma! Gerçek ID:
+     https://apps.admob.com → Apps → App settings → App ID
+
+  4. Test komutu (Düello deep link):
+     adb shell am start -W -a android.intent.action.VIEW \
+       -d "https://sefa4334.github.io/zihinussu/?d=test" com.zihinussu.app
+-->

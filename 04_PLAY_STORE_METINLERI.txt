@@ -1,0 +1,232 @@
+═══════════════════════════════════════════════════════
+  ZİHİN ÜSSÜ — PLAY STORE METİNLERİ
+  Hepsi Türkçe, ASO optimize, kopyala-yapıştır hazır
+═══════════════════════════════════════════════════════
+
+
+╔══════════════════════════════════════════════════════╗
+║  1. APP NAME (50 karakter limit)                     ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  Zihin Üssü                                          ║
+║                                                      ║
+║  (10 karakter — ASO için "Kelime Oyunu" eklenebilir) ║
+║                                                      ║
+║  ALTERNATIF (44 karakter):                          ║
+║  Zihin Üssü — Kelime, Sudoku, Zeka Oyunları         ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  2. SHORT DESCRIPTION (80 karakter limit)            ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  ÖNERİLEN (78 karakter):                            ║
+║                                                      ║
+║  8 oyun bir uygulamada: Kelime, Sayısal, Sudoku,    ║
+║  Gizem, Düello ve fazlası.                          ║
+║                                                      ║
+║  ALTERNATIF (76 karakter):                          ║
+║                                                      ║
+║  Türkçe Wordle, Sudoku, gizem ve daha fazlası.      ║
+║  Günlük zeka oyunları paketi.                       ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  3. FULL DESCRIPTION (4000 karakter limit)           ║
+╠══════════════════════════════════════════════════════╣
+
+🎯 Zihin Üssü — Türkçe Zeka Oyunları Platformu
+
+Tek uygulamada 8 farklı oyun! Her gün yeni bulmaca, sınırsız pratik modu ve arkadaşlarınızla yarışabileceğiniz Düello modu.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 KELİME (Türkçe Wordle)
+Her gün yeni bir 5 harfli Türkçe kelimeyi 6 tahminde bulun. 5500+ kelimelik özenle seçilmiş havuz. Türk dilinin inceliklerine özel olarak hazırlandı.
+
+🔢 SAYISAL
+Hızlı matematik soruları. Çarpma, bölme, toplama. Beyniniz uyansın.
+
+🔮 GİZEM
+3 farklı sorudan oluşan günlük bulmaca. Her doğru cevap bir basamak. Anlamlı bir sayı çıkartın!
+
+🔐 GÜNÜN ŞİFRESİ
+Üç ana modu (Kelime, Sayısal, Gizem) bitirin, gizli günün şifresini açın. Her gün farklı.
+
+♾️ SINIRSIZ KELİME
+Pratik modu. Günlük limit yok. Sürekli yeni kelime, kendi rekorunu kır.
+
+🧩 SUDOKU
+Klasik 9×9 Sudoku. Kolay/Orta/Zor seviyeler. İpucu sistemi.
+
+🎯 İSİM ŞEHİR
+Çocukluğumuzun favori oyunu — modern arayüzle. Tek başına veya arkadaşınla URL üzerinden oynayın.
+
+⚔️ DÜELLO (YENİ!)
+Bir kelime seç, link oluştur, WhatsApp'tan gruba at. Herkes aynı kelimeyi çözmeye çalışsın. "Ben 4/6'da buldum, sen kaçta?"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ ÖZELLİKLER
+
+✅ Tamamen Türkçe — yabancı kelime oyunlarından bıkanlar için
+✅ Çevrimdışı çalışır — internet olmadan da oyna
+✅ Reklamsız (şimdilik!)
+✅ Hiç bir kişisel veri toplamaz
+✅ Sade, modern arayüz — gözleri yormaz
+✅ Karanlık tema
+✅ Liderlik tablosu (haftalık)
+✅ Detaylı istatistikler
+✅ Premium ile sınırsız ipucu ve özel temalar (opsiyonel)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🇹🇷 NEDEN TÜRKÇE WORDLE'A İHTİYACIMIZ VAR?
+
+Çoğu kelime oyunu İngilizce. Türkçe Wordle klonları var ama çoğu sadece tek modülden oluşuyor. Zihin Üssü bunun çok ötesi — 8 farklı oyun, sürekli yeni içerik, ve Türk diline özel hazırlandı.
+
+Türkçe karakterler (Ç, Ğ, I, İ, Ö, Ş, Ü) tam destekli. Türkçe morfolojisi göz önünde bulundurularak kelime havuzu seçildi.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚔️ DÜELLO MODU NASIL ÇALIŞIR?
+
+1. Bir kelime seç (örn: MASAL)
+2. "Düello Linki Oluştur" butonuna bas
+3. WhatsApp'a gönder veya kopyala-yapıştır yap
+4. Linki açan herkes aynı kelimeyi çözmeye çalışır
+5. Sonucunu paylaşır: "Ben 4/6'da buldum 🎯"
+
+Aile grubu, iş arkadaşları, yakın çevre — herkesle yarışabilirsin.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎮 KİMLER İÇİN UYGUN?
+
+• Türkçe kelime oyunu sevenler
+• Wordle'a alıştığı ama Türkçe versiyon arayanlar
+• Günlük zihin egzersizi yapmak isteyenler
+• Sudoku tutkulları
+• Aile/arkadaş gruplarıyla yarışmak isteyenler
+• KPSS, ALES, YDS hazırlık öğrencileri (kelime hazinesi geliştirir)
+• Türkçeyi yeni öğrenenler
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📬 GERİ BİLDİRİM
+
+Henüz erken bir versiyondayız ve sürekli geliştiriyoruz. Hata, öneri veya istek için: zihinussu@gmail.com
+
+İndirin, oynayın, gerçek kelime ustası olun! 🎯
+
+#TürkçeWordle #KelimeOyunu #Sudoku #ZekaOyunları #GünlükBulmaca
+
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  4. RELEASE NOTES (500 karakter limit)               ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  İLK SÜRÜM (v1.0.9):                                ║
+║                                                      ║
+║  🎉 İlk sürüm! Türkçe zeka oyunları platformu.      ║
+║                                                      ║
+║  • 8 farklı oyun modu                                ║
+║  • Günlük yeni bulmacalar                            ║
+║  • Düello modu — arkadaşına meydan oku!             ║
+║  • 5500+ kelimelik Türkçe havuz                     ║
+║  • Çevrimdışı çalışır                                ║
+║  • Reklamsız                                         ║
+║                                                      ║
+║  Geri bildirim: zihinussu@gmail.com                  ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  5. CONTACT EMAIL                                    ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  zihinussu@gmail.com                                 ║
+║  (kendi mail adresinle değiştir)                    ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  6. KEYWORDS (Play Store içinde aramalar için)      ║
+╠══════════════════════════════════════════════════════╣
+
+  Bu kelimeler açıklamada doğal şekilde geçiyor.
+  Ekstra alan yok, ama açıklama tarama içinde:
+  
+  • türkçe wordle
+  • kelime oyunu
+  • sudoku
+  • zeka oyunları
+  • günlük bulmaca
+  • zihin egzersizi
+  • türkçe kelime
+  • bulmaca oyunu
+  • kelime tahmin
+  • sayısal oyun
+  • gizem bulmaca
+  • düello
+  • multiplayer kelime
+  • whatsapp oyun
+  • aile oyunu
+
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  7. CATEGORIES                                       ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  App category: Games                                 ║
+║  Game category: Word                                 ║
+║                                                      ║
+║  Tags (en fazla 3):                                 ║
+║  • Word                                              ║
+║  • Brain Games                                       ║
+║  • Puzzle                                            ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  8. CONTENT RATING                                   ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  Hedef: Everyone (Herkese Uygun)                    ║
+║  Tüm sorulara "No" cevabı:                          ║
+║  - Şiddet                                            ║
+║  - Cinsellik                                         ║
+║  - Dil/Küfür                                         ║
+║  - Madde kullanımı                                   ║
+║  - Kumar                                             ║
+║  - Kullanıcı içeriği                                 ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════╗
+║  9. PRIVACY POLICY URL                               ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  https://[KULLANICI_ADIN].github.io/zihinussu/      ║
+║  privacy-policy.html                                 ║
+║                                                      ║
+║  (GitHub Pages aktif olduktan sonra çalışır)        ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════
+  HAZIR. KOPYALA, YAPIŞTIR, YAYINLA 🚀
+═══════════════════════════════════════════════════════
