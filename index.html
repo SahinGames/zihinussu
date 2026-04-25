@@ -3767,1177 +3767,25 @@ header {
   to   { opacity: 1; }
 }
 
-/* ═══════════════════════════════════════════
-   İSİM ŞEHİR MODÜLÜ (sınırsız oyun)
-═══════════════════════════════════════════ */
-.is-container {
-  padding: 8px 0 24px;
-  animation: fadeIn 0.3s ease;
-}
-
-/* Başlangıç (intro) ekranı */
-.is-intro {
-  text-align: center;
-  padding: 28px 16px;
-}
-.is-intro-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 28px;
-  color: var(--text);
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-.is-intro-sub {
-  font-size: 13px;
-  color: var(--text2);
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-.is-highscore {
-  display: inline-block;
-  padding: 8px 14px;
-  margin-bottom: 20px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 12px;
-  color: var(--correct2);
-}
-.is-highscore strong {
-  font-size: 16px;
-  font-weight: 700;
-}
-.is-start-btn, .is-stop-btn, .is-new-btn {
-  display: inline-block;
-  padding: 12px 28px;
-  border-radius: 10px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border: none;
-  text-transform: uppercase;
-}
-.is-start-btn {
-  background: linear-gradient(135deg, var(--correct2), var(--correct));
-  color: var(--bg);
-}
-.is-start-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-.is-stop-btn {
-  background: var(--coral);
-  color: white;
-}
-.is-stop-btn:hover { transform: translateY(-1px); }
-.is-new-btn {
-  background: var(--bg3);
-  color: var(--correct2);
-  border: 1px solid var(--correct2);
-  margin-top: 14px;
-}
-.is-new-btn:hover { background: var(--correct2); color: var(--bg); }
-
-/* Oyun ekranı */
-.is-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-.is-letter-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.is-letter-label {
-  font-size: 10px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.is-letter {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 48px;
-  font-weight: 700;
-  color: var(--correct2);
-  line-height: 1;
-}
-.is-timer-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.is-timer-label {
-  font-size: 10px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.is-timer {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.1;
-}
-.is-timer.warning { color: var(--coral2); }
-.is-timer.critical {
-  color: var(--wrong);
-  animation: pulse 0.8s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.is-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-.is-field {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 12px 14px;
-}
-.is-field-label {
-  font-size: 11px;
-  color: var(--correct2);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.is-field-input {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 7px;
-  padding: 9px 12px;
-  color: var(--text);
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 15px;
-  outline: none;
-  box-sizing: border-box;
-  transition: border-color 0.15s;
-}
-.is-field-input:focus { border-color: var(--correct2); }
-.is-field-input:disabled { opacity: 0.7; }
-
-.is-actions {
-  text-align: center;
-  margin-top: 10px;
-}
-
-/* Sonuç ekranı */
-.is-result {
-  padding: 20px 16px;
-  animation: fadeIn 0.4s ease;
-}
-.is-result-header {
-  text-align: center;
-  margin-bottom: 16px;
-}
-.is-result-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 28px;
-  color: var(--text);
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.is-result-letter {
-  font-size: 13px;
-  color: var(--text2);
-}
-.is-result-letter b {
-  color: var(--correct2);
-  font-size: 18px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-}
-.is-score-big {
-  text-align: center;
-  margin: 18px 0;
-}
-.is-score-value {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 54px;
-  font-weight: 700;
-  color: var(--correct2);
-  line-height: 1;
-}
-.is-score-max {
-  font-size: 14px;
-  color: var(--text3);
-  margin-left: 4px;
-}
-.is-score-newrecord {
-  display: inline-block;
-  margin-top: 6px;
-  font-size: 11px;
-  color: var(--gold2);
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  animation: pulse 1.2s infinite;
-}
-.is-answers {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 16px;
-}
-.is-answer-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 6px;
-  border-bottom: 1px solid var(--border2);
-  font-size: 13px;
-}
-.is-answer-row:last-child { border-bottom: none; }
-.is-answer-cat {
-  color: var(--text3);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  min-width: 60px;
-}
-.is-answer-val {
-  flex: 1;
-  color: var(--text);
-  margin: 0 10px;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-.is-answer-val.empty {
-  color: var(--text3);
-  font-style: italic;
-}
-.is-answer-pts {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 12px;
-  font-weight: 600;
-}
-.is-answer-pts.got { color: var(--correct2); }
-.is-answer-pts.zero { color: var(--text3); font-size: 10px; font-weight: 500; }
-.is-answer-row.wrong-letter .is-answer-val,
-.is-answer-row.invalid-word .is-answer-val {
-  color: var(--coral2, #e07c7c);
-  text-decoration: line-through;
-  text-decoration-color: rgba(224,124,124,0.4);
-}
-.is-suggest {
-  margin-left: 8px;
-  font-size: 11px;
-  color: var(--gold);
-  font-style: italic;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-/* ── Multiplayer / El sistemi eklentileri ─── */
-.is-opt-block {
-  margin: 14px 0;
-  text-align: center;
-}
-.is-opt-label {
-  font-size: 11px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-.is-opt-row {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.is-opt-btn {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.is-opt-btn:hover {
-  color: var(--text);
-  border-color: var(--correct2);
-}
-.is-opt-btn.active {
-  background: var(--correct2);
-  color: var(--bg);
-  border-color: var(--correct2);
-}
-
-.is-names-block {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 16px 0;
-  padding: 12px;
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-}
-.is-name-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.is-name-label {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  color: var(--text3);
-  font-size: 12px;
-  min-width: 20px;
-}
-.is-name-input {
-  flex: 1;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 7px;
-  padding: 8px 12px;
-  color: var(--text);
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 14px;
-  outline: none;
-  box-sizing: border-box;
-}
-.is-name-input:focus { border-color: var(--correct2); }
-
-/* Pass screen (telefonu ver) */
-.is-pass-screen {
-  text-align: center;
-  padding: 40px 16px;
-  animation: fadeIn 0.4s ease;
-}
-.is-pass-round {
-  font-size: 11px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-}
-.is-pass-icon {
-  font-size: 64px;
-  margin-bottom: 12px;
-  animation: pulse 2s infinite;
-}
-.is-pass-prompt {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 20px;
-  color: var(--text2);
-  margin-bottom: 6px;
-}
-.is-pass-player {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 32px;
-  color: var(--correct2);
-  font-weight: 600;
-  margin-bottom: 10px;
-  word-break: break-word;
-}
-.is-pass-hint {
-  font-size: 12px;
-  color: var(--text3);
-  margin-bottom: 24px;
-  line-height: 1.5;
-}
-
-.is-player-tag {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 11px;
-  color: var(--correct2);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-  padding: 6px 12px;
-  background: rgba(34, 197, 94, 0.08);
-  border-radius: 6px;
-  margin-bottom: 12px;
-  font-weight: 600;
-}
-
-/* Ranking / round-end tablo */
-.is-block-title {
-  font-size: 11px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-weight: 600;
-  margin: 16px 0 6px;
-}
-.is-ranking {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 6px;
-  margin-bottom: 8px;
-}
-.is-rank-row {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border2);
-  gap: 10px;
-}
-.is-rank-row:last-child { border-bottom: none; }
-.is-rank-row.leader {
-  background: rgba(34, 197, 94, 0.08);
-  border-radius: 7px;
-}
-.is-rank-pos {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 13px;
-  color: var(--text3);
-  min-width: 28px;
-  font-weight: 700;
-}
-.is-rank-row.leader .is-rank-pos { color: var(--correct2); }
-.is-rank-name {
-  flex: 1;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 14px;
-  color: var(--text);
-  word-break: break-word;
-}
-.is-rank-score {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--correct2);
-}
-.is-rank-max {
-  font-size: 11px;
-  color: var(--text3);
-  font-weight: 500;
-}
-
-.is-ranking-final .is-rank-row {
-  padding: 14px 12px;
-}
-.is-ranking-final .is-rank-pos {
-  font-size: 18px;
-}
-.is-ranking-final .is-rank-name {
-  font-size: 16px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-}
-.is-ranking-final .is-rank-score {
-  font-size: 20px;
-}
-
-.is-winner-banner {
-  text-align: center;
-  padding: 14px;
-  background: linear-gradient(135deg, rgba(244,164,96,0.12), rgba(34,197,94,0.08));
-  border: 1px solid var(--gold2);
-  border-radius: 10px;
-  margin: 14px 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 18px;
-  color: var(--text);
-}
-.is-winner-banner b {
-  color: var(--gold2);
-  font-weight: 700;
-}
-
-.is-details {
-  margin-bottom: 8px;
-}
-.is-detail-block {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  margin-bottom: 6px;
-  padding: 0;
-}
-.is-detail-block summary {
-  padding: 10px 14px;
-  cursor: pointer;
-  font-size: 13px;
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: var(--text2);
-  outline: none;
-  user-select: none;
-}
-.is-detail-block summary:hover { color: var(--text); }
-.is-detail-block[open] summary {
-  border-bottom: 1px solid var(--border2);
-  color: var(--correct2);
-}
-.is-detail-block .is-answers {
-  border: none;
-  padding: 10px 12px;
-  background: transparent;
-  margin: 0;
-}
-
-/* ── Challenge (URL seed paylaşım) ─── */
-.is-link-btn {
-  background: transparent;
-  border: 1px solid var(--correct2);
-  color: var(--correct2);
-  padding: 10px 18px;
-  border-radius: 9px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-transform: uppercase;
-}
-.is-link-btn:hover {
-  background: var(--correct2);
-  color: var(--bg);
-}
-.is-link-box {
-  background: var(--bg2);
-  border: 1px solid var(--correct2);
-  border-radius: 10px;
-  padding: 12px;
-  margin: 16px 0;
-}
-.is-link-label {
-  font-size: 10px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-.is-link-text {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  padding: 8px 10px;
-  color: var(--text);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 11px;
-  outline: none;
-  box-sizing: border-box;
-  word-break: break-all;
-}
-.is-link-text:focus { border-color: var(--correct2); }
-a.is-start-btn {
-  text-decoration: none;
-  display: inline-block;
-}
-
-/* ══ Sınırsız Kelime ══════════════════════════ */
-.sw-stats-bar {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-}
-.sw-subtitle {
-  text-align: center;
-  font-size: 11px;
-  color: #c084fc;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 14px;
-  font-weight: 600;
-}
-.sw-game-over {
-  margin: 16px auto 0;
-  max-width: 340px;
-  padding: 18px 16px;
-  text-align: center;
-  background: linear-gradient(135deg, rgba(192,132,252,0.08), var(--bg2));
-  border: 1.5px solid #c084fc;
-  border-radius: 14px;
-  animation: fadeIn 0.4s ease;
-}
-.sw-go-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 24px;
-  color: var(--text);
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-.sw-go-word {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 28px;
-  letter-spacing: 6px;
-  color: #c084fc;
-  margin-bottom: 4px;
-  font-weight: 700;
-}
-.sw-go-sub {
-  font-size: 12px;
-  color: var(--text2);
-  margin-bottom: 14px;
-}
-.sw-next-btn {
-  background: linear-gradient(135deg, #c084fc, #a855f7);
-  color: white;
-  border: none;
-  padding: 11px 26px;
-  border-radius: 10px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: transform 0.15s;
-  text-transform: uppercase;
-}
-.sw-next-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,132,252,0.3); }
-
-/* ═══════════════════════════════════════════════════
-   DÜELLO MODÜLÜ
-═══════════════════════════════════════════════════ */
-.duello-container {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 8px 4px;
-}
-.duello-tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  background: var(--bg2);
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid var(--border2);
-}
-.duello-tab {
-  flex: 1;
-  padding: 10px 12px;
-  font-size: 13px;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  font-weight: 500;
-}
-.duello-tab.active {
-  background: var(--gold-bg);
-  color: var(--gold);
-  font-weight: 600;
-}
-.duello-card {
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 14px;
-}
-.duello-card-label {
-  font-size: 11px;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-.duello-input {
-  width: 100%;
-  padding: 14px;
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  color: var(--text);
-  outline: none;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  box-sizing: border-box;
-}
-.duello-input:focus { border-color: var(--gold); }
-.duello-input.invalid { border-color: #e07c7c; }
-.duello-name-input {
-  width: 100%;
-  padding: 10px 14px;
-  font-size: 15px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  color: var(--text);
-  outline: none;
-  box-sizing: border-box;
-}
-.duello-name-input:focus { border-color: var(--gold); }
-.duello-help {
-  font-size: 12px;
-  color: var(--text3);
-  margin-top: 8px;
-  text-align: center;
-}
-.duello-create-btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 15px;
-  font-weight: 600;
-  background: var(--gold-bg);
-  color: var(--gold);
-  border: 1px solid var(--gold-border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.duello-create-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(212,166,69,0.25); }
-.duello-create-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
-.duello-link-box {
-  background: var(--bg3);
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 12px;
-  color: var(--text2);
-  word-break: break-all;
-  border: 1px solid var(--border2);
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-.duello-share-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.duello-share-btn {
-  padding: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  background: var(--bg3);
-  color: var(--text);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.duello-share-btn.wa {
-  background: rgba(37,211,102,0.12);
-  color: #25D366;
-  border-color: rgba(37,211,102,0.35);
-}
-.duello-share-btn:hover { transform: translateY(-1px); }
-.duello-history-empty {
-  text-align: center;
-  padding: 32px 16px;
-  color: var(--text3);
-  font-size: 13px;
-}
-.duello-history-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.duello-history-item:hover { border-color: var(--gold-border); }
-.duello-history-icon { font-size: 20px; }
-.duello-history-info { flex: 1; min-width: 0; }
-.duello-history-title { font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 2px; }
-.duello-history-meta { font-size: 11px; color: var(--text3); margin: 0; }
-.duello-history-score {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gold);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-}
-.duello-incoming {
-  background: linear-gradient(135deg, rgba(212,166,69,0.1), rgba(58,143,126,0.08));
-  border: 1px solid var(--gold-border);
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 14px;
-  text-align: center;
-}
-.duello-incoming-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--gold);
-  margin-bottom: 6px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.duello-incoming-from {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.duello-incoming-sub {
-  font-size: 13px;
-  color: var(--text2);
-  margin-bottom: 14px;
-}
-.duello-accept-btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 14px;
-  font-weight: 600;
-  background: var(--teal-bg);
-  color: var(--teal);
-  border: 1px solid var(--teal-border);
-  border-radius: 10px;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-}
-.duello-accept-btn:hover { transform: translateY(-1px); }
-
-/* Word ekranında düello davet butonu (oyun bittiğinde) */
-.word-duello-btn {
-  display: inline-block;
-  padding: 9px 16px;
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  background: var(--gold-bg);
-  color: var(--gold);
-  border: 1px solid var(--gold-border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-}
-.word-duello-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,166,69,0.25); }
-
-/* 🔒 Cipher kilit ikonu — tab-done iken gizlenir */
-.cipher-lock { font-size: 11px; opacity: 0.7; margin-right: 2px; }
-#tab-cipher.tab-done .cipher-lock { display: none; }
-
-/* 📊 Sosyal kanıt rozeti (Düello geçmiş üstü) */
-.duello-stat-badge {
-  background: linear-gradient(135deg, rgba(212,166,69,0.12), rgba(58,143,126,0.08));
-  border: 1px solid rgba(212,166,69,0.25);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: var(--text);
-  margin-bottom: 12px;
-  text-align: center;
-}
-.duello-stat-badge b { color: var(--gold); font-weight: 700; }
-
-/* 👋 First Time Hint — soft onboarding banner */
-.first-hint {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(120%);
-  background: linear-gradient(180deg, rgba(20,18,28,0.98), rgba(7,7,13,0.98));
-  border: 1px solid rgba(212, 166, 69, 0.4);
-  border-radius: 12px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 9000;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(212, 166, 69, 0.15);
-  max-width: calc(100vw - 40px);
-  width: max-content;
-  animation: fhSlideUp 0.5s ease forwards 0.2s;
-}
-@keyframes fhSlideUp {
-  from { transform: translateX(-50%) translateY(120%); opacity: 0; }
-  to { transform: translateX(-50%) translateY(0); opacity: 1; }
-}
-.first-hint .fh-emoji {
-  font-size: 20px;
-  flex-shrink: 0;
-}
-.first-hint .fh-text {
-  flex: 1;
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.first-hint .fh-help {
-  background: rgba(212, 166, 69, 0.15);
-  border: 1px solid rgba(212, 166, 69, 0.4);
-  color: var(--gold);
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: 'JetBrains Mono', monospace;
-}
-.first-hint .fh-help:hover {
-  background: rgba(212, 166, 69, 0.25);
-}
-.first-hint .fh-close {
-  background: transparent;
-  border: none;
-  color: var(--text2);
-  font-size: 22px;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-}
-.first-hint .fh-close:hover { color: var(--text); }
-
-/* Mobil için */
-@media (max-width: 480px) {
-  .first-hint .fh-text {
-    white-space: normal;
-    font-size: 12px;
+/* ═══════════════════════════════════════════════════════════════
+   📱 MİNİMAL MOBİL FIX (v1.2.2 hotfix-2)
+   Sadece klavye sığması için, başka bir şeye dokunma!
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  body {
+    overflow-x: hidden !important;
   }
-  .first-hint { padding: 10px 12px; gap: 8px; }
-  .first-hint .fh-help { padding: 4px 8px; font-size: 10px; }
-}
-
-/* 📊 İçgörüler paneli (Analytics) */
-
-/* 🎯 Mini Analytics — Sefa'nın 3 ana metrik kartı */
-.mini-analytics {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding-bottom: 18px;
-  border-bottom: 1px dashed var(--border);
-}
-.ma-card {
-  background: linear-gradient(180deg, rgba(212, 166, 69, 0.08), rgba(212, 166, 69, 0.02));
-  border: 1px solid rgba(212, 166, 69, 0.25);
-  border-radius: 10px;
-  padding: 14px 8px 12px;
-  text-align: center;
-  transition: transform 0.15s;
-}
-.ma-card:hover { transform: translateY(-1px); }
-.ma-card.ma-loss {
-  background: linear-gradient(180deg, rgba(201, 87, 87, 0.08), rgba(201, 87, 87, 0.02));
-  border-color: rgba(201, 87, 87, 0.25);
-}
-.ma-card.ma-time {
-  background: linear-gradient(180deg, rgba(58, 143, 126, 0.08), rgba(58, 143, 126, 0.02));
-  border-color: rgba(58, 143, 126, 0.25);
-}
-.ma-icon { font-size: 22px; margin-bottom: 4px; }
-.ma-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.1;
-  margin-bottom: 2px;
-}
-.ma-lbl {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  color: var(--text2);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-.ma-sub {
-  font-size: 10px;
-  color: var(--text3);
-  margin-top: 2px;
-  line-height: 1.2;
-}
-
-.mini-analytics-empty {
-  text-align: center;
-  padding: 24px 16px;
-  background: var(--bg2);
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  margin-bottom: 18px;
-}
-.mae-icon { font-size: 36px; margin-bottom: 6px; opacity: 0.7; }
-.mae-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.mae-msg {
-  font-size: 12px;
-  color: var(--text3);
-}
-
-.insights-section { margin-bottom: 18px; }
-.insights-section-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--gold);
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-.insights-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-}
-.insights-stat {
-  background: rgba(212,166,69,0.06);
-  border: 1px solid rgba(212,166,69,0.15);
-  border-radius: 8px;
-  padding: 8px 4px;
-  text-align: center;
-}
-.insights-stat .is-val {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  font-family: 'Outfit', sans-serif;
-}
-.insights-stat .is-lbl {
-  font-size: 10px;
-  color: var(--text3);
-  margin-top: 2px;
-}
-.insights-bars { display: flex; flex-direction: column; gap: 6px; }
-.insights-bar-row {
-  display: grid;
-  grid-template-columns: 80px 1fr 60px;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-}
-.insights-bar-row .ib-label { color: var(--text2); }
-.insights-bar-row .ib-bar {
-  height: 6px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.insights-bar-row .ib-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold), var(--teal2));
-  border-radius: 3px;
-  transition: width 0.4s ease;
-}
-.insights-bar-row .ib-val { color: var(--text3); text-align: right; font-size: 11px; }
-.insights-game-row {
-  background: rgba(255,255,255,0.03);
-  border-radius: 8px;
-  padding: 8px 10px;
-  margin-bottom: 6px;
-}
-.insights-game-row .igr-name {
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.insights-game-row .igr-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: 11px;
-  color: var(--text3);
-}
-.insights-game-row .igr-stats b { color: var(--gold); }
-.insights-empty {
-  text-align: center;
-  padding: 30px 20px;
-  color: var(--text3);
-  font-size: 13px;
-}
-.insights-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-.insights-btn {
-  flex: 1;
-  padding: 10px 14px;
-  background: rgba(212,166,69,0.12);
-  color: var(--text);
-  border: 1px solid rgba(212,166,69,0.3);
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.insights-btn:hover { background: rgba(212,166,69,0.2); }
-.insights-btn.warn {
-  background: rgba(224,124,124,0.1);
-  border-color: rgba(224,124,124,0.3);
-}
-.insights-btn.warn:hover { background: rgba(224,124,124,0.2); }
-
-/* ═══════════════════════════════════════════════════════
-   LANDSCAPE UYARISI — Telefonda yan çevrilince portre öner
-   Sadece mobil ve dar yükseklikte aktif
-   ═══════════════════════════════════════════════════════ */
-.landscape-warning {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  background: rgba(7,7,13,0.96);
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 30px;
-  text-align: center;
-}
-.landscape-warning .lw-icon {
-  font-size: 56px;
-  margin-bottom: 16px;
-  animation: lwRotate 2s ease-in-out infinite;
-}
-@keyframes lwRotate {
-  0%, 100% { transform: rotate(-90deg); }
-  50% { transform: rotate(0deg); }
-}
-.landscape-warning .lw-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--gold);
-  margin-bottom: 8px;
-}
-.landscape-warning .lw-text {
-  font-size: 14px;
-  color: var(--text2);
-  max-width: 320px;
-  line-height: 1.5;
-}
-/* Sadece mobilde + landscape'te + kısa yükseklikte göster */
-@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
-  .landscape-warning { display: flex; }
+  /* Drawer 52 → 44px (8px kazanım) */
+  .drawer { width: 44px !important; }
+  #app {
+    margin-left: 44px !important;
+    width: calc(100% - 44px) !important;
+  }
+  /* Klavye butonları dar ekranda sığsın */
+  .kb-key {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
 }
 
 </style>
@@ -5366,7 +4214,7 @@ a.is-start-btn {
         <div class="profile-xp"><div class="profile-xp-fill" id="profile-xp-fill" style="width:0%"></div></div>
         <div class="profile-xp-text" id="profile-xp-text">0 / 50 XP</div>
       </div>
-      <div class="profile-coins" id="profile-coins">🪙 0</div>
+      <div class="profile-coins" id="profile-coins">💰 0</div>
     </div>
 
     <!-- Quests paneli -->
@@ -6052,13 +4900,13 @@ const Invite = (() => {
     try {
       if (count >= 50) {
         Progress.addCoins(5000);
-        UI.toast('🥇 Gold Davetçi! +5000 🪙 mega bonus!', 5000);
+        UI.toast('🥇 Gold Davetçi! +5000 💰 mega bonus!', 5000);
       } else if (count >= 10) {
         Progress.addCoins(1000);
-        UI.toast('🥈 Silver Davetçi! +1000 🪙', 4000);
+        UI.toast('🥈 Silver Davetçi! +1000 💰', 4000);
       } else if (count >= 3) {
         Progress.addCoins(300);
-        UI.toast('🥉 Bronze Davetçi! +300 🪙', 4000);
+        UI.toast('🥉 Bronze Davetçi! +300 💰', 4000);
       }
     } catch(e) {}
   }
@@ -6069,7 +4917,7 @@ const Invite = (() => {
     return `🧠 Zihin Üssü'nde benimle yarış!\n\n` +
            `Davet kodumla başla: *${code}*\n` +
            `İlk oynadığında ikimize de:\n` +
-           `🪙 500 Altın\n❄️ 5 Streak Freeze\n\n` +
+           `💰 500 Altın\n❄️ 5 Streak Freeze\n\n` +
            `İndir 👇\nhttps://zihinussu.app?inv=${code}`;
   }
 
@@ -6114,7 +4962,7 @@ const Invite = (() => {
         <div class="iw-msg">Bir arkadaşın seni davet etti.<br>Kodu kullan, ikiniz de kazan:</div>
         <div class="iw-code">${code}</div>
         <div class="iw-rewards">
-          <div class="iw-rew">🪙 500 Altın</div>
+          <div class="iw-rew">💰 500 Altın</div>
           <div class="iw-rew">❄️ 5 Streak Freeze</div>
         </div>
         <button class="iw-accept-btn" onclick="UI.acceptInviteCode('${code}'); this.closest('.invite-welcome-overlay').remove();">
@@ -6219,7 +5067,7 @@ const Progress = (() => {
         <div class="lu-emoji">⭐</div>
         <div class="lu-title">Level ${newLevel}!</div>
         <div class="lu-msg">Yeni seviye açıldı</div>
-        <div class="lu-reward">🪙 +${reward} altın hediye</div>
+        <div class="lu-reward">💰 +${reward} altın hediye</div>
         <button class="lu-btn" onclick="this.closest('.levelup-overlay').remove()">Devam</button>
       </div>
     `;
@@ -6295,7 +5143,7 @@ const Quests = (() => {
     if (q.progress >= q.target) {
       // Tamamlandı! Toast göster
       try {
-        UI.toast(`✓ Görev tamam: ${q.label} — +${q.xp} XP, +${q.coins}🪙`, 3500);
+        UI.toast(`✓ Görev tamam: ${q.label} — +${q.xp} XP, +${q.coins}💰`, 3500);
       } catch(e) {}
       try { Sound.win(); } catch(e) {}
     }
@@ -6378,7 +5226,7 @@ const Shop = (() => {
       // Web/test ortamı — direkt ekle (geliştirme amaçlı)
       const totalCoins = pack.coins + (pack.bonus || 0);
       Progress.addCoins(totalCoins);
-      try { UI.toast(`✨ +${totalCoins} 🪙 eklendi (TEST)`, 3000); Sound.win(); } catch(e) {}
+      try { UI.toast(`✨ +${totalCoins} 💰 eklendi (TEST)`, 3000); Sound.win(); } catch(e) {}
     }
   }
 
@@ -6471,13 +5319,13 @@ const StreakFreeze = (() => {
 const DailyReward = (() => {
   const KEY = 'ah_daily';
   const REWARDS = [
-    { day: 1, type: 'points', amount: 5,  label: '🪙 +5 puan', color: '#d4a645' },
-    { day: 2, type: 'points', amount: 10, label: '🪙 +10 puan', color: '#d4a645' },
-    { day: 3, type: 'points', amount: 15, label: '🪙 +15 puan', color: '#d4a645' },
-    { day: 4, type: 'points', amount: 20, label: '🪙 +20 puan', color: '#d4a645' },
-    { day: 5, type: 'points', amount: 30, label: '🪙 +30 puan', color: '#d4a645' },
+    { day: 1, type: 'points', amount: 5,  label: '💰 +5 puan', color: '#d4a645' },
+    { day: 2, type: 'points', amount: 10, label: '💰 +10 puan', color: '#d4a645' },
+    { day: 3, type: 'points', amount: 15, label: '💰 +15 puan', color: '#d4a645' },
+    { day: 4, type: 'points', amount: 20, label: '💰 +20 puan', color: '#d4a645' },
+    { day: 5, type: 'points', amount: 30, label: '💰 +30 puan', color: '#d4a645' },
     { day: 6, type: 'freeze', amount: 1,  label: '❄️ Streak Freeze', color: '#80c0f0' },
-    { day: 7, type: 'coins',     amount: 100, label: '🪙 +100 Altın (büyük ödül!)', color: '#ffd700' }
+    { day: 7, type: 'coins',     amount: 100, label: '💰 +100 Altın (büyük ödül!)', color: '#ffd700' }
   ];
 
   function load() {
@@ -18337,7 +17185,7 @@ function updateTabState() {
             <div class="quest-info">
               <div class="quest-label">${escapeHtml(q.label)}</div>
               <div class="quest-progress-bar"><div class="quest-progress-fill" style="width:${pct}%"></div></div>
-              <div class="quest-rewards">+${q.xp} XP · +${q.coins} 🪙</div>
+              <div class="quest-rewards">+${q.xp} XP · +${q.coins} 💰</div>
             </div>
             <div class="quest-status">${statusText}</div>
           </div>
@@ -18367,7 +17215,7 @@ function updateTabState() {
       let html = '';
 
       // 💰 Coin paketleri (IAP) — en üstte, dikkat çekici
-      html += '<div class="shop-section-label">🪙 Altın Paketleri</div>';
+      html += '<div class="shop-section-label">💰 Altın Paketleri</div>';
       Shop.COIN_PACKS.forEach(pack => {
         const totalCoins = pack.coins + (pack.bonus || 0);
         const bonusText = pack.bonus ? ` <span style="color:var(--gold)">(+${pack.bonus} bonus)</span>` : '';
@@ -18375,7 +17223,7 @@ function updateTabState() {
         html += `
           <div class="shop-item shop-coin-pack">
             ${badgeHtml}
-            <div class="shop-item-icon">🪙</div>
+            <div class="shop-item-icon">💰</div>
             <div class="shop-item-info">
               <div class="shop-item-label">${pack.coins} Altın${bonusText}</div>
               <div class="shop-item-sub">Anında hesabına eklenir</div>
@@ -18390,7 +17238,7 @@ function updateTabState() {
       Shop.ITEMS.forEach(item => {
         const owned = Shop.isOwned(item.id);
         const canAfford = state.coins >= item.cost;
-        const btnText = owned ? '✓ ALINDI' : `🪙 ${item.cost}`;
+        const btnText = owned ? '✓ ALINDI' : `💰 ${item.cost}`;
         const btnClass = owned ? 'shop-buy-btn owned' : 'shop-buy-btn';
         const btnDisabled = owned || !canAfford ? 'disabled' : '';
         const onClick = owned || !canAfford ? '' : `onclick="UI.buyItem('${item.id}')"`;
@@ -18442,7 +17290,7 @@ function updateTabState() {
       if (levelEl) levelEl.textContent = `Level ${state.level}`;
       if (fillEl) fillEl.style.width = pct + '%';
       if (textEl) textEl.textContent = `${state.xp} / ${xpNext} XP`;
-      if (coinsEl) coinsEl.textContent = `🪙 ${state.coins}`;
+      if (coinsEl) coinsEl.textContent = `💰 ${state.coins}`;
     } catch(e) {}
   }
 
@@ -18715,7 +17563,7 @@ function updateTabState() {
 
         <div class="im-rewards-box">
           <div class="im-rewards-title">Her davette ikiniz de:</div>
-          <div class="im-reward-row">🪙 +500 Altın</div>
+          <div class="im-reward-row">💰 +500 Altın</div>
           <div class="im-reward-row">❄️ +5 Streak Freeze</div>
         </div>
 
@@ -18725,9 +17573,9 @@ function updateTabState() {
         </div>
 
         <div class="im-milestones">
-          <div class="im-mile ${sent >= 3 ? 'done' : ''}">🥉 3 davet → +300 🪙</div>
-          <div class="im-mile ${sent >= 10 ? 'done' : ''}">🥈 10 davet → +1000 🪙</div>
-          <div class="im-mile ${sent >= 50 ? 'done' : ''}">🥇 50 davet → +5000 🪙 mega bonus</div>
+          <div class="im-mile ${sent >= 3 ? 'done' : ''}">🥉 3 davet → +300 💰</div>
+          <div class="im-mile ${sent >= 10 ? 'done' : ''}">🥈 10 davet → +1000 💰</div>
+          <div class="im-mile ${sent >= 50 ? 'done' : ''}">🥇 50 davet → +5000 💰 mega bonus</div>
         </div>
 
         <button class="im-share-btn" onclick="Invite.shareViaWhatsApp()">
