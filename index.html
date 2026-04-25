@@ -3820,7 +3820,7 @@ header {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📱 KLAVYE STICKY FIX - klavye altta sabit kalır, hücreler binmez
+   📱 KLAVYE STICKY FIX v2 - klavye altta, hücreler scroll
 ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 720px) {
   body { overflow-x: hidden !important; }
@@ -3833,18 +3833,31 @@ header {
     flex: 1 1 0 !important;
     min-width: 0 !important;
   }
-  /* Klavye sticky bottom */
-  .keyboard {
-    position: sticky !important;
-    bottom: 0 !important;
-    background: var(--bg0, #07070d) !important;
-    padding-bottom: 8px !important;
-    z-index: 10 !important;
-  }
-  /* Wordle ekranı klavye için yer açsın */
+
+  /* Word ekranı: flex column, full height, scroll'lu üst alan */
   #screen-word {
-    padding-bottom: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
   }
+  /* Üst alan (stats + grid) scroll'lu */
+  #screen-word > *:not(.keyboard) {
+    flex-shrink: 0;
+  }
+  #word-grid {
+    margin-bottom: 12px !important;
+  }
+  /* Klavye en altta sabit, küçültülmüş */
+  .keyboard {
+    margin-top: auto !important;
+    background: var(--bg0, #07070d) !important;
+    padding: 8px 4px !important;
+    flex-shrink: 0 !important;
+  }
+  .kb-row { gap: 3px !important; margin-bottom: 4px !important; }
+  .kb-key { height: 42px !important; font-size: 13px !important; }
 }
 
 </style>
