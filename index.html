@@ -3819,6 +3819,34 @@ header {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   📱 KLAVYE STICKY FIX - klavye altta sabit kalır, hücreler binmez
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  body { overflow-x: hidden !important; }
+  .drawer { width: 44px !important; }
+  #app {
+    margin-left: 44px !important;
+    width: calc(100% - 44px) !important;
+  }
+  .kb-key {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
+  /* Klavye sticky bottom */
+  .keyboard {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: var(--bg0, #07070d) !important;
+    padding-bottom: 8px !important;
+    z-index: 10 !important;
+  }
+  /* Wordle ekranı klavye için yer açsın */
+  #screen-word {
+    padding-bottom: 20px !important;
+  }
+}
+
 </style>
 </head>
 <body>
