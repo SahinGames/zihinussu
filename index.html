@@ -362,25 +362,34 @@ header {
 
 /* Mobil: dar sidebar (64px, sadece icon) */
 @media (max-width: 720px) {
-  .drawer { width: 64px; }
-  .drawer-title { display: none; }
-  .drawer-header { padding: 14px 8px; min-height: 52px; }
-  .drawer-header::before {
-    content: "☰";
-    font-size: 20px;
-    color: var(--text2);
+  /* Mobilde drawer kapalı duruyor — hamburger ile açılır */
+  .drawer {
+    width: 240px;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
   }
-  .drawer-nav { padding: 8px 6px; }
+  .drawer.mobile-open {
+    transform: translateX(0);
+  }
+  /* Açıkken etiketler tekrar görünsün */
+  .drawer-title { display: block; }
+  .drawer-header { padding: 14px 18px; min-height: 52px; }
+  .drawer-header::before { content: ""; }
+  .drawer-nav { padding: 12px 10px; }
   .drawer-item {
-    justify-content: center;
-    padding: 12px 6px;
-    gap: 0;
+    justify-content: flex-start;
+    padding: 12px 14px;
+    gap: 12px;
   }
-  .drawer-label { display: none; }
+  .drawer-label { display: inline; }
   .drawer-icon { font-size: 20px; width: auto; }
+
+  /* App tam genişlik */
   #app {
-    margin-left: 64px;
-    width: calc(100% - 64px);
+    margin-left: 0;
+    width: 100%;
   }
 
   /* Sudoku mobilde dar ekranı tam kullansın — cell'ler daha büyük, dokunma kolay */
@@ -3784,18 +3793,17 @@ header {
 @media (max-width: 720px) {
   body { overflow-x: hidden !important; }
 
-  /* Drawer dar (44px) - mobilde sadece icon */
-  .drawer { width: 44px !important; }
+  /* App tam genişlik — drawer artık üstüne kayan tipte */
   #app {
-    margin-left: 44px !important;
-    width: calc(100% - 44px) !important;
+    margin-left: 0 !important;
+    width: 100% !important;
   }
 
-  /* Klavye altta SABİT, içeriğin üstünde kayar */
+  /* Klavye altta SABİT, tam genişlik */
   .keyboard {
     position: fixed !important;
     bottom: 0 !important;
-    left: 44px !important;
+    left: 0 !important;
     right: 0 !important;
     background: rgba(7,7,13,0.98) !important;
     backdrop-filter: blur(12px);
@@ -3829,6 +3837,11 @@ header {
     font-weight: 700 !important;
   }
 
+  /* Hamburger butonu mobilde görünür, masaüstünde gizli */
+  .hamburger-btn {
+    display: inline-flex !important;
+  }
+
   /* Screen'ler — klavye yüksekliği kadar alt padding */
   #screen-word,
   #screen-sinirsiz {
@@ -3843,6 +3856,11 @@ header {
   #screen-cipher {
     padding-bottom: 30px !important;
   }
+}
+
+/* Hamburger masaüstünde gizli */
+@media (min-width: 721px) {
+  .hamburger-btn { display: none !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4243,12 +4261,12 @@ header {
 
   <!-- HEADER -->
   <header>
+    <button class="icon-btn hamburger-btn" id="hamburger-btn" onclick="document.querySelector('.drawer').classList.toggle('mobile-open'); document.querySelector('.drawer-backdrop').classList.toggle('show')" title="Menü" aria-label="Menüyü aç">☰</button>
     <div class="logo-mark">ZİHİN<span>ÜSSÜ</span></div>
     <div class="header-right">
 
 
 
-      <button class="icon-btn" id="hamburger-btn" onclick="document.querySelector('.drawer').classList.toggle('mobile-open'); document.querySelector('.drawer-backdrop').classList.toggle('show')" title="Menü" style="display:none">☰</button>
       <button class="icon-btn" id="sound-btn" onclick="UI.toggleSound()" title="Ses">🔊</button>
       <button class="icon-btn" id="cb-btn" onclick="UI.toggleColorBlind()" title="Renk körü modu">🎨</button>
       <button class="icon-btn" id="howto-btn" onclick="HowTo.show()" title="Nasıl Oynanır">?</button>
@@ -17442,6 +17460,16 @@ const UI = (() => {
 
   function switchTab(tab) {
     // Şifre sekmesi her zaman açık — cevap her durumda gösterilir
+
+    // Mobilde drawer açıksa tab seçildiğinde otomatik kapansın
+    try {
+      const drw = document.querySelector('.drawer');
+      const bd  = document.querySelector('.drawer-backdrop');
+      if (drw && drw.classList.contains('mobile-open')) {
+        drw.classList.remove('mobile-open');
+        if (bd) bd.classList.remove('show');
+      }
+    } catch(e) {}
 
     // Önceki tab cleanup
     if (currentTab === 'number' && tab !== 'number') {
