@@ -4510,8 +4510,9 @@ header {
         <div class="cipher-lock-icon">⬡</div>
         <div class="cipher-lock-title">Günün Şifresi</div>
         <div class="cipher-lock-text">
-          <b>Kelime</b> ve <b>Sayısal</b> modlarını bitir.<br>
-          Bugünkü gizli kelime ortaya çıksın.
+          <b>Kelime</b>, <b>Sayısal</b> ve <b>Gizem</b> modlarını bitir.<br>
+          Gizem modundaki 3 sorunun cevapları birleşince<br>
+          bugünkü gizli kelime ortaya çıkar.
         </div>
         <div class="cipher-checklist" id="cipher-checklist">
           <div class="cipher-check" id="cc-word">
@@ -4521,6 +4522,10 @@ header {
           <div class="cipher-check" id="cc-number">
             <div class="chk" id="cc-number-dot"></div>
             <span>Sayısal</span>
+          </div>
+          <div class="cipher-check" id="cc-mystery">
+            <div class="chk" id="cc-mystery-dot"></div>
+            <span>Gizem</span>
           </div>
         </div>
       </div>
@@ -15389,22 +15394,33 @@ const Mystery = (() => {
       }
     }
 
-    // Check all done
-    const allCorrect = solvedSteps.length === data.steps.length && !solvedSteps.includes(null);
-    if (allCorrect) {
+    // Check all done — tüm sorular denenmişse (doğru ya da yanlış) bitti say
+    const allAttempted = solvedSteps.length === data.steps.length && solvedSteps.every(s => s !== undefined);
+    const allCorrect = allAttempted && !solvedSteps.includes(null);
+
+    if (allAttempted) {
       TODAY.mysteryDone = true;
+      TODAY.mysteryAllCorrect = allCorrect;
       saveToday();
       updateTabState();
-      // 🏆 Achievements — ilk denemede çözdüyse "Dedektif"
-      try {
-        const noRetries = !TODAY.mysteryRetries || Object.keys(TODAY.mysteryRetries).length === 0;
-        if (noRetries) Achievements.checkMysterySolve(1);
-      } catch(e) {}
-      // ⭐ XP + Quest
-      try {
-        Progress.addXP(45, 'Mystery çözüldü');
-        Quests.addProgress('q_mystery_solve', 1);
-      } catch(e) {}
+
+      if (allCorrect) {
+        // 🏆 Achievements — ilk denemede çözdüyse "Dedektif"
+        try {
+          const noRetries = !TODAY.mysteryRetries || Object.keys(TODAY.mysteryRetries).length === 0;
+          if (noRetries) Achievements.checkMysterySolve(1);
+        } catch(e) {}
+        // ⭐ XP + Quest
+        try {
+          Progress.addXP(45, 'Mystery çözüldü');
+          Quests.addProgress('q_mystery_solve', 1);
+        } catch(e) {}
+      } else {
+        // Bulamadı — tebrik yok, sadece yarına yönlendir
+        setTimeout(() => {
+          UI.toast('Bugün hepsini bulamadın — yarın yeniden dene 💪 Şifre yine de açıldı.', 4000);
+        }, 800);
+      }
     }
   }
 
@@ -15528,24 +15544,61 @@ const Cipher = (() => {
     const wordDone = TODAY.wordDone || false;
     const numDone = TODAY.numDone || false;
     const mysteryDone = TODAY.mysteryDone || false;
+    const allDone = wordDone && numDone && mysteryDone;
 
     setCheck('cc-word', wordDone);
     setCheck('cc-number', numDone);
     setCheck('cc-mystery', mysteryDone);
 
-    if (wordDone && numDone) {
-      document.getElementById('cipher-locked').style.display = 'none';
-      document.getElementById('cipher-unlocked').style.display = 'block';
+    // ŞİFRE HER ZAMAN AÇIK — kullanıcı 3 modu bitirmemiş olsa bile cevabı göster
+    document.getElementById('cipher-locked').style.display = 'none';
+    document.getElementById('cipher-unlocked').style.display = 'block';
 
-      const dayIdx = getDayIndex() % MYSTERY_DATA.length;
-      const myst = MYSTERY_DATA[dayIdx];
-      document.getElementById('cipher-final-word').textContent = myst.word;
-      // Zengin etymology paneli (Anlam / Köken / Kullanım — mevcut içerikten)
-      try { Etymology.showCipher(myst); } catch(e) {}
+    const dayIdx = getDayIndex() % MYSTERY_DATA.length;
+    const myst = MYSTERY_DATA[dayIdx];
+    document.getElementById('cipher-final-word').textContent = myst.word;
+    // Zengin etymology paneli
+    try { Etymology.showCipher(myst); } catch(e) {}
     document.getElementById('cipher-meaning').textContent = myst.etymology;
-      document.getElementById('cipher-congrats').textContent =
-        `${new Date().toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long'})} · Günün Şifresi Açıldı`;
+
+    // Tebrik mesajı: 3 senaryo
+    const wordWon = TODAY.wordWon || false;
+    const mysteryAllCorrect = TODAY.mysteryAllCorrect || false;
+    const allPerfect = allDone && wordWon && mysteryAllCorrect;
+
+    const dateStr = new Date().toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long'});
+
+    let msg;
+    if (allPerfect) {
+      // Mükemmel — hepsini doğru yaptı
+      const congratsMessages = [
+        '🏆 Mükemmel! Bugün her şeyi çözdün!',
+        '🌟 Hepsini bildin — gerçek bir zihin ustası!',
+        '🎯 Kusursuz performans, tebrikler!',
+        '🔥 Bugün zirvedeydin!',
+        '💎 Zihin Üssü\'nün gözdesi sensin bugün'
+      ];
+      msg = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
+    } else if (allDone) {
+      // 3 modu bitirdi ama bazıları yanlış
+      const tryAgainMessages = [
+        'Bugün bulamadın — ama şifre yine de senin. Yarın yeniden!',
+        'Hepsini çözemedin, sorun değil. Yarın daha iyisi olacak.',
+        'Bugün biraz zorladı — yarın revanşa hazır ol.',
+        'Şifre açıldı ama bir kısmı kaçtı. Yarın tekrar deneyeceksin.'
+      ];
+      msg = tryAgainMessages[Math.floor(Math.random() * tryAgainMessages.length)];
+    } else {
+      // 3 modu bile tamamlamadı — yine de cevap göster
+      const incompleteMessages = [
+        'Bugün hepsini denemedin — ama şifre senin. Yarın hepsi seni bekliyor!',
+        'Tüm modları bitiremedin, olsun. Cevap burada — yarın tekrar gel.',
+        'Bugün biraz eksik kaldı. Şifre hediyemiz olsun, yarın görüşürüz!',
+        'Bugün modlar yarım — ama şifre yine senin. Yarın tam başlayalım.'
+      ];
+      msg = incompleteMessages[Math.floor(Math.random() * incompleteMessages.length)];
     }
+    document.getElementById('cipher-congrats').textContent = `${dateStr} · ${msg}`;
   }
 
   function setCheck(id, done) {
@@ -17388,18 +17441,7 @@ const UI = (() => {
   }
 
   function switchTab(tab) {
-    // 🔒 Cipher kilidi — diğer 3 oyun bitmeden açılmaz
-    if (tab === 'cipher') {
-      const allDone = TODAY.wordDone && TODAY.numDone;
-      if (!allDone) {
-        const eksik = [];
-        if (!TODAY.wordDone) eksik.push('Kelime');
-        if (!TODAY.numDone) eksik.push('Sayısal');
-        if (!TODAY.mysteryDone) eksik.push('Gizem');
-        toast(`🔒 Şifreyi açmak için önce: ${eksik.join(', ')}`);
-        return;
-      }
-    }
+    // Şifre sekmesi her zaman açık — cevap her durumda gösterilir
 
     // Önceki tab cleanup
     if (currentTab === 'number' && tab !== 'number') {
@@ -17525,14 +17567,14 @@ function updateTabState() {
     if (TODAY.wordDone) tabWord.classList.add('tab-done');
     if (TODAY.numDone) tabNum.classList.add('tab-done');
     if (TODAY.mysteryDone) tabMystery.classList.add('tab-done');
-    if (TODAY.wordDone && TODAY.numDone) tabCipher.classList.add('tab-done');
+    if (TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone) tabCipher.classList.add('tab-done');
 
     // Drawer item'larda done göstergesi (sidebar görünüm)
     const doneMap = {
       'word': TODAY.wordDone,
       'number': TODAY.numDone,
       'mystery': TODAY.mysteryDone,
-      'cipher': TODAY.wordDone && TODAY.numDone
+      'cipher': TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone
     };
     document.querySelectorAll('.drawer-item').forEach(it => {
       const t = it.dataset.tab;
@@ -18440,7 +18482,7 @@ function boot() {
   if (TODAY.wordDone) tabWord.classList.add('tab-done');
   if (TODAY.numDone) tabNum.classList.add('tab-done');
   if (TODAY.mysteryDone) tabMyst.classList.add('tab-done');
-  if (TODAY.wordDone && TODAY.numDone) tabCiph.classList.add('tab-done');
+  if (TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone) tabCiph.classList.add('tab-done');
 
   // ═══════════════════════════════════════════════════════
   // 🔔 LOKAL BİLDİRİM — Sabah 09:00 günlük kelime hatırlatması
