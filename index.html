@@ -3808,23 +3808,24 @@ header {
   }
   /* Klavye tuşları BÜYÜK ve okunaklı */
   .kb-row {
-    gap: 5px !important;
-    margin-bottom: 6px !important;
+    gap: 4px !important;
+    margin-bottom: 5px !important;
     width: 100%;
+    padding: 0 4px !important;
   }
   .kb-key {
     flex: 1 1 0 !important;
     min-width: 0 !important;
-    height: 56px !important;
-    font-size: 17px !important;
+    height: 52px !important;
+    font-size: 15px !important;
     font-weight: 600 !important;
-    border-radius: 8px !important;
+    border-radius: 7px !important;
     padding: 0 !important;
   }
   .kb-key.wide,
   .kb-key[data-special="true"] {
-    flex: 1.4 1 0 !important;
-    font-size: 12px !important;
+    flex: 1.3 1 0 !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
   }
 
@@ -4146,6 +4147,85 @@ header {
   box-shadow: 0 4px 12px rgba(255,107,107,0.3);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   📊 Stats Bar — yatay grid (mobil dahil)
+═══════════════════════════════════════════════════════════════ */
+.sw-stats-bar,
+.stats-bar,
+#screen-word .stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 8px !important;
+  padding: 14px 12px !important;
+  max-width: 600px;
+  margin: 0 auto !important;
+}
+.sw-stats-bar .stat-chip,
+.stats-bar .stat-chip,
+.stats-grid .stat-chip {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 12px 6px !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  border-radius: 12px !important;
+  min-width: 0;
+}
+.sw-stats-bar .stat-chip .val,
+.stats-bar .stat-chip .val,
+.stats-grid .stat-chip .val {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #f4d03f !important;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.sw-stats-bar .stat-chip .lbl,
+.stats-bar .stat-chip .lbl,
+.stats-grid .stat-chip .lbl {
+  font-size: 10px !important;
+  font-weight: 600;
+  color: var(--text2, #a0a0b8) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  white-space: nowrap;
+}
+.sw-subtitle {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text2, #a0a0b8);
+  font-weight: 600;
+  margin: 8px 0 16px;
+}
+
+/* Mobilde stat çipleri biraz küçülsün */
+@media (max-width: 720px) {
+  .sw-stats-bar,
+  .stats-bar,
+  .stats-grid {
+    gap: 6px !important;
+    padding: 10px 8px !important;
+  }
+  .sw-stats-bar .stat-chip,
+  .stats-bar .stat-chip,
+  .stats-grid .stat-chip {
+    padding: 10px 4px !important;
+  }
+  .sw-stats-bar .stat-chip .val,
+  .stats-bar .stat-chip .val,
+  .stats-grid .stat-chip .val {
+    font-size: 18px !important;
+  }
+  .sw-stats-bar .stat-chip .lbl,
+  .stats-bar .stat-chip .lbl,
+  .stats-grid .stat-chip .lbl {
+    font-size: 9px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -4430,9 +4510,8 @@ header {
         <div class="cipher-lock-icon">⬡</div>
         <div class="cipher-lock-title">Günün Şifresi</div>
         <div class="cipher-lock-text">
-          <b>Kelime</b>, <b>Sayısal</b> ve <b>Gizem</b> modlarını bitir.<br>
-          Gizem modundaki 3 sorunun cevapları birleşince<br>
-          bugünkü gizli kelime ortaya çıkar.
+          <b>Kelime</b> ve <b>Sayısal</b> modlarını bitir.<br>
+          Bugünkü gizli kelime ortaya çıksın.
         </div>
         <div class="cipher-checklist" id="cipher-checklist">
           <div class="cipher-check" id="cc-word">
@@ -4442,10 +4521,6 @@ header {
           <div class="cipher-check" id="cc-number">
             <div class="chk" id="cc-number-dot"></div>
             <span>Sayısal</span>
-          </div>
-          <div class="cipher-check" id="cc-mystery">
-            <div class="chk" id="cc-mystery-dot"></div>
-            <span>Gizem</span>
           </div>
         </div>
       </div>
@@ -14600,7 +14675,7 @@ const Word = (() => {
     } else {
       document.getElementById('go-sub').textContent = won
         ? `${guesses.length} tahminde buldun!`
-        : 'Sözcük buydu.';
+        : `Sözcük şuydu — ${word.toUpperCase()} 😱 Yarın yeniden dene!`;
     }
 
     // 📚 Kelime tanımı göster (TDK kökenli sözlükten)
@@ -15458,7 +15533,7 @@ const Cipher = (() => {
     setCheck('cc-number', numDone);
     setCheck('cc-mystery', mysteryDone);
 
-    if (wordDone && numDone && mysteryDone) {
+    if (wordDone && numDone) {
       document.getElementById('cipher-locked').style.display = 'none';
       document.getElementById('cipher-unlocked').style.display = 'block';
 
@@ -17315,7 +17390,7 @@ const UI = (() => {
   function switchTab(tab) {
     // 🔒 Cipher kilidi — diğer 3 oyun bitmeden açılmaz
     if (tab === 'cipher') {
-      const allDone = TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone;
+      const allDone = TODAY.wordDone && TODAY.numDone;
       if (!allDone) {
         const eksik = [];
         if (!TODAY.wordDone) eksik.push('Kelime');
@@ -17450,14 +17525,14 @@ function updateTabState() {
     if (TODAY.wordDone) tabWord.classList.add('tab-done');
     if (TODAY.numDone) tabNum.classList.add('tab-done');
     if (TODAY.mysteryDone) tabMystery.classList.add('tab-done');
-    if (TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone) tabCipher.classList.add('tab-done');
+    if (TODAY.wordDone && TODAY.numDone) tabCipher.classList.add('tab-done');
 
     // Drawer item'larda done göstergesi (sidebar görünüm)
     const doneMap = {
       'word': TODAY.wordDone,
       'number': TODAY.numDone,
       'mystery': TODAY.mysteryDone,
-      'cipher': TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone
+      'cipher': TODAY.wordDone && TODAY.numDone
     };
     document.querySelectorAll('.drawer-item').forEach(it => {
       const t = it.dataset.tab;
@@ -18365,7 +18440,7 @@ function boot() {
   if (TODAY.wordDone) tabWord.classList.add('tab-done');
   if (TODAY.numDone) tabNum.classList.add('tab-done');
   if (TODAY.mysteryDone) tabMyst.classList.add('tab-done');
-  if (TODAY.wordDone && TODAY.numDone && TODAY.mysteryDone) tabCiph.classList.add('tab-done');
+  if (TODAY.wordDone && TODAY.numDone) tabCiph.classList.add('tab-done');
 
   // ═══════════════════════════════════════════════════════
   // 🔔 LOKAL BİLDİRİM — Sabah 09:00 günlük kelime hatırlatması
