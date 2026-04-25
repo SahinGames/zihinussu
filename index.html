@@ -3768,11 +3768,10 @@ header {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📱 RADİKAL MOBİL FIX (v1.2.2 hotfix-3)
-   Drawer mobilde GİZLİ, hamburger ile açılır
+   📱 MOBİL FIX (v1.2.2 final) - Klavye fixed bottom, screens padded
 ═══════════════════════════════════════════════════════════════ */
 
-/* Backdrop — drawer açıkken arka planı karart */
+/* Drawer backdrop (mobilde drawer açılırken arka plan kararır) */
 .drawer-backdrop {
   display: none;
   position: fixed;
@@ -3785,79 +3784,366 @@ header {
 @media (max-width: 720px) {
   body { overflow-x: hidden !important; }
 
-  /* Hamburger butonu görünsün */
-  #hamburger-btn { display: inline-flex !important; }
-
-  /* Drawer'ı gizle (sol kenardan dışarı) */
-  .drawer {
-    width: 220px !important;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 50;
-  }
-  .drawer.mobile-open {
-    transform: translateX(0) !important;
-  }
-
-  /* Drawer açıkken normal görünüm (mobilde tam genişlik kullansın) */
-  .drawer-title { display: block !important; }
-  .drawer-header::before { display: none !important; }
-  .drawer-item { justify-content: flex-start !important; padding: 12px 14px !important; gap: 12px !important; }
-  .drawer-label { display: inline !important; }
-  .drawer-icon { font-size: 20px !important; width: 24px !important; }
-
-  /* App tam genişlik — drawer artık sabit değil */
-  #app {
-    margin-left: 0 !important;
-    width: 100% !important;
-  }
-
-  /* Klavye butonları sığsın */
-  .kb-key {
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   📱 KLAVYE STICKY FIX v2 - klavye altta, hücreler scroll
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 720px) {
-  body { overflow-x: hidden !important; }
+  /* Drawer dar (44px) - mobilde sadece icon */
   .drawer { width: 44px !important; }
   #app {
     margin-left: 44px !important;
     width: calc(100% - 44px) !important;
   }
+
+  /* Klavye altta SABİT, içeriğin üstünde kayar */
+  .keyboard {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 44px !important;
+    right: 0 !important;
+    background: rgba(7,7,13,0.98) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 6px 14px !important;
+    z-index: 30 !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+  /* Klavye tuşları BÜYÜK ve okunaklı */
+  .kb-row {
+    gap: 5px !important;
+    margin-bottom: 6px !important;
+    width: 100%;
+  }
   .kb-key {
     flex: 1 1 0 !important;
     min-width: 0 !important;
+    height: 56px !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+  }
+  .kb-key.wide,
+  .kb-key[data-special="true"] {
+    flex: 1.4 1 0 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
   }
 
-  /* Word ekranı: flex column, full height, scroll'lu üst alan */
-  #screen-word {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    overflow: hidden !important;
+  /* Screen'ler — klavye yüksekliği kadar alt padding */
+  #screen-word,
+  #screen-sinirsiz {
+    padding-bottom: 220px !important;
   }
-  /* Üst alan (stats + grid) scroll'lu */
-  #screen-word > *:not(.keyboard) {
-    flex-shrink: 0;
+  /* Klavyesi olmayan ekranlar normal */
+  #screen-isimsehir,
+  #screen-duello,
+  #screen-sudoku,
+  #screen-number,
+  #screen-mystery,
+  #screen-cipher {
+    padding-bottom: 30px !important;
   }
-  #word-grid {
-    margin-bottom: 12px !important;
-  }
-  /* Klavye en altta sabit, küçültülmüş */
-  .keyboard {
-    margin-top: auto !important;
-    background: var(--bg0, #07070d) !important;
-    padding: 8px 4px !important;
-    flex-shrink: 0 !important;
-  }
-  .kb-row { gap: 3px !important; margin-bottom: 4px !important; }
-  .kb-key { height: 42px !important; font-size: 13px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🎨 İsim Şehir — modern dark stil
+═══════════════════════════════════════════════════════════════ */
+.is-intro {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 28px 18px 40px;
+  color: var(--text, #e8e8f0);
+}
+.is-intro-title {
+  font-size: 30px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #f4d03f 0%, #4ecdc4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.is-intro-sub {
+  text-align: center;
+  color: var(--text2, #a0a0b8);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.is-opt-block {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+}
+.is-opt-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2, #a0a0b8);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.is-opt-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.is-opt-btn {
+  flex: 1;
+  min-width: 64px;
+  padding: 12px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--text, #e8e8f0);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.is-opt-btn:hover { background: rgba(255,255,255,0.08); }
+.is-opt-btn.active {
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a3aa 100%);
+  border-color: #4ecdc4;
+  color: #07070d;
+  box-shadow: 0 4px 12px rgba(78,205,196,0.25);
+}
+.is-name-row, .is-name-input-wrap {
+  margin-bottom: 8px;
+}
+.is-intro input[type="text"] {
+  width: 100%;
+  padding: 13px 14px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--text, #e8e8f0);
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.is-intro input[type="text"]:focus {
+  border-color: #4ecdc4;
+  background: rgba(78,205,196,0.05);
+}
+.is-highscore {
+  text-align: center;
+  padding: 14px;
+  margin: 18px 0;
+  background: linear-gradient(135deg, rgba(244,208,63,0.12) 0%, rgba(244,208,63,0.04) 100%);
+  border: 1px solid rgba(244,208,63,0.25);
+  border-radius: 12px;
+  color: #f4d03f;
+  font-size: 14px;
+  font-weight: 600;
+}
+.is-start-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 16px;
+  background: linear-gradient(135deg, #4ecdc4 0%, #44a3aa 100%);
+  border: none;
+  border-radius: 14px;
+  color: #07070d;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(78,205,196,0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.is-start-btn:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 3px 8px rgba(78,205,196,0.25);
+}
+.is-link-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.18);
+  border-radius: 12px;
+  color: var(--text2, #a0a0b8);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.is-link-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text, #e8e8f0);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ⚔️ Düello — modern dark stil
+═══════════════════════════════════════════════════════════════ */
+.duello-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+}
+.duello-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.03);
+  padding: 4px;
+  border-radius: 12px;
+}
+.duello-tab {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text2, #a0a0b8);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.duello-tab.active {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(255,107,107,0.25);
+}
+.duello-card {
+  margin-bottom: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+}
+.duello-card-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2, #a0a0b8);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.duello-name-input,
+.duello-input {
+  width: 100%;
+  padding: 13px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--text, #e8e8f0);
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.duello-input {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.duello-name-input:focus,
+.duello-input:focus {
+  border-color: #ff6b6b;
+  background: rgba(255,107,107,0.05);
+}
+.duello-help {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text2, #a0a0b8);
+  font-style: italic;
+}
+.duello-create-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(255,107,107,0.3);
+  transition: transform 0.15s;
+}
+.duello-create-btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+.duello-link-box {
+  padding: 12px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: #4ecdc4;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  word-break: break-all;
+  margin-bottom: 12px;
+}
+.duello-share-row {
+  display: flex;
+  gap: 8px;
+}
+.duello-share-btn {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--text, #e8e8f0);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.duello-share-btn:hover { background: rgba(255,255,255,0.08); }
+.duello-share-btn.wa {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  border-color: #25D366;
+  color: #fff;
+}
+.duello-incoming {
+  padding: 24px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, rgba(255,107,107,0.15) 0%, rgba(255,107,107,0.05) 100%);
+  border: 1px solid rgba(255,107,107,0.3);
+  border-radius: 16px;
+  text-align: center;
+}
+.duello-incoming-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ff6b6b;
+  margin-bottom: 8px;
+}
+.duello-incoming-from {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text, #e8e8f0);
+  margin-bottom: 4px;
+}
+.duello-incoming-sub {
+  color: var(--text2, #a0a0b8);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.duello-accept-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255,107,107,0.3);
 }
 
 </style>
