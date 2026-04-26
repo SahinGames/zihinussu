@@ -786,34 +786,47 @@ header {
   box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
-/* Mobilde: panel klavyenin hemen ÜSTÜNDE sabit kalsın, kullanıcı kaydırınca kaybolmasın */
+/* Mobilde: panel ekran ortasında modal gibi açılsın, klavye altta kalır */
 @media (max-width: 720px) {
   .game-over-card.show-fixed {
     position: fixed !important;
-    bottom: 230px !important; /* klavye yüksekliği kadar yukarı */
+    top: 50% !important;
     left: 50% !important;
-    transform: translateX(-50%) !important;
+    transform: translate(-50%, -50%) !important;
     max-width: calc(100% - 24px) !important;
-    z-index: 35 !important;
+    width: calc(100% - 24px) !important;
+    z-index: 9999 !important;
     margin: 0 !important;
-    animation: slideUpPanel 0.4s ease;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    animation: panelPopIn 0.3s ease;
   }
-  @keyframes slideUpPanel {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @keyframes panelPopIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   }
-  /* Kapatma butonu ekle */
+  /* Arka planı karart */
+  .game-over-card.show-fixed::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: -1;
+    pointer-events: none;
+  }
+  /* Kapatma butonu */
   .game-over-card.show-fixed::before {
     content: "✕";
     position: absolute;
     top: 8px;
     right: 12px;
-    font-size: 18px;
+    font-size: 22px;
     color: var(--text2);
     cursor: pointer;
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 4px;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.08);
+    z-index: 10;
   }
 }
 
@@ -13550,7 +13563,7 @@ const Word = (() => {
             setTimeout(() => AdManager.showInterstitial(() => {}), 3000);
           }
         } catch(e) {}
-      }, guesses.length * 80 + 500);
+      }, guesses.length * 80 + 200);
     } else {
       if (!duelMode) saveToday();
       refreshKeyboard();
@@ -16344,7 +16357,7 @@ const SinirsizWord = (() => {
       setTimeout(() => {
         refreshKeyboard();
         showGameOver();
-      }, guesses.length * 80 + 500);
+      }, guesses.length * 80 + 200);
     } else {
       refreshKeyboard();
       updateCurrentRow();
@@ -17435,7 +17448,7 @@ function boot() {
     if (!isNativePlatform() && 'serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         // 🔄 AGRESIF GÜNCELLEME — eski cache'leri temizle, yeni sürümü zorla
-        const APP_VERSION = '1.2.6'; // her release'de değiştir
+        const APP_VERSION = '1.2.7'; // her release'de değiştir
         const STORED_VERSION = localStorage.getItem('ah_app_version');
 
         if (STORED_VERSION !== APP_VERSION) {
