@@ -13621,15 +13621,26 @@ const Word = (() => {
   }
 
   function showGameOver() {
+    console.log('[Word] showGameOver çağrıldı - won:', won);
     const panel = document.getElementById('word-game-over');
+    if (!panel) {
+      console.error('[Word] word-game-over paneli bulunamadı!');
+      return;
+    }
     panel.style.display = 'block';
     panel.classList.add('show-fixed');
+    // Panel'i body'ye taşı — parent z-index/transform sorunlarını aş
+    if (panel.parentElement !== document.body) {
+      document.body.appendChild(panel);
+    }
+    console.log('[Word] Panel açıldı, classes:', panel.className);
     // Kapatma butonu (mobilde ✕)
     panel.onclick = (e) => {
       const rect = panel.getBoundingClientRect();
       // Sağ üst ✕ alanına tıklama (yaklaşık)
       if (e.clientX > rect.right - 50 && e.clientY < rect.top + 40) {
         panel.classList.remove('show-fixed');
+        panel.style.display = 'none';
       }
     };
     try { won ? Sound.win() : Sound.lose(); } catch(e) {}
@@ -16370,13 +16381,19 @@ const SinirsizWord = (() => {
   }
 
   function showGameOver() {
+    console.log('[SW] showGameOver çağrıldı');
     const panel = document.getElementById('sw-game-over');
+    if (!panel) return;
     panel.style.display = 'block';
     panel.classList.add('show-fixed');
+    if (panel.parentElement !== document.body) {
+      document.body.appendChild(panel);
+    }
     panel.onclick = (e) => {
       const rect = panel.getBoundingClientRect();
       if (e.clientX > rect.right - 50 && e.clientY < rect.top + 40) {
         panel.classList.remove('show-fixed');
+        panel.style.display = 'none';
       }
     };
     try { won ? Sound.win() : Sound.lose(); } catch(e) {}
@@ -17452,7 +17469,7 @@ function boot() {
     if (!isNativePlatform() && 'serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         // 🔄 AGRESIF GÜNCELLEME — eski cache'leri temizle, yeni sürümü zorla
-        const APP_VERSION = '1.2.8'; // her release'de değiştir
+        const APP_VERSION = '1.2.9'; // her release'de değiştir
         const STORED_VERSION = localStorage.getItem('ah_app_version');
 
         if (STORED_VERSION !== APP_VERSION) {
