@@ -13538,7 +13538,7 @@ const Word = (() => {
 
         if (isWin) TODAY.wordDone = true;
         saveToday();
-        updateTabState();
+        try { updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
       }
 
       setTimeout(() => {
@@ -14104,7 +14104,7 @@ const Num = (() => {
     TODAY.numDone = true;
     TODAY.numAllCorrect = (sessionCorrect === sessionQs.length);
     saveToday();
-    updateTabState();
+    try { updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
 
     // Feedback
     const fbPanel = document.getElementById('num-feedback');
@@ -14390,7 +14390,7 @@ const Mystery = (() => {
       TODAY.mysteryDone = true;
       TODAY.mysteryAllCorrect = allCorrect;
       saveToday();
-      updateTabState();
+      try { updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
 
       if (allCorrect) {
         // 🏆 Achievements — ilk denemede çözdüyse "Dedektif"
@@ -17469,7 +17469,7 @@ function boot() {
     if (!isNativePlatform() && 'serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         // 🔄 AGRESIF GÜNCELLEME — eski cache'leri temizle, yeni sürümü zorla
-        const APP_VERSION = '1.2.9'; // her release'de değiştir
+        const APP_VERSION = '1.3.0'; // her release'de değiştir
         const STORED_VERSION = localStorage.getItem('ah_app_version');
 
         if (STORED_VERSION !== APP_VERSION) {
