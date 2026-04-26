@@ -768,7 +768,7 @@ header {
 .game-over-card {
   text-align: center;
   padding: 20px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(15,15,25,0.98);
   border: 1px solid var(--border2);
   border-radius: 14px;
   margin-bottom: 16px;
@@ -778,6 +778,12 @@ header {
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
+  position: relative;
+  z-index: 20;
+  scroll-margin-top: 70px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
 @keyframes fadeRise {
@@ -6643,7 +6649,7 @@ function isNativePlatform() {
      4. Bu kadar — banner otomatik gösterilir, Mystery retry rewarded olur
 ===================================================================== */
 const AdConfig = {
-  enabled: false,          // ⚠️ Play Store build'de true yap
+  enabled: true,           // ✅ Play Store build'de aktif
   showBanners: false,      // 🚫 Banner kaldırıldı (kullanıcı dostu)
   showInterstitial: true,  // ✅ TEK reklam noktası: oyun KAYBEDİLDİĞİNDE
   showRewarded: false,     // 🚫 Rewarded kaldırıldı (basit para sistemi)
@@ -13369,6 +13375,13 @@ const Word = (() => {
 
     const guess = current;
 
+    // 🔁 Aynı kelime 2 kez denenmesin
+    if (guesses.includes(guess)) {
+      UI.toast(lang === 'tr' ? 'Bu kelimeyi zaten denedin' : 'You already tried this word');
+      shakeRow(guesses.length);
+      return;
+    }
+
     // 🔒 SIKI MOD: Havuz dışı kelimeleri reddet (NYT/Bundle mantığı)
     // Kelime sözlükte yoksa "Bu kelime sözlükte yok" der, tahmin harcanmaz.
     const validSet = lang === 'tr' ? VALID_TR : VALID_EN;
@@ -13562,6 +13575,10 @@ const Word = (() => {
   function showGameOver() {
     const panel = document.getElementById('word-game-over');
     panel.style.display = 'block';
+    // Otomatik scroll — panel ekranda görünsün (mobilde hücreler arkasında kalmasın)
+    setTimeout(() => {
+      try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+    }, 100);
     try { won ? Sound.win() : Sound.lose(); } catch(e) {}
     // 🎉 Kazanma efekti — confetti
     if (won) { try { fireConfetti(); } catch(e) {} }
@@ -13992,7 +14009,11 @@ const Num = (() => {
   function sessionOver() {
     clearTimer();
     document.getElementById('num-qcard').style.display = 'none';
-    document.getElementById('num-session-over').style.display = 'block';
+    const panel = document.getElementById('num-session-over');
+    panel.style.display = 'block';
+    setTimeout(() => {
+      try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+    }, 100);
     document.getElementById('num-final-score').textContent = `${sessionCorrect}/${sessionQs.length} Doğru · ${sessionPoints} Puan`;
     document.getElementById('num-final-sub').textContent =
       sessionCorrect === sessionQs.length ? 'Mükemmel oturum!' : 'Devam et, her soru bir adım.';
@@ -16237,6 +16258,14 @@ const SinirsizWord = (() => {
     if (current.length < 5) { UI.toast('5 harf gerekli'); shakeRow(guesses.length); return; }
 
     const guess = current;
+
+    // 🔁 Aynı kelime 2 kez denenmesin
+    if (guesses.includes(guess)) {
+      UI.toast('Bu kelimeyi zaten denedin');
+      shakeRow(guesses.length);
+      return;
+    }
+
     // 🔒 SIKI MOD: Sözlük dışı kelimeler reddedilir
     if (!VALID_TR.has(guess)) {
       UI.toast('"' + guess + '" sözlükte yok');
@@ -16283,6 +16312,9 @@ const SinirsizWord = (() => {
   function showGameOver() {
     const panel = document.getElementById('sw-game-over');
     panel.style.display = 'block';
+    setTimeout(() => {
+      try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+    }, 100);
     try { won ? Sound.win() : Sound.lose(); } catch(e) {}
     // 🎉 Kazanma efekti
     if (won) { try { fireConfetti(); } catch(e) {} }
