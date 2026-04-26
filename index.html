@@ -786,6 +786,37 @@ header {
   box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
+/* Mobilde: panel klavyenin hemen ÜSTÜNDE sabit kalsın, kullanıcı kaydırınca kaybolmasın */
+@media (max-width: 720px) {
+  .game-over-card.show-fixed {
+    position: fixed !important;
+    bottom: 230px !important; /* klavye yüksekliği kadar yukarı */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100% - 24px) !important;
+    z-index: 35 !important;
+    margin: 0 !important;
+    animation: slideUpPanel 0.4s ease;
+  }
+  @keyframes slideUpPanel {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  /* Kapatma butonu ekle */
+  .game-over-card.show-fixed::before {
+    content: "✕";
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 18px;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+  }
+}
+
 @keyframes fadeRise {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -13575,10 +13606,15 @@ const Word = (() => {
   function showGameOver() {
     const panel = document.getElementById('word-game-over');
     panel.style.display = 'block';
-    // Otomatik scroll — panel ekranda görünsün (mobilde hücreler arkasında kalmasın)
-    setTimeout(() => {
-      try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
-    }, 100);
+    panel.classList.add('show-fixed');
+    // Kapatma butonu (mobilde ✕)
+    panel.onclick = (e) => {
+      const rect = panel.getBoundingClientRect();
+      // Sağ üst ✕ alanına tıklama (yaklaşık)
+      if (e.clientX > rect.right - 50 && e.clientY < rect.top + 40) {
+        panel.classList.remove('show-fixed');
+      }
+    };
     try { won ? Sound.win() : Sound.lose(); } catch(e) {}
     // 🎉 Kazanma efekti — confetti
     if (won) { try { fireConfetti(); } catch(e) {} }
@@ -13665,7 +13701,10 @@ const Word = (() => {
 
     // Game over panelini gizle (önceki oyundan kalan)
     const panel = document.getElementById('word-game-over');
-    if (panel) panel.style.display = 'none';
+    if (panel) {
+      panel.style.display = 'none';
+      panel.classList.remove('show-fixed');
+    }
     const oldBtn = document.getElementById('word-go-duello-btn');
     if (oldBtn) oldBtn.remove();
 
@@ -14011,9 +14050,13 @@ const Num = (() => {
     document.getElementById('num-qcard').style.display = 'none';
     const panel = document.getElementById('num-session-over');
     panel.style.display = 'block';
-    setTimeout(() => {
-      try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
-    }, 100);
+    panel.classList.add('show-fixed');
+    panel.onclick = (e) => {
+      const rect = panel.getBoundingClientRect();
+      if (e.clientX > rect.right - 50 && e.clientY < rect.top + 40) {
+        panel.classList.remove('show-fixed');
+      }
+    };
     document.getElementById('num-final-score').textContent = `${sessionCorrect}/${sessionQs.length} Doğru · ${sessionPoints} Puan`;
     document.getElementById('num-final-sub').textContent =
       sessionCorrect === sessionQs.length ? 'Mükemmel oturum!' : 'Devam et, her soru bir adım.';
@@ -16312,9 +16355,13 @@ const SinirsizWord = (() => {
   function showGameOver() {
     const panel = document.getElementById('sw-game-over');
     panel.style.display = 'block';
-    setTimeout(() => {
-      try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
-    }, 100);
+    panel.classList.add('show-fixed');
+    panel.onclick = (e) => {
+      const rect = panel.getBoundingClientRect();
+      if (e.clientX > rect.right - 50 && e.clientY < rect.top + 40) {
+        panel.classList.remove('show-fixed');
+      }
+    };
     try { won ? Sound.win() : Sound.lose(); } catch(e) {}
     // 🎉 Kazanma efekti
     if (won) { try { fireConfetti(); } catch(e) {} }
@@ -16330,7 +16377,10 @@ const SinirsizWord = (() => {
 
   function hideGameOver() {
     const panel = document.getElementById('sw-game-over');
-    if (panel) panel.style.display = 'none';
+    if (panel) {
+      panel.style.display = 'none';
+      panel.classList.remove('show-fixed');
+    }
   }
 
   function updateStatBar() {
@@ -17385,7 +17435,7 @@ function boot() {
     if (!isNativePlatform() && 'serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         // 🔄 AGRESIF GÜNCELLEME — eski cache'leri temizle, yeni sürümü zorla
-        const APP_VERSION = '1.2.5'; // her release'de değiştir
+        const APP_VERSION = '1.2.6'; // her release'de değiştir
         const STORED_VERSION = localStorage.getItem('ah_app_version');
 
         if (STORED_VERSION !== APP_VERSION) {
