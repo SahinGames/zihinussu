@@ -17383,8 +17383,43 @@ function boot() {
   // Capacitor native build'de gerek yok, web/GitHub Pages'te offline çalışsın
   try {
     if (!isNativePlatform() && 'serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      window.addEventListener('load', async () => {
+        // 🔄 AGRESIF GÜNCELLEME — eski cache'leri temizle, yeni sürümü zorla
+        const APP_VERSION = '1.2.5'; // her release'de değiştir
+        const STORED_VERSION = localStorage.getItem('ah_app_version');
+
+        if (STORED_VERSION !== APP_VERSION) {
+          // Yeni sürüm tespit edildi → eski SW'yi sil, cache'i temizle
+          try {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (const reg of regs) await reg.unregister();
+            const cacheNames = await caches.keys();
+            for (const name of cacheNames) await caches.delete(name);
+            localStorage.setItem('ah_app_version', APP_VERSION);
+            // Sayfayı 1 kez tazele (eski JS/CSS gitsin)
+            if (STORED_VERSION) {
+              location.reload();
+              return;
+            }
+          } catch(e) {}
+          localStorage.setItem('ah_app_version', APP_VERSION);
+        }
+
+        // SW'yi tekrar register et
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          // Sayfa yüklü iken yeni SW gelirse → kullanıcıya haber ver, otomatik update et
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            if (!newWorker) return;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // Yeni sürüm hazır → kullanıcıyı 1 kez yenile
+                console.log('[SW] Yeni sürüm hazır, sayfa yenileniyor...');
+                setTimeout(() => location.reload(), 500);
+              }
+            });
+          });
+        }).catch(() => {});
       });
     }
   } catch(e) {}
