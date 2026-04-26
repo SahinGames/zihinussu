@@ -119,6 +119,55 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   cursor: default;
+  /* 🔢 Tüm rakamlar baseline'a otursun (Cormorant Garamond default 'old-style'
+     rakamları kullanıyor, bu da 4²-gibi yanılma yaratıyordu).
+     lining-nums hepsini eşit yüksekliğe getirir. */
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum";
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🎮 GLOBAL GAME FEEL — tap scale animasyonu
+   Tüm tıklanabilir elementlere uygulanır. Mevcut :active kuralları
+   override edilebilir. -webkit-tap-highlight-color mavi flash'ı kaldırır.
+═══════════════════════════════════════════════════════════════ */
+button, [role="button"], a.btn, .icon-btn, .lang-btn, .diff-btn, .share-btn,
+.is-start-btn, .is-link-btn, .is-new-btn, .is-submit-btn, .is-finish-btn,
+.iw-accept-btn, .iw-skip-btn, .ach-share-btn, .sw-next-btn,
+.k, .sdk-num, [data-tap] {
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.08s ease, opacity 0.08s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Aktif (basılı) durumda hafif geri çekilme - tactile his */
+button:active, [role="button"]:active, a.btn:active,
+.icon-btn:active, .lang-btn:active, .diff-btn:active,
+.is-start-btn:active, .is-link-btn:active, .is-new-btn:active,
+.is-submit-btn:active, .is-finish-btn:active,
+.iw-accept-btn:active, .iw-skip-btn:active, .ach-share-btn:active,
+.sw-next-btn:active, [data-tap]:active {
+  transform: scale(0.96);
+  opacity: 0.92;
+}
+
+/* Disabled butonlarda animasyon yok */
+button:disabled:active, [role="button"][aria-disabled="true"]:active,
+button.loading:active {
+  transform: none;
+  opacity: 1;
+}
+
+/* Reduced-motion tercihi olan kullanıcılar için animasyonu kapat */
+@media (prefers-reduced-motion: reduce) {
+  button:active, [role="button"]:active, .icon-btn:active,
+  .lang-btn:active, .diff-btn:active, .is-start-btn:active,
+  .is-link-btn:active, .is-new-btn:active, .is-submit-btn:active,
+  .iw-accept-btn:active, .iw-skip-btn:active, .ach-share-btn:active,
+  .sw-next-btn:active {
+    transform: none;
+  }
 }
 
 /* ===================================
@@ -1005,6 +1054,29 @@ header {
   75% { transform: translateX(8px); }
 }
 
+/* 🎮 Sayısal mod — yanlış cevap shake */
+.num-shake {
+  animation: numShake 0.4s ease;
+}
+@keyframes numShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-10px); }
+  30% { transform: translateX(8px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}
+
+/* 🎮 Sayısal mod — doğru cevap pulse (yeşil parıltı) */
+.num-pulse-correct {
+  animation: numPulseCorrect 0.6s ease;
+}
+@keyframes numPulseCorrect {
+  0% { box-shadow: 0 0 0 0 rgba(45,107,74,0.6); transform: scale(1); }
+  50% { box-shadow: 0 0 0 16px rgba(45,107,74,0); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 rgba(45,107,74,0); transform: scale(1); }
+}
+
 /* 👥 Invite Modal */
 .invite-modal-overlay, .invite-welcome-overlay {
   position: fixed;
@@ -1883,6 +1955,10 @@ header {
   color: var(--text);
   margin-bottom: 8px;
   letter-spacing: 2px;
+  /* 🔢 Rakamlar baseline'a otursun, eşit genişlikte olsun
+     (Cormorant default 'old-style' numerals — 4²-gibi yanılma yapıyor) */
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum", "tnum";
 }
 
 .num-equation .blank {
@@ -1917,6 +1993,9 @@ header {
   text-align: center;
   outline: none;
   transition: border-color 0.15s;
+  /* 🔢 Rakamlar baseline'a otursun (lining-nums) */
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum", "tnum";
 }
 
 .num-input:focus { border-color: var(--gold); }
@@ -3310,6 +3389,34 @@ header {
 .share-btn:active { opacity: 0.85; transform: scale(0.97); }
 .modal-share-btn  { max-width: 100%; }
 
+/* Sınırsız mod "Sonraki Kelime" butonu */
+.sw-next-btn {
+  display: block !important;
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--gold2, #c9a961), var(--gold1, #b8964e));
+  color: #1a1408;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.sw-next-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(201, 169, 97, 0.4);
+}
+.sw-next-btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
 
 /* ── NASIL OYNANIR ONBOARDING ────────────────────────────── */
 #howto-overlay {
@@ -4051,6 +4158,285 @@ header {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   İsim Şehir — Oyun ekranı (eksikti)
+═══════════════════════════════════════════════════════════════ */
+.is-game {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 16px 12px 80px;
+}
+
+/* Üst durum çubuğu — harf + süre */
+.is-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.is-letter-box, .is-timer-box {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  text-align: center;
+}
+.is-letter-box {
+  border-color: rgba(201,169,97,0.3);
+  background: linear-gradient(135deg, rgba(201,169,97,0.08), rgba(201,169,97,0.02));
+}
+.is-letter-label, .is-timer-label {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text3, #707088);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.is-letter {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--gold2, #c9a961);
+  line-height: 1;
+}
+.is-timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--teal2, #63c4b5);
+  line-height: 1;
+}
+.is-timer.urgent {
+  color: var(--coral2, #f08484);
+  animation: urgentPulse 0.5s ease infinite;
+}
+
+/* El gösterici */
+.is-round-info {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--text3, #707088);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* Cevap kutuları */
+.is-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.is-field {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.is-field:focus-within {
+  border-color: var(--gold2, #c9a961);
+  background: rgba(201,169,97,0.04);
+}
+.is-field-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text3, #707088);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.is-field-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text, #e8e8f0);
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  padding: 4px 0;
+}
+.is-field-input::placeholder {
+  color: var(--text3, #707088);
+  opacity: 0.5;
+}
+
+/* Bitir butonu */
+.is-submit-btn, .is-finish-btn {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--gold2, #c9a961), var(--gold1, #b8964e));
+  color: #1a1408;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(201,169,97,0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.is-submit-btn:active, .is-finish-btn:active {
+  transform: scale(0.97);
+}
+
+/* Sonuç ekranı (el bitti) */
+.is-result {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 16px 12px 80px;
+}
+.is-result-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(99,196,181,0.06);
+  border: 1px solid rgba(99,196,181,0.2);
+  border-radius: 14px;
+}
+.is-result-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold2, #c9a961);
+  margin-bottom: 6px;
+}
+.is-result-letter {
+  font-size: 14px;
+  color: var(--text2, #a0a0b8);
+}
+.is-result-letter b {
+  color: var(--teal2, #63c4b5);
+  font-size: 18px;
+  margin-left: 6px;
+}
+
+/* Block başlık */
+.is-block-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--text3, #707088);
+  text-transform: uppercase;
+  margin: 18px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Sıralama tablosu */
+.is-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.is-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.is-rank-row.leader {
+  background: rgba(201,169,97,0.08);
+  border-color: rgba(201,169,97,0.3);
+}
+.is-rank-pos {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold2, #c9a961);
+  min-width: 26px;
+}
+.is-rank-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text, #e8e8f0);
+  font-weight: 600;
+}
+.is-rank-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal2, #63c4b5);
+}
+.is-rank-max {
+  color: var(--text3, #707088);
+  font-weight: 400;
+  font-size: 12px;
+}
+
+/* Cevap detayları */
+.is-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.is-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.is-detail-cat {
+  color: var(--text2, #a0a0b8);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.is-detail-val {
+  color: var(--text, #e8e8f0);
+}
+.is-detail-val.empty {
+  color: var(--text3, #707088);
+  font-style: italic;
+}
+
+/* Final ekran kazanan banner */
+.is-winner-banner {
+  text-align: center;
+  padding: 16px;
+  margin: 14px 0;
+  background: linear-gradient(135deg, rgba(201,169,97,0.15), rgba(201,169,97,0.05));
+  border: 1px solid var(--gold2, #c9a961);
+  border-radius: 14px;
+  font-size: 16px;
+  color: var(--text, #e8e8f0);
+}
+.is-winner-banner b {
+  color: var(--gold2, #c9a961);
+}
+
+/* Yeni oyun butonu */
+.is-new-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: rgba(99,196,181,0.1);
+  color: var(--teal2, #63c4b5);
+  border: 1px solid var(--teal2, #63c4b5);
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.is-new-btn:hover {
+  background: rgba(99,196,181,0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════
    ⚔️ Düello — modern dark stil
 ═══════════════════════════════════════════════════════════════ */
 .duello-container {
@@ -4631,10 +5017,10 @@ header {
       <div class="sw-subtitle">Sürekli yeni kelime · Kendi rekorunu kır</div>
       <div id="sw-grid" class="w-grid"></div>
       <div id="sw-keyboard" class="keyboard"></div>
-      <div class="sw-game-over" id="sw-game-over" style="display:none">
-        <div class="sw-go-title" id="sw-go-title"></div>
-        <div class="sw-go-word" id="sw-go-word"></div>
-        <div class="sw-go-sub" id="sw-go-sub"></div>
+      <div class="sw-game-over game-over-card" id="sw-game-over" style="display:none">
+        <div class="sw-go-title go-title" id="sw-go-title"></div>
+        <div class="sw-go-word go-word" id="sw-go-word"></div>
+        <div class="sw-go-sub go-sub" id="sw-go-sub"></div>
         <button class="sw-next-btn" onclick="SinirsizWord.newGame()">▶ Sonraki Kelime</button>
       </div>
     </div>
@@ -4994,14 +5380,17 @@ const Sudoku = (() => {
     grid[selected] = n;
     saveState();
     if (n !== 0 && grid[selected] === solution[selected] && !hasConflict(selected)) {
-      try { Sound.sudokuCorrect(); } catch(e) {}
+      // 🎮 Game feel: doğru sayı
+      try { Sound.sudokuCorrect(); Haptics.light(); } catch(e) {}
     }
     // Yanlış değer yazıldı? Sadece önceki değerden farklıysa (aynı yanlışı tekrar yazmak sayılmaz)
     if (n !== 0 && n !== prevValue && (grid[selected] !== solution[selected] || hasConflict(selected))) {
       mistakes++;
+      // 🎮 Game feel: yanlış sayı
+      try { Sound.buzz(); Haptics.heavy(); } catch(e) {}
       if (mistakes >= 3) { endGame(false); return; }
     }
-    if (grid.every((v, i) => v === solution[i])) { try { Sound.sudokuWin(); } catch(e) {} endGame(true); return; }
+    if (grid.every((v, i) => v === solution[i])) { try { Sound.sudokuWin(); Haptics.heavy(); } catch(e) {} endGame(true); return; }
     render();
   }
 
@@ -5263,7 +5652,7 @@ const Achievements = (() => {
     const tierLabel = badge.tier === 'gold' ? '✨ NADİR ' : badge.tier === 'silver' ? '⭐ ÖZEL ' : '';
     const myCode = (typeof Invite !== 'undefined') ? Invite.getMyCode() : '';
     const inviteParam = myCode ? '?inv=' + myCode : '';
-    const link = `https://zihinussu.app${inviteParam}`;
+    const link = `https://sahingames.github.io/zihinussu${inviteParam}`;
     const text = `🏆 ${tierLabel}*${badge.title}* madalyasını kazandım!\n\n` +
                  `${badge.icon} ${badge.desc}\n\n` +
                  `Zihin Üssü'nde sen de dene 👇\n${link}\n\n#zihinussu #${badge.tier}`;
@@ -5428,7 +5817,7 @@ const Invite = (() => {
            `Davet kodumla başla: *${code}*\n` +
            `İlk oynadığında ikimize de:\n` +
            `💰 500 Altın\n❄️ 5 Streak Freeze\n\n` +
-           `İndir 👇\nhttps://zihinussu.app?inv=${code}`;
+           `İndir 👇\nhttps://sahingames.github.io/zihinussu?inv=${code}`;
   }
 
   function shareViaWhatsApp() {
@@ -6754,7 +7143,7 @@ const AdManager = (() => {
   async function init() {
     if (!AdConfig.enabled) return;
     if (!detectPlugin()) {
-      console.warn('[AdMob] Capacitor AdMob plugin bulunamadı — web/devmode');
+      // Web/dev mode'da AdMob native plugin yok — bu beklenen durum, sessizce skip
       return;
     }
     try {
@@ -6885,6 +7274,11 @@ const Sound = (() => {
       try { ctx = new (window.AudioContext || window.webkitAudioContext)(); }
       catch(e) { return null; }
     }
+    // 🎵 Autoplay policy fix: Browser kullanıcı etkileşimi olmadan AudioContext'i
+    // suspend mode'da başlatır. İlk tıklamada (ya da herhangi etkileşimde) resume.
+    if (ctx.state === 'suspended') {
+      try { ctx.resume(); } catch(e) {}
+    }
     return ctx;
   }
 
@@ -6933,6 +7327,15 @@ const Sound = (() => {
   // Hatalı kelime shake sesi
   function shake() { beep(180, 0.2, 0.12, 'sawtooth'); }
 
+  // 🆕 Buton tıklama — kısa, yumuşak, dikkat dağıtmayan
+  function click() { beep(900, 0.025, 0.05, 'sine'); }
+
+  // 🆕 Doğru cevap toast/ödül için — pozitif "ding"
+  function ding() { beep(880, 0.08, 0.10, 'sine'); setTimeout(() => beep(1175, 0.10, 0.10, 'sine'), 60); }
+
+  // 🆕 Yanlış cevap için kısa "buzz"
+  function buzz() { beep(150, 0.18, 0.10, 'sawtooth'); }
+
   // Sudoku doğru hücre
   function sudokuCorrect() { beep(660, 0.1, 0.08); }
 
@@ -6953,7 +7356,7 @@ const Sound = (() => {
     try { enabled = localStorage.getItem('ah_sound') !== '0'; } catch(e) {}
   }
 
-  return { keyPress, tile, win, lose, shake, sudokuCorrect, sudokuWin, toggle, init };
+  return { keyPress, tile, win, lose, shake, click, ding, buzz, sudokuCorrect, sudokuWin, toggle, init };
 })();
 
 const HowTo = (() => {
@@ -13398,7 +13801,7 @@ const Word = (() => {
     current += letter;
     const rowIdx = guesses.length;
     const cell = document.getElementById(`wc-${rowIdx}-${current.length - 1}`);
-    if (cell) { cell.textContent = letter; cell.className = 'w-cell has-letter pop'; try { Sound.keyPress(); } catch(e) {} setTimeout(() => cell.classList.remove('pop'), 150); }
+    if (cell) { cell.textContent = letter; cell.className = 'w-cell has-letter pop'; try { Sound.keyPress(); Haptics.light(); } catch(e) {} setTimeout(() => cell.classList.remove('pop'), 150); }
   }
 
   function del() {
@@ -13621,7 +14024,6 @@ const Word = (() => {
   }
 
   function showGameOver() {
-    console.log('[Word] showGameOver çağrıldı - won:', won);
     const panel = document.getElementById('word-game-over');
     if (!panel) {
       console.error('[Word] word-game-over paneli bulunamadı!');
@@ -13633,7 +14035,6 @@ const Word = (() => {
     if (panel.parentElement !== document.body) {
       document.body.appendChild(panel);
     }
-    console.log('[Word] Panel açıldı, classes:', panel.className);
     // Kapatma butonu (mobilde ✕)
     panel.onclick = (e) => {
       const rect = panel.getBoundingClientRect();
@@ -13864,7 +14265,7 @@ const Word = (() => {
     // Deep link — aynı günün kelimesini açar
     const myCode = (typeof Invite !== 'undefined') ? Invite.getMyCode() : '';
     const inviteParam = myCode ? '?inv=' + myCode : '';
-    const link = `https://zihinussu.app${inviteParam}`;
+    const link = `https://sahingames.github.io/zihinussu${inviteParam}`;
 
     const text = `${header}\n\n${result}\n\n${grid}\n\nSen de dene 👇\n${link}\n\n#zihinussu #wordleturkce`;
 
@@ -14034,11 +14435,34 @@ const Num = (() => {
       const pts = diff === 'easy' ? 10 : diff === 'medium' ? 20 : 35;
       sessionPoints += pts + (sessionStreak > 1 ? (sessionStreak - 1) * 5 : 0);
       showResult(true, 'Doğru! +' + pts + ' puan' + (sessionStreak > 1 ? ' (' + sessionStreak + '× seri!)' : ''));
+      // 🎮 Game feel: doğru cevap
+      try { Sound.ding(); } catch(e) {}
+      try { Haptics.medium(); } catch(e) {}
+      // Soru kartını yeşil pulse
+      const card = document.getElementById('num-qcard');
+      if (card) {
+        card.classList.remove('num-pulse-correct');
+        void card.offsetWidth;
+        card.classList.add('num-pulse-correct');
+        setTimeout(() => card.classList.remove('num-pulse-correct'), 600);
+      }
       // 📜 Quest + XP
       try { Quests.addProgress('q_number_5', 1); Progress.addXP(5, 'Sayısal doğru'); } catch(e) {}
     } else {
       sessionStreak = 0;
       showResult(false, `Yanlış. Cevap: ${q.ans}. ${q.hint}`);
+      // 🎮 Game feel: yanlış cevap
+      try { Sound.buzz(); } catch(e) {}
+      try { Haptics.heavy(); } catch(e) {}
+      // Soru kartını shake
+      const card = document.getElementById('num-qcard');
+      if (card) {
+        card.classList.remove('num-shake');
+        // Reflow zorla, animasyon tekrar tetiklensin
+        void card.offsetWidth;
+        card.classList.add('num-shake');
+        setTimeout(() => card.classList.remove('num-shake'), 500);
+      }
     }
 
     advanceDot(correct);
@@ -14079,10 +14503,15 @@ const Num = (() => {
     const panel = document.getElementById('num-session-over');
     panel.style.display = 'block';
     panel.classList.add('show-fixed');
+    // Panel'i body'ye taşı — parent z-index/transform sorunlarını aş
+    if (panel.parentElement !== document.body) {
+      document.body.appendChild(panel);
+    }
     panel.onclick = (e) => {
       const rect = panel.getBoundingClientRect();
       if (e.clientX > rect.right - 50 && e.clientY < rect.top + 40) {
         panel.classList.remove('show-fixed');
+        panel.style.display = 'none';
       }
     };
     document.getElementById('num-final-score').textContent = `${sessionCorrect}/${sessionQs.length} Doğru · ${sessionPoints} Puan`;
@@ -14331,6 +14760,9 @@ const Mystery = (() => {
 
     updateCodeSlots();
     if (correct) {
+      // 🎮 Game feel: doğru cevap
+      try { Sound.ding(); } catch(e) {}
+      try { Haptics.medium(); } catch(e) {}
       const slotEl = document.getElementById(`cs-${i}`);
       if (slotEl) {
         slotEl.style.animation = 'none';
@@ -14342,6 +14774,18 @@ const Mystery = (() => {
       const total  = data.steps.length;
       if (filled < total) {
         UI.toast(`${filled}/${total} basamak tamam — ${total - filled} soru kaldı 🔓`);
+      }
+    } else {
+      // 🎮 Game feel: yanlış cevap
+      try { Sound.buzz(); } catch(e) {}
+      try { Haptics.heavy(); } catch(e) {}
+      // Soru kartını shake
+      const card = document.getElementById(`mstep-${i}`);
+      if (card) {
+        card.classList.remove('num-shake');
+        void card.offsetWidth;
+        card.classList.add('num-shake');
+        setTimeout(() => card.classList.remove('num-shake'), 500);
       }
     }
 
@@ -14949,12 +15393,12 @@ const IsimSehir = (() => {
   // Çünkü Sivas şehirdir, isim değil.
   //
   // Her kategori sadece KENDİ kelime listesinde olanı kabul eder:
-  //   - sehir   → SEHIR_LIST (216 kelime)
-  //   - isim    → ISIM_LIST (328 kelime)
-  //   - unlu    → UNLU_LIST (124 kelime)
-  //   - hayvan  → HAYVAN_LIST (153 kelime)
-  //   - bitki   → BITKI_LIST (151 kelime)
-  //   - esya    → ESYA_LIST (229 kelime)
+  //   - sehir   → SEHIR_LIST (517 kelime)
+  //   - isim    → ISIM_LIST (863 kelime)
+  //   - unlu    → UNLU_LIST (810 kelime)
+  //   - hayvan  → HAYVAN_LIST (500 kelime)
+  //   - bitki   → BITKI_LIST (353 kelime)
+  //   - esya    → ESYA_LIST (635 kelime)
   // ═══════════════════════════════════════════════════════════════════
 
 // ── Kategori-bazlı sözlükler ──────────────────────────
@@ -14962,268 +15406,391 @@ const IsimSehir = (() => {
   // Klasik İsim Şehir kuralı: 'sivas' isim değil, şehirdir
 
   const SEHIR_LIST = new Set([
-    'achkhabat','adana','adapazarı','adisababa','adıyaman','afyon','afyonkarahisar','afşin','ahmedabad','akdağmadeni',
-    'akhisar','aksaray','aksu','akyazı','akçaabat','alanya','alaşehir','algier','amasya','amsterdam',
-    'anamur','ankara','antakya','antalya','antep','ardahan','ardanuç','arhavi','arifiye','arnavutköy',
-    'arsin','artvin','astana','ataköy','ataşehir','atina','atlanta','aukland','avanos','avcılar',
-    'aydın','aydıncık','ağrı','bahçelievler','baku','bakü','bakırköy','baltimore','balıkesir','bangalore',
-    'bangkok','barcelona','barselona','bartın','basel','bath','batman','bayburt','bayındır','bağcılar',
-    'bağdat','başak','başakşehir','başiskele','bebek','belfast','belgrad','berlin','bern','beykoz',
-    'beyoğlu','beyrut','beşiktaş','bilbao','bilecik','bingöl','birmingham','bitlis','bişkek','bodrum',
-    'bogota','bologna','bolu','bordo','bornova','borçka','boston','boğazkale','boğazlıyan','braga',
-    'bremen','bristol','brüksel','buca','budapeşte','buenosaires','bukreş','burdur','burgaz','bursa',
-    'busan','bükreş','büyükçekmece','cambridge','cannes','caracas','cardiff','catania','cenevre','cenova',
-    'cezayir','chennai','chicago','coimbra','colombo','cordoba','daegu','dakar','dallas','darıca',
-    'delhi','demirci','demre','denizli','denver','derince','dernekpazarı','detroit','didim','dikili',
-    'dilovası','diyarbakır','dodurga','dortmund','dover','dubai','dublin','duşanbe','düsseldorf','düzce',
-    'düzköy','edinburgh','edirne','elazığ','elbistan','elmalı','eminönü','erdemli','ereğli','erzincan',
-    'erzurum','esenler','eskişehir','etiler','etimesgut','eyüp','faro','fatih','ferizli','fez',
-    'filibe','finike','floransa','florya','foça','frankfurt','funchal','galata','gaziantep','gaziosmanpaşa',
-    'gebze','gemlik','geyve','giresun','girne','glasgow','granada','göksun','gördes','göreme',
-    'gümüşhane','güzelbahçe','hakkari','hamburg','hartum','hatay','havana','haymana','hayrat','helsinki',
-    'hendek','hiroşima','hongkong','hopa','houston','hyderabad','ihlara','incheon','inegöl','iskenderun',
-    'iskilip','isparta','istanbul','izmir','iznik','jaipur','jakarta','johannesburg','kadıköy','kadışehri',
-    'kahire','kahramanmaraş','kalecik','kandıra','kanpur','kapstadt','karaburun','karabük','karacabey','karaman',
-    'karasu','karaçi','kars','kartal','kartepe','karşıyaka','kastamonu','katmandu','kaynarca','kayseri',
-    'kazan','kağıthane','kaş','kemer','keçiören','kilis','kobe','kocaeli','konak','konya',
-    'kopenhag','korkuteli','kuala','kualalumpur','kula','kumluca','kuşadası','kyoto','köln','köprübaşı',
-    'körfez','kütahya','küçükçekmece','kıbrıs','kırklareli','kırıkkale','kırşehir','kızılcahamam','lagos','laçin',
-    'leeds','lefkoşa','leipzig','levent','lille','lima','liverpool','lizbon','londra','lozan',
-    'lyon','madras','madrid','malaga','malatya','maltepe','mamak','manavgat','manchester','manila',
-    'manisa','marakeş','maraş','mardin','marmaris','marsilya','maslak','mecitözü','meksika','melbourne',
-    'memphis','menderes','mersin','miami','milano','minneapolis','monrovia','montreal','moskova','mudanya',
-    'mut','muğla','muş','münih','nagoya','nairobi','nallıhan','nantes','napoli','nashville',
-    'nevşehir','newyork','nice','nilüfer','niğde','nişantaşı','nurhak','oran','ordu','orhangazi',
-    'ortaköy','osaka','oslo','osmancık','osmangazi','osmaniye','ottawa','oxford','oğuzlar','palermo',
-    'pamukova','panama','paris','pazarcık','pekin','pendik','philadelphia','phoenix','pittsburgh','pleven',
-    'polatlı','portland','porto','prag','pune','rabat','rennes','rio','rize','roma',
-    'sakarya','salihli','salıhli','samsun','sancaktepe','santiago','sapanca','sapporo','saraybosna','saraykent',
-    'sarıgöl','sarıkaya','sarıyer','seattle','seferihisar','sendai','serik','seul','sevilla','seydişehir',
-    'sheffield','sidney','siirt','silifke','silivri','sincan','singapur','sinop','sivas','sofya',
-    'sorgun','stokholm','strazburg','stuttgart','sultanahmet','sungurlu','surat','söke','söğütlü','tahran',
-    'taksim','tangia','taraklı','tarsus','taşkent','tebriz','tekirdağ','tepeköy','tiflis','tiran',
-    'tire','tokat','tokyo','toledo','torbalı','torino','toronto','toulouse','trabzon','tripoli',
-    'tunceli','tunus','turgutlu','tuzla','türkoğlu','urfa','urla','uğurludağ','uşak','valencia',
-    'van','vancouver','varna','varşova','venedik','verona','viana','viyana','washington','yalova',
-    'yenikapı','yenimahalle','yerevan','yeşilköy','yokohama','york','yozgat','yusufeli','yıldırım','zagreb',
-    'zaragoza','zeytinburnu','zonguldak','zürih','çanakkale','çankaya','çankırı','çaykara','çayıralan','çayırova',
-    'çağlayan','çağlayancerit','çekerek','çekmeköy','çerkezköy','çeşme','çorum','çubuk','évora','ödemiş',
-    'ümraniye','ürgüp','üsküdar','üsküp','ığdır','şam','şanghay','şanlıurfa','şavşat','şereflikoçhisar',
-    'şişli','şırnak'
+    'aachen','abidjan','abudabi','accra','adana','addisababa','adelaide','adisababa','adıyaman','afganistan',
+    'afyon','afyonkarahisar','ahmedabad','aksaray','alanya','algier','almanya','almaty','amasya','amerika',
+    'amman','amsterdam','angola','ankara','antakya','antalya','antep','ardahan','arjantin','arnavutluk',
+    'artvin','astana','atina','atlanta','auckland','aukland','avustralya','avusturya','aydın','azerbaycan',
+    'ağrı','bahamalar','bahreyn','baku','bakü','baltimore','balıkesir','bangalore','bangkok','bangladeş',
+    'barbados','barcelona','barselona','bartın','basel','bath','batman','bayburt','belarus','belfast',
+    'belgrad','belize','belo','belçika','benin','berlin','bern','beyrut','bilbao','bilecik',
+    'bingöl','birleşikarapemirlikleri','birmingham','bitlis','bişkek','bodrum','bogota','bolivya','bologna','bolu',
+    'bonn','bordo','bosna','boston','botsvana','braga','brasilia','bremen','brezilya','brisbane',
+    'bristol','britanya','brunei','brüksel','budapeşte','buenosaires','bukreş','bulgaristan','burdur','burgaz',
+    'bursa','burundi','busan','butan','bükreş','calgary','cambridge','canberra','cannes','caracas',
+    'cardiff','casablanca','catania','cenevre','cenova','cezayir','chennai','chicago','coimbra','colombo',
+    'cordoba','daegu','dakar','dakka','dallas','danimarka','darüsselam','datça','delhi','denizli',
+    'denver','detroit','didim','diyarbakır','doha','dominik','dortmund','dover','dresden','dubai',
+    'dublin','duşanbe','düblin','düsseldorf','düzce','edinburgh','edirne','edmonton','ekvador','elazığ',
+    'endonezya','ermenistan','erzincan','erzurum','eskişehir','estonya','etiyopya','faro','fas','fethiye',
+    'fez','fiji','fildişisahili','filibe','filipinler','filistin','finlandiya','floransa','frankfurt','fransa',
+    'funchal','gabon','galler','gambiya','gana','gaziantep','giresun','glasgow','granada','grenada',
+    'guadalajara','guatemala','guyana','göreme','gümbet','gümüşhane','güneyafrika','güneykore','gürcistan','haiti',
+    'hakkari','hamburg','hannover','hanoi','hartum','hatay','havana','helsinki','hindistan','hiroşima',
+    'hollanda','honduras','hongkong','houston','hyderabad','hırvatistan','ingiltere','irak','iran','irlanda',
+    'iskoçya','ispanya','isparta','israil','istanbul','isveç','isviçre','italya','izlanda','izmir',
+    'jaipur','jakarta','jamaika','japonya','johannesburg','kabil','kahire','kahramanmaraş','kalküta','kamboçya',
+    'kamerun','kampala','kanada','kanpur','kapstadt','karabük','karadağ','karaman','karaçi','kars',
+    'kastamonu','katar','katmandu','kayseri','kazakistan','kaş','keiptaun','kemer','kenya','khartoum',
+    'kilis','kocaeli','kolombiya','kongo','konya','kopenhag','kosova','kostarika','kuala','kualalumpur',
+    'kuveyt','kuzeykore','kuşadası','kyoto','köln','küba','kütahya','kıbrıs','kınhasa','kırgızistan',
+    'kırklareli','kırıkkale','kırşehir','lagos','lahor','laos','lasvegas','leeds','lefkoşa','leipzig',
+    'lesoto','letonya','liberya','libya','lille','lima','litvanya','liverpool','lizbon','londra',
+    'losangeles','lozan','lyon','lübeck','lübnan','lüksemburg','macaristan','madagaskar','madras','madrid',
+    'mahmutpaşa','makau','makedonya','malaga','malatya','malawi','maldivler','malezya','mali','malta',
+    'manchester','manila','manisa','marakeş','maraş','mardin','marmaris','marsilya','mauritius','medine',
+    'mekke','meksika','melbourne','memphis','mersin','mexicocity','miami','milano','minneapolis','moldova',
+    'monrovia','monterrey','montevideo','montreal','moritanya','moskova','mozambik','moğolistan','mumbai','muğla',
+    'muş','myanmar','münih','münster','mısır','nagoya','nairobi','namibya','nantes','napoli',
+    'nashville','nepal','nevşehir','newyork','nice','nijer','nijerya','nikaragua','niğde','norveç',
+    'nuuk','nürnberg','oran','oranjestad','ordu','osaka','oslo','osmaniye','ottawa','oxford',
+    'pakistan','palermo','panama','papuayenigine','paraguay','paris','paulo','pekin','perth','peru',
+    'philadelphia','phoenix','pittsburgh','pleven','polonya','portekiz','portland','porto','prag','pune',
+    'quito','rabat','rennes','reykjavik','rio','riyad','rize','roma','romanya','ruanda',
+    'rusya','sakarya','salvador','samoa','samsun','sandiego','sanfrancisco','santiago','sao','sapporo',
+    'saraybosna','seattle','sendai','senegal','seul','sevilla','seyşeller','sheffield','side','sidney',
+    'sierraleone','siirt','singapur','sinop','sivas','slovakya','slovenya','sofya','somali','srilanka',
+    'stokholm','strazburg','stuttgart','sudan','surat','surinam','suriye','suudiarabistan','svaziland','sırbistan',
+    'tacikistan','tahiti','tahran','taipei','tangia','tanzanya','tayland','tayvan','taşkent','tebriz',
+    'tekirdağ','tiflis','timor','tiran','togo','tokat','tokyo','toledo','torino','toronto',
+    'toulouse','trabzon','tripoli','tunceli','tunus','türkiye','türkmenistan','uganda','ukrayna','umman',
+    'urfa','uruguay','uşak','valencia','van','vancouver','vanuatu','varna','varşova','venedik',
+    'venezuela','verona','viana','vietnam','viyana','washington','wellington','yalova','yemen','yenizelanda',
+    'yerevan','yokohama','york','yozgat','yunanistan','zagreb','zambiya','zaragoza','zimbabve','zonguldak',
+    'zürih','çad','çanakkale','çankırı','çekya','çeşme','çin','çorum','özbekistan','ürdün',
+    'ürgüp','ığdır','şam','şanghay','şanlıurfa','şili','şırnak'
   ]);
 
   const ISIM_LIST = new Set([
-    'abdullah','adem','adile','adnan','adviye','afet','afife','afitap','agah','ahmed',
-    'ahmet','ahsen','ajda','alaattin','alaeddin','alev','aleyna','ali','alime','aliye',
-    'alparslan','alper','alperen','altan','altug','altın','anna','anıl','arda','arif',
-    'arzu','arıkan','asaf','aslan','aslı','asuman','asya','atalay','atilla','aybüke',
-    'ayda','aydın','aynur','aysu','ayşe','ayşegül','ayşin','azat','azime','aziz',
-    'azra','bahadır','bahar','bahattin','bahri','bahriye','baki','banu','baran','barış',
-    'basak','batu','bayram','başak','bedia','bediha','bedii','bedrettin','bedri','behice',
-    'behiye','bekir','belda','belgin','benal','benay','bengi','benihan','beray','beren',
-    'berfin','beril','berkay','berra','bertan','besime','beyazıt','beyza','bilal','bilge',
-    'bilgehan','binnaz','binnur','bircan','birkan','birsel','birsen','bob','bora','buket',
-    'bulut','burak','burhan','büşra','can','canan','cananı','cananım','candan','caner',
-    'cansel','cansen','cansu','cansın','cebrail','cehat','cem','cengiz','cenk','ceren',
-    'cevdet','cevher','ceyda','ceyhan','ceylan','ceyran','cihan','cihat','coşkun','cüneyt',
-    'damla','davut','dağhan','defne','demet','deniz','derin','derya','devrim','dicle',
-    'dila','dilan','dilara','dilay','dilek','doruk','doğa','dudu','duru','duygu',
-    'duyşen','ece','eda','edip','efe','ege','ekin','elif','elis','elma',
-    'emel','emin','emine','emir','emirhan','emre','enes','engin','enver','erbil',
-    'ercan','ercilasun','erdal','erdem','erdoğan','eren','erkan','erkin','erol','ersan',
-    'ersin','ersun','ertan','ertuğrul','esin','esinti','esra','evren','eylem','eylül',
-    'ezgi','fadime','fadıl','fahri','fahriye','faik','faruk','fatma','fatoş','fazıl',
-    'fehmi','feray','ferda','ferhat','feridun','ferzan','fethi','fevzi','feyza','feyzullah',
-    'figen','fikret','filiz','fitnat','fuad','fulya','funda','furkan','gaffar','galip',
-    'gamze','gani','ganime','garip','gaye','gazi','gencay','gencer','gercek','geyik',
-    'gizem','gurbet','gökay','gökhan','gökhanım','göksel','göktuğ','gökçe','gönül','görkem',
-    'gözde','gözen','gözlem','güher','gül','gülay','güldali','güldane','güler','gülizar',
-    'gülnaz','gülnur','gülsemin','gülten','gülşen','güneş','günşah','gürbüz','güven','hadi',
-    'hakan','hakkı','haldun','halil','halit','haluk','hamdi','hamdullah','hamit','handan',
-    'hande','hanifi','harun','hasan','hatice','hayati','hayrettin','hayri','hayrullah','hicabi',
-    'hicran','hilmi','himmet','hira','hulusi','huriye','hüseyin','hüsrev','hıdır','hıncal',
-    'hızır','ibrahim','iclal','idil','ihsan','ilayda','ilhami','ilhan','ilker','ilyas',
-    'irem','irfan','irmak','iskender','islam','ismail','ismet','izzet','işıl','jale',
-    'jane','jean','jim','john','jülide','kaan','kadir','kasım','kate','kayhan',
-    'kazım','kemal','keramettin','kerem','kerim','kerime','ketenci','korkmaz','kuzey','kübra',
-    'kıvanç','lalegül','levent','leyla','lisa','macit','mahir','mahmut','makbule','maria',
-    'mehmet','melih','melike','melisa','mert','merve','meryem','metin','mine','miray',
-    'muhammed','muharrem','murad','murat','musa','mustafa','mücahit','müge','naci','nail',
-    'nalan','naz','nazlı','nazım','necati','necdet','nedim','nehir','nesli','neslihan',
-    'nesrin','nilgün','niyazi','nizam','nuh','nur','nuran','nuri','nurullah','okan',
-    'onur','orçun','osman','oya','oytun','ozan','pelin','pelinsu','peter','pınar',
-    'rabia','rahim','rahmi','ramazan','rana','reşat','rıdvan','rıza','saadet','sadık',
-    'saffet','saim','salih','sami','sara','sare','seda','sefa','selim','selin',
-    'selçuk','sema','semih','semra','serap','serdar','serkan','sevda','sevde','sevgi',
-    'sevim','sevtap','sezai','sezgin','sibel','simay','simge','sinan','sinem','sofia',
-    'soner','songül','suat','sudem','sultan','suphi','suzan','süleyman','sıdıka','tahir',
-    'talat','taner','tarık','tayfun','taşkın','teoman','tezcan','timur','timuçin','tolga',
-    'tom','tuncay','tunç','turabi','turan','turgay','tuğba','tuğrul','tuğçe','tülay',
-    'tülin','türkan','ulvi','umut','utku','uğur','volkan','vural','yalçın','yaprak',
-    'yaren','yasemin','yağız','yaşar','yiğit','yunus','yusuf','yıldıray','yıldız','zafer',
-    'zeki','zerrin','zeynep','ziya','zümra','çağatay','çağla','çağrı','çelik','çisem',
-    'çiçek','çiğdem','ömer','özcan','özge','özgür','özlem','ülfet','ülkü','ümit',
-    'ünal','şahin','şakir','şefik','şenol','şeref','şule','şükran','şükrü'
+    'abdullah','abdurrahman','abdülaziz','abdülbaki','abdülkadir','abdüllatif','abdülmuttalip','abdülrahman','acar','adem',
+    'adile','adlan','adnan','adviye','afet','afife','afitap','agah','ahmed','ahmedcan',
+    'ahmet','ahmetcan','ahsen','ajda','akay','akif','aksel','akın','alaattin','alaeddin',
+    'aldemir','alev','aleyna','ali','alim','alime','aliriza','aliye','alkan','alkım',
+    'alparslan','alpaslan','alpay','alpdoğan','alper','alperen','alpgiray','alphan','alphun','altan',
+    'altug','altuğ','amasyalı','anar','anıl','arafat','arda','ardal','argun','arif',
+    'aris','arman','armağan','arslan','artun','arzu','asaf','asaman','aslan','aslı',
+    'aslıgül','aslıhan','asu','asuman','asya','asım','atakan','atalay','ataman','atamer',
+    'ataç','atilim','atilla','atınç','ayaz','aybars','aybek','aybüke','ayda','aydın',
+    'ayhan','aykut','aylan','aynur','aysel','aysima','aysu','aysun','ayten','ayşe',
+    'ayşegül','ayşin','azat','azim','azime','aziz','azra','aşkın','baha','bahadır',
+    'bahar','bahattin','bahri','bahriye','baki','balcı','balıkçı','banu','baran','barbaros',
+    'barlas','barış','basak','basat','batu','batugan','batuhan','baturay','batın','bayan',
+    'baybars','bayhan','bayram','başak','başar','bedia','bediha','bedii','bedirhan','bedrettin',
+    'bedri','begüm','behice','behiye','bekir','belda','belgin','belma','benal','benay',
+    'bengi','benginur','benihan','beray','beren','berfin','beril','berin','berkay','berke',
+    'berra','bertan','besime','beste','beyazıt','beyhan','beyza','bilal','bilge','bilgehan',
+    'bilkay','binnaz','binnur','bircan','birgül','birkan','birol','birsel','birsen','bora',
+    'boran','boğaç','buket','bulut','burak','burcu','burhan','buse','buğra','büşra',
+    'cafer','cahide','cahit','can','canan','candan','candar','candaş','candeniz','canel',
+    'caner','cansel','cansen','cansu','cansın','cebrail','cehat','cem','cengiz','cenk',
+    'ceren','cevahir','cevdet','cevher','cevriye','ceyda','ceyhan','ceylan','ceyran','cihan',
+    'cihangir','cihangül','cihat','coşkun','cuma','cüneyt','damla','davut','dağhan','dede',
+    'defne','deha','demet','deniz','derin','derya','devran','devrim','diba','dicle',
+    'didem','dila','dilan','dilara','dilay','dildem','dilek','doruk','doğa','doğan',
+    'doğukan','dudu','durmuş','duru','duygu','duyşen','ece','eda','edhem','edip',
+    'efe','efrah','ege','ekber','ekim','ekin','ekmel','ela','elif','elis',
+    'eliz','elma','elmas','emel','emin','emine','emir','emircan','emirhan','emre',
+    'enes','engin','enver','eralp','erbil','ercan','ercilasun','erdal','erdem','erden',
+    'erdoğan','eren','erhan','erim','erin','erkan','erkin','erman','ermine','erol',
+    'ersan','ersin','ersun','ertan','ertuğrul','erva','esat','eser','esin','esinti',
+    'eslem','esma','esra','ethem','evren','evrim','eylem','eylül','ezgi','fadime',
+    'fadıl','fahir','fahri','fahriye','faik','faiz','fakir','falih','farabi','faruk',
+    'fatih','fatma','fatoş','fazıl','fehim','fehmi','feray','ferda','ferdi','ferhat',
+    'feride','feridun','feriha','ferit','ferzan','fethi','fevzi','feyza','feyzullah','figen',
+    'fikret','fikri','filiz','fitnat','fuad','fuat','fulya','funda','furkan','gaffar',
+    'galip','gamze','gani','ganime','garip','gaye','gazi','gencay','gencer','gercek',
+    'gevher','geyik','gizem','gurbet','gökay','gökhan','gökhanım','göksel','göksu','göktuğ',
+    'göktürk','gökçe','gönen','gönül','görkem','gözde','güher','gül','gülay','gülbahar',
+    'güldali','güldane','gülden','güler','gülizar','gülnaz','gülnur','gülsema','gülsemin','gülsen',
+    'gülsenem','gülten','gülçin','gülşah','gülşen','güneş','günsel','günşah','gürbüz','gürkan',
+    'güven','hadi','hakan','hakkı','haldun','halil','halise','halit','haluk','hamdi',
+    'hamdullah','hamit','hamza','handan','hande','hanifi','harun','hasan','hatice','hayal',
+    'hayati','haydar','hayrettin','hayri','hayrullah','helin','hicabi','hicran','hidayet','hilal',
+    'hilmi','himmet','hira','hulusi','humay','hunay','huriye','hülya','hümeyra','hürrem',
+    'hüseyin','hüsnü','hüsrev','hıdır','hıncal','hızır','ibrahim','iclal','idil','idris',
+    'ihsan','ikbal','ilayda','ilhami','ilhan','ilker','ilyas','inan','inci','irem',
+    'irfan','irmak','iskender','islam','ismail','ismet','izzet','işıl','jale','jülide',
+    'kaan','kadir','kamil','kamile','kandemir','kasım','kayhan','kayra','kazım','kemal',
+    'kemalettin','keramettin','kerem','kerim','kerime','ketenci','kiraz','korkmaz','kuzey','kübra',
+    'kıvanç','lale','lalegül','lamia','lara','latif','latife','levent','leyla','macit',
+    'mahir','mahmut','makbule','maral','mehmet','mehtap','melda','melih','melike','melis',
+    'melisa','meltem','mert','merve','meryem','mete','metehan','metin','mevlüt','midhat',
+    'mihriban','mine','miray','miraç','miriam','misha','muammer','muhammed','muharrem','mukadder',
+    'murad','murat','murathan','musa','mustafa','mücahit','müge','müjde','münir','müslüm',
+    'naci','naciye','nadir','nail','naile','naim','naime','nalan','narin','nasrullah',
+    'naz','nazan','nazende','nazife','nazlı','nazım','necati','necdet','necip','necla',
+    'necmettin','nedim','nedret','nehir','nejat','nesibe','nesli','neslihan','nesrin','nevin',
+    'nezih','neşe','neşet','nigar','nihat','nilay','nilgün','niyazi','nizam','nizamettin',
+    'nuh','nur','nuran','nuray','nurcan','nurdan','nurettin','nuri','nuriye','nurullah',
+    'nükhet','okan','okay','olcay','omer','onat','onur','onurcan','orhan','orkide',
+    'orkun','oruç','orçun','osman','oya','oytun','ozan','oğuz','oğuzhan','pelin',
+    'pelinsu','perihan','pınar','rabia','rahim','rahmi','ramazan','rana','recai','recep',
+    'refik','reha','remzi','reyhan','reşat','rojda','ruhi','rüya','rüştü','rıdvan',
+    'rıza','saadet','sabah','sabahattin','sabri','sadettin','sadık','saffet','saim','sait',
+    'salih','saliha','salim','samet','sami','samime','sanem','saniye','sansın','sare',
+    'savaş','saygın','sebahattin','seda','sefa','sefer','selami','selen','selim','selin',
+    'selçuk','sema','semih','semra','sena','senem','serap','sercan','serdal','serdar',
+    'serenay','serhan','serhat','serkan','sertaç','servet','sevda','sevde','sevgi','sevim',
+    'sevtap','seyit','seyran','sezai','sezen','sezer','sezgin','sibel','simay','simge',
+    'sina','sinan','sinem','sofia','soner','songül','suat','subutay','sude','sudem',
+    'sultan','suphi','suzan','sönmez','sühan','süleyman','sülün','sümeyye','süreyya','sıdıka',
+    'sıla','tabip','taci','tahir','tahsin','talat','talha','tamer','taner','tarık',
+    'tayfun','taylan','tayyip','taşkın','teoman','tezcan','tijen','timur','timuçin','tolga',
+    'toygar','toygun','tuana','tuba','tufan','tuncay','tunç','turabi','turan','turgay',
+    'turgut','turhan','tuğba','tuğrul','tuğçe','tülay','tülin','türkan','ufuk','ulaş',
+    'ulvi','umay','umur','umut','utku','uğur','uğurcan','vahap','vahit','vecdi',
+    'vedat','vehbi','veli','vesile','veysel','vildan','volkan','vural','yakup','yalçın',
+    'yamaç','yaprak','yaren','yasemin','yavuz','yağmur','yağız','yaşar','yelda','yeliz',
+    'yener','yetkin','yiğit','yunus','yusuf','yıldıray','yıldız','yılmaz','zafer','zehra',
+    'zekeriya','zeki','zekiye','zeliha','zerrin','zeynal','zeynel','zeynep','ziya','zümra',
+    'çağan','çağatay','çağdaş','çağla','çağrı','çelebi','çelik','çilek','çisem','çiçek',
+    'çiğdem','çoban','ömer','ömür','öykü','özay','özcan','özden','özen','özge',
+    'özgü','özgün','özgür','özhan','özkan','özlem','ülfet','ülkü','ümit','ümran',
+    'ünal','şahap','şahin','şakir','şaziye','şefik','şefika','şehnaz','şehrazat','şenay',
+    'şenel','şener','şenol','şentürk','şerafettin','şeref','şinasi','şirin','şuayb','şuayp',
+    'şule','şükran','şükrü'
   ]);
 
   const UNLU_LIST = new Set([
-    'adele','adler','aguilera','ahmet','ajda','akan','akif','aksu','akşemseddin','ali',
-    'altan','anar','anday','arar','arif','aristoteles','arşimet','ata','atatürk','attila',
-    'austen','avril','ayhan','ayşe','aşıkveysel','bach','baki','barbaros','bayar','bayezid',
-    'beatles','beckett','beethoven','behçet','bernini','besni','beyazıd','beyazıt','beyonce','biggie',
-    'bizet','bohr','bolt','bowie','brahms','britney','bronte','brunelleschi','bülent','camus',
-    'caravaggio','celal','celine','cem','cemal','cevat','cevdet','chekhov','chopin','christina',
-    'curie','cézanne','daliroberto','dante','darwin','debussy','demirel','demirer','dickens','dion',
-    'djokovic','donatello','dormen','dostoyevski','dr','drake','dre','duncan','durerbosch','ecevit',
-    'edgü','edison','ediz','einstein','elif','elvis','elvisbeatles','emel','eminem','emre',
-    'epikür','eratosthenes','erdoğan','erener','ergen','ersoy','ertaş','evren','faik','fatih',
-    'faulkner','fazıl','federer','ferdi','ferit','ferzan','feynman','fikret','fitzgerald','freud',
-    'funda','fuzuli','gaga','galileo','gandhi','gauguin','gencebay','geçgin','giotto','goethe',
-    'gogol','gökalp','gökbakar','gülben','haaland','hacivat','hacıbektaş','hadid','hakan','haldun',
-    'halide','halit','halıdiş','handel','hasan','hatun','hawking','haydn','hegel','heisenberg',
-    'hemingway','hikmet','hodja','holyfield','hun','ibrahim','ihsan','ii','ilhan','inanır',
-    'inönü','işık','jackson','jay','johnson','jordan','joyce','jung','kadir','kadri',
-    'kafka','kant','kanuni','kanye','karagöz','karaosmanoğlu','kareem','kasımağa','kazımkoyuncu','kel',
-    'keloğlan','kemal','kenter','kepler','kobe','kopernik','kulin','küçükesat','kırmızıgül','lacan',
-    'lebron','lecorbusier','liszt','madonna','magic','mahir','mahler','mahsun','mahzunişerif','mandela',
-    'manet','maradona','mariah','marx','matisse','mayweather','mağden','mbappe','mehmet','mehmetağa',
-    'melih','mendelssohn','messi','mevlana','michael','miley','mimarsinan','mithat','monet','mozart',
-    'muazzez','muhammed','murad','murat','murathan','murray','mustafa','müren','müslüm','nabokov',
-    'nadal','namık','nasreddin','nazım','necatigil','necip','nedim','newton','neymar','neşet',
-    'nietzsche','nilüfer','novak','nuri','obama','oktay','oluğ','orhan','osman','pacquiao',
-    'pamuk','pavlov','pele','perihan','peyami','phelps','piaget','picasso','pink','pirimrahim',
-    'pisagor','platon','prens','prince','puccini','pushkin','queen','rachmaninoff','rafael','raphael',
-    'ravel','recep','rembrandt','renoir','reşat','rifat','rihanna','roger','ronaldinho','ronaldo',
-    'rossini','sabahattin','safa','sagan','sait','sandal','sartre','sayın','sağ','schopenhauer',
-    'schubert','schumann','selen','selim','serena','sertab','seyfettin','sezen','shakespeare','shakira',
-    'shaquille','skinner','snoop','sokrates','steinbeck','stoa','stravinsky','sultan','swift','süleyman',
-    'süreya','sıvasli','tanpınar','tarkan','tarık','tatlıses','taylor','tchaikovsky','tesla','tevfik',
-    'tim','tolstoy','tomris','trump','tupac','turgenev','turgut','twain','tyson','türkan',
-    'ulubatlı','usainbolt','uyar','vangogh','veli','venus','verdi','vivaldi','wagner','watson',
-    'whitney','williams','woolf','yahya','yahyakemal','yakup','yavuz','yaşar','yunus','yıldız',
-    'yılmaz','zaha','zeki','zidane','ziya','çiller','öklit','özal','ümit','ürek',
-    'şafak','şahan','şakir','şeyhgalip','şinasi','şoray'
+    'abdul','abdullah','abdullahgül','acarakgün','adamlevine','adele','adler','adnan','adnanmenderes','affleck',
+    'afshin','aguilera','ahmed','ahmet','ahmetkaya','ahmetkutsi','ahmetmaranki','ajda','ajdar','akalın',
+    'akan','akif','akkemal','akpekmez','aksu','akşemseddin','akşener','albert','alev','ali',
+    'alican','aliye','alparslantürkeş','alpay','alpman','altan','altuğ','altıok','alışık','anadolu',
+    'anar','anday','andreabocelli','angelina','antetokounmpo','antonio','aragorn','arar','arda','ardaaslı',
+    'ardaturan','ardatürkan','ariana','arianagrande','arie','arif','aristoteles','aristotle','arkın','arşimet',
+    'asaf','asgari','aslı','aslıenver','ata','atak','ataol','atatürk','atilla','atom',
+    'attila','auinan','austen','avril','avşar','ayhan','ayten','ayşe','aziz','açıkgöz',
+    'aşkın','aşık','aşıkveysel','bach','bahar','bahçeli','baki','bale','barbaros','barış',
+    'bayar','bayezid','beatles','beckett','beckham','beethoven','behramoğlu','behçet','bekir','bekiroğlu',
+    'belkıs','belözoğlu','benli','benzema','beren','bernini','besni','beyaz','beyazıd','beyazıt',
+    'beyonce','bezos','bieber','biggie','bill','biricik','bizet','blackpink','bohr','bolt',
+    'bowie','boz','brad','brahms','britney','bronte','bruce','brunelleschi','brunmars','bruno',
+    'bryant','bts','bubikoğlu','buffett','burak','burcu','burcubiricik','burhan','bülent','bürsin',
+    'büyüküstün','büşra','caesar','cahit','cakirler','camus','can','cansel','cansever','cansu',
+    'caravaggio','cardi','carles','ceasar','cedi','celal','celine','cem','cemal','cemkaraca',
+    'cemyılmaz','cengiz','cenk','cevat','cevdet','ceyda','ceylanertem','chekhov','chopin','chris',
+    'christina','churchill','clinton','cobain','coskun','cristiano','cruise','cruyff','curie','curry',
+    'cézanne','cüneyt','daliroberto','damon','daniel','dante','darwin','david','debussy','demet',
+    'demiral','demirel','demirer','deniro','deniz','depp','derindere','derya','devlet','diana',
+    'dicaprio','dickens','dicle','dilara','dion','djokovic','donald','donatello','dormen','dostoyevski',
+    'downey','doğan','doğulu','dr','drake','dre','dua','duncan','durant','durerbosch',
+    'duru','duygu','dylan','ecevit','ed','edgü','edip','edison','ediz','efe',
+    'einstein','ekrem','ekremimamoğlu','elazığ','elif','elon','elvis','elvisbeatles','emel','emelsayın',
+    'emine','eminem','emma','emre','engin','enrique','enver','epikür','eratosthenes','eraysarıçam',
+    'erbakan','erbil','ercan','erdal','erdem','erden','erdoğan','eren','erener','ergen',
+    'ergenç','ergüncan','ergüçlü','erkin','erol','ersoy','ertan','ertaş','ertuğrul','erçel',
+    'esra','esrabilgiç','evcen','evren','ezgi','fahriye','faik','falcao','faruk','fatih',
+    'fatihterim','fatma','faulkner','fazıl','federer','ferdi','ferhat','ferhatgöçer','feridun','ferit',
+    'ferzan','feynman','figo','fikret','filiz','fitzgerald','freeman','freud','funda','fuzuli',
+    'füruzan','gaga','galileo','gandhi','gates','gauguin','gazoz','gencebay','geçgin','ghazi',
+    'gheorghe','giannis','giotto','girik','goethe','gogol','grande','gökalp','gökbakar','gökhan',
+    'göksel','göksu','gönül','göçer','gül','gülay','gülben','gülşen','günay','güney',
+    'güneş','gürel','gürses','haaland','hacivat','hacıbektaş','hadid','hadise','hagi','hakan',
+    'halicarn','halid','halide','halil','halit','haluk','halıdiş','hamlet','hande','handel',
+    'hanks','hanım','hasan','hatun','hawking','haydn','hazar','hegel','heisenberg','hemingway',
+    'herek','hidayet','hikmet','hilal','hipokrat','hodja','holyfield','hun','hülya','hümeyra',
+    'hürrem','ibrahim','ibrahimovic','icardi','ihsan','ii','ilhan','imamoğlu','imirzalıoğlu','imran',
+    'imranov','inanır','iniesta','inönü','irem','isaac','iskender','ismet','izzet','işık',
+    'işıl','jabbar','jackson','jagger','james','jay','jayz','jeff','jenner','jobs',
+    'johansson','johnny','johnson','jokic','jolie','jordan','joyce','julia','jung','justin',
+    'justinbieber','jüstin','kabak','kadir','kadri','kafka','kant','kanuni','kanye','karaca',
+    'karagöz','karakoç','karaosmanoğlu','kardashian','kareem','kasımağa','katy','kavaklıoğlu','kawhi','kaya',
+    'kayhan','kaynarca','kazımkoyuncu','kel','keloğlan','kemal','kenan','kennedy','kenter','kepler',
+    'kerem','kerimoğlu','kevin','kidman','kim','kobal','kobe','kopernik','koray','koçyiğit',
+    'kraliçe','kulin','kuyas','küçük','küçükesat','kılıçdaroğlu','kıraç','kırmızıgül','kıvanç','kızılok',
+    'lacan','lady','ladygaga','lale','lawrence','lebron','lecorbusier','lennon','leonard','leonardo',
+    'lerzan','levent','lincoln','lionel','lipa','liszt','lorde','lozan','ludwig','madonna',
+    'magic','mahir','mahler','mahmut','mahsun','mahzunişerif','malala','mandela','manet','manolya',
+    'mansur','manyok','manço','maradona','mariah','marie','mark','mars','mart','marx',
+    'matisse','mauro','mayweather','mağden','mbappe','mccartney','mehmet','mehmetağa','mehter','melih',
+    'melisa','meltem','mendelssohn','menderes','meral','merih','mertens','mertosman','messi','mesut',
+    'metallica','mete','metehan','metin','mevlana','michael','mikail','miley','mimarsinan','minaj',
+    'mithat','modric','monet','morgan','mozart','muazzez','muhammed','muharrem','murad','murat',
+    'murathan','murray','musk','mustafa','mutlu','müge','münir','müren','müslüm','nabokov',
+    'nadal','nadia','naim','namık','napoleon','nasreddin','nazan','nazım','necatigil','necip',
+    'nedim','nelson','nesin','neslihan','neslişah','newton','neymar','neşet','neşrin','nicki',
+    'nietzsche','nikola','nilgün','nilüfer','novak','nuh','nur','nuri','obama','oluğ',
+    'orhan','ortaç','orwell','osman','ozan','pacino','pacquiao','pamuk','paris','pavarotti',
+    'pavlov','pekkan','pele','perihan','perry','peter','petrov','peyami','phelps','piaget',
+    'picasso','pink','pirimrahim','pisagor','pitt','platini','plato','platon','prens','presley',
+    'prince','puccini','pushkin','puyol','pınar','queen','rachmaninoff','rafael','raphael','ravel',
+    'recep','refik','rembrandt','renoir','reçber','reşat','rifat','rihanna','robert','roberts',
+    'roger','ronaldinho','ronaldo','roosevelt','rossini','rowling','rüştü','saat','sabahattin','sabri',
+    'sadri','safa','safiye','sagan','sait','salah','salih','sandal','sartre','sarıkaya',
+    'savaş','sayan','sayın','sağ','scarlett','schopenhauer','schubert','schumann','seda','selen',
+    'selim','selma','selçuk','semih','serdar','serena','serenay','sergen','serhat','sertab',
+    'seyfettin','sezai','sezen','sezenak','sezgin','shakespeare','shakira','shaquille','sheeran','sibel',
+    'simge','sinatra','sinem','skinner','smith','snoop','sokrates','spielberg','stalin','steinbeck',
+    'stephen','steve','stoa','stone','strauss','stravinsky','streep','sukur','sultan','sunal',
+    'sunay','suzan','swift','söyüncü','süleyman','süleymanoğlu','süreya','sıtkı','sıvasli','tanpınar',
+    'tarkan','tatar','tatlıses','tatlıtuğ','tayfur','taylor','taylorswift','tayyip','tchaikovsky','teoman',
+    'tesla','tevfik','tim','tolkien','tolstoy','tomris','tosun','tuba','tugay','tuncay',
+    'tupac','turan','turgay','turgenev','turgut','turhan','tuğbabüyüküstün','tuğberk','twain','tyson',
+    'türkan','türkoğlu','ulubatlı','usainbolt','uyar','vangogh','venus','verdi','veysel','vivaldi',
+    'vladimir','volkan','voltaire','wagner','warren','washington','watson','west','whitney','will',
+    'williams','woolf','xavi','yahya','yahyakemal','yakup','yalçın','yaman','yasin','yavaş',
+    'yavuz','yaşar','yener','yengi','yunus','yücel','yücesoy','yılmaz','zaha','zeki',
+    'zidane','ziya','zuckerberg','çalhanoğlu','çağlar','çiller','çolakoğlu','öklit','özal','özalan',
+    'özcan','özdemir','özge','özil','özkul','özler','öztürk','özyıldız','ümit','ürek',
+    'şafak','şahan','şahin','şakir','şen','şener','şeyhgalip','şinasi','şoray','şükrü'
   ]);
 
   const HAYVAN_LIST = new Set([
-    'afrika','ahtapot','ahududu','akbaba','akkeçi','akrep','akya','alabalık','alageyik','albatros',
-    'aligator','anaconda','anakonda','antilop','arı','arısı','asil','aslan','aslanı','at',
-    'ay','aygır','ayı','ağaçkakan','ağustosböceği','babun','bal','balarısı','balina','balık',
-    'balıkçıkuşu','balıkçılık','barbun','baykuş','beluga','beyazşark','bizon','boa','bombus','boynuzlu',
-    'buzağı','bıldırcın','cellatkuşu','ceylan','civciv','cırcırböceği','dana','dağkeçisi','deniz','denizatı',
-    'denizfili','deniztosbağası','denizyıldızı','devekuşu','deveotu','dilbalığı','domuz','doğan','dugong','engerek',
-    'erkekarı','ermin','eşek','eşekarısı','fare','farelilik','fil','filgilleri','flamingo','fok',
-    'foknehir','galago','gavial','gelincik','gerbil','gergedan','geyik','geyiği','gibon','gnu',
-    'goril','gri','güve','güvecinin','güvercin','hamamböceği','hamsi','hamster','hindi','hindistan',
-    'hipopotam','horoz','hortumu','ibik','iguana','impala','inek','ipekböceği','ispinoz','istakoz',
-    'istavrit','it','işçi','jaguar','kakadu','kakım','kalamar','kalkan','kambur','kanarya',
-    'kanat','kanguru','kaplan','kaplumbağa','kapuçinmaymunu','kara','karabatak','karaca','karagöz','karayılan',
-    'karga','karides','kartal','karınca','katil','katır','kaz','kedi','kediotu','kefal',
-    'keklik','kelebek','kelebekler','kene','kerkenez','kertenkele','keçi','kirpi','koala','kobay',
-    'kobra','komodo','koyun','koç','kraliçearı','krokodil','kudu','kunduz','kurt','kuyruklu',
-    'kuyruksallayan','kuzgun','kuzu','kuğu','köpek','köpekbalığı','köstebek','kırkayak','laboratuvarfaresi','lemur',
-    'leopar','levrek','leylek','lipsoz','lori','lüfer','makak','mako','mamba','manatı',
-    'manda','mandril','maral','martı','mavi','maymun','megabat','megalodon','mercanbalığı','mezopotamya',
-    'midye','mikrobat','minkoala','misk','mors','muhabbet','mühürlü','mürekkep','mürekkepbalığı','nerwhal',
-    'nesir','nilgay','orangutan','orca','orfoz','oryx','palamut','panda','papağan','pekari',
-    'pelikan','penguen','pire','pirelek','pisi','piton','porsuk','pul','puma','python',
-    'rakun','ren','rinoseros','saksağan','salyangoz','samur','sansar','sardalya','sarıkanat','semender',
-    'serçe','sincap','sinek','sineği','sivrisinek','solucan','somon','sperm','suaygırı','sumru',
-    'sırtlan','sıçan','sığır','tahtakurusu','takım','tapir','tarantula','tarlafaresi','tarsier','tasmanian',
-    'tavuk','tavus','tavşan','tay','teke','termit','tigerşark','tilki','timsah','tokmak',
-    'tonbalığı','tortilla','tosbağası','tosun','tukan','turna','tıne','uskumru','uçan','uğurböceği',
-    'vampir','vampiryarasa','varan','vaşak','vervet','viper','vizon','walrus','yabanarısı','yabandomuzu',
-    'yabanikoyun','yak','yarasa','yavşancık','yağmurkuşu','yengeç','yumakkurusu','yunus','yılan','yılanbalığı',
-    'zebra','zürafa','çekirge','çekiç','çift','çinekop','çiplem','çita','çitari','çulluk',
-    'çıyan','ördek','örümcek','örümcekmaymunu','şahin','şempanze'
+    'afrika','ahtapot','akbaba','akkeçi','akrep','aksungur','akya','alabalık','alaca','alagacık',
+    'alageyik','alakarga','alaska','albatros','aligator','alpaka','altıngöz','amfibi','amur','anaconda',
+    'anakonda','anasoplo','anasör','angora','antilop','ardıçkuşu','arslan','arı','arıkurdu','arıkuşu',
+    'arısı','arıyutan','asil','aslan','aslanı','astakoz','at','atmaca','avcıkuşu','ay',
+    'aygır','ayı','ayıbalığı','ayısı','azman','ağaçkakan','ağustosböceği','aşağı','babun','bal',
+    'balaban','balarısı','balina','balkurbağası','balık','balıkçıkuşu','balıkçıl','balıkçılık','bambubay','barbun',
+    'bataklıkkuşu','baykuş','bedevi','behemot','bekçiköpeği','beluga','belugabalin','benekgöz','benekkuşu','benekli',
+    'beyazbalina','beyazşark','beygir','bizon','bizonöküzü','boa','bombus','bonobo','boruboynuzu','boynuzlu',
+    'bozayı','bozdoğan','boğa','bukalemun','buzağı','börü','bülbül','büyükbalina','bıldırcın','cellatkuşu',
+    'ceylan','cheetah','ciritböceği','civciv','cırcırböceği','dana','dağ','dağkeçisi','deniz','denizanası',
+    'denizatı','denizfili','denizinekparkı','denizkestanesi','denizköpeği','denizkırlangıcı','denizkızı','denizleoparı','deniztarağı','deniztosbağası',
+    'denizyılanı','denizyıldızı','deve','devekuşu','deveotu','dilbalığı','dinozor','domuz','domuzbalığı','domuzburnu',
+    'dorado','doğan','dugong','ebabil','elektrikbalığı','emu','engerek','engerekbalığı','erkekarı','erkeçböceği',
+    'ermin','eşek','eşekarı','eşekarısı','eşekkulağı','fare','farelilik','ferret','fil','filbalı',
+    'fildişi','filgilleri','flamingo','fok','foka','foknehir','fokot','foksterye','galago','gaur',
+    'gavial','gazel','gecekuşu','gecko','gelincik','gerbil','gergedan','geyik','geyiği','gibon',
+    'gnu','goril','gorilla','gri','gökçeleylek','gölgekuşu','göçmen','göğüskuşları','güve','güvecinin',
+    'güvercin','hamamböceği','hamsi','hamster','hanumkurdu','havuzbalığı','hindi','hindistan','hindistandevesi','hipopotam',
+    'horoz','hortumu','hummingbird','hyena','ibik','ibis','iguana','impala','incilipalmi','incirkuşu',
+    'inek','ipekböceği','ispermeçet','ispinoz','istakoz','istavrit','istiridye','it','iştar','işçi',
+    'jagua','jaguar','jelibalığı','kabukluböcek','kakadu','kakatua','kakım','kalamar','kalkan','kambur',
+    'kameleon','kanarya','kanat','kanguru','kaplan','kaplumbağa','kapuçinmaymunu','kara','karabatak','karaca',
+    'karadul','karagöz','karakuş','karasinek','karayılan','karga','karginca','karides','karinca','kartal',
+    'karınca','kaspi','katil','katır','kayalık','kayseri','kaz','kedi','kediotu','kefal',
+    'keklik','kelaynak','kelebek','kelebekler','keler','kemirgen','kene','kerkenez','kerpiç','kertenkele',
+    'kesirici','kestanesi','keçi','kirpi','koala','kobay','kobra','koel','koleksiyon','kolibri',
+    'komodo','komodor','kondor','kookaburra','koridor','korkuluk','kornaz','koyun','koyunbalı','koç',
+    'kraliçearı','krokodil','kudu','kuguar','kuluk','kunduz','kupes','kurbağa','kurnaz','kurt',
+    'kurşun','kurşunbalı','kuyruklu','kuyruksallayan','kuzgun','kuzu','kuğu','kuş','kuşu','köpek',
+    'köpekbalığı','köstebek','kırkayak','kırlangıç','kırmızıkarınca','kıvırcık','laboratuvarfaresi','lama','lamantin','lemur',
+    'leopar','levrek','leylek','lipsoz','lokum','lori','lynx','lüfer','makak','mako',
+    'mamba','manatee','manatı','manda','mandril','manta','mantik','maral','marmoset','martı',
+    'mastiff','matrak','mavi','mavibalina','maymun','megabat','megalodon','mercanbalığı','mercankırlangıcı','mercanlar',
+    'merin','mersin','mersinbalığı','merşan','mezopotamya','midye','mikrobat','minkoala','misk','miyav',
+    'morina','mors','muhabbet','muhabbetkuşu','mühürlü','mürekkep','mürekkepbalığı','müren','nargile','nerwhal',
+    'nesim','nesir','nilgay','oklukirpi','oktopus','orangutan','orca','orfoz','oryx','palamut',
+    'panda','pangolin','papağan','pekari','pelikan','pelinler','peluş','penguen','penkuen','pingu',
+    'pinguen','piranha','piranya','pire','pirelek','pisi','pistalbalık','pitbul','piton','pitonun',
+    'porcupine','porsuk','puma','python','rakun','ren','rezus','rinoseros','saksağan','salyangoz',
+    'samur','sansar','sardalya','sarduvan','sarıkanat','sazan','semender','serçe','sincap','sinek',
+    'sineği','sirklan','sivrisinek','solucan','somon','suaygırı','sungur','sülün','sümük','süt',
+    'sırtlan','sırtlanı','sıçan','sığır','sığırcık','tahtakurusu','takım','tapir','tarantula','tarlafaresi',
+    'tarsier','tartar','tasmanian','tatlısu','tavuk','tavus','tavşan','tay','teke','termit',
+    'tigerşark','tilki','timsah','tokmak','tonbalı','tonbalığı','toprak','tortilla','tosbağası','tosun',
+    'toy','tukan','turaç','turna','tıne','ufak','uskumru','uçan','uğurböceği','vampir',
+    'vampiryarasa','varan','vaşak','vervet','viper','vizon','vombat','walrus','yaban','yabanarısı',
+    'yabandomuzu','yabanikoyun','yabankedisi','yak','yarasa','yavşancık','yaylacı','yağmurkuşu','yengeç','yumakkurusu',
+    'yunus','yunusbalığı','yusufçuk','yılan','yılanbalığı','yılkı','zakkum','zebra','zürafa','çakal',
+    'çakaltın','çekirge','çift','çinekop','çiplem','çita','çitari','çiçekbalı','çulluk','çıngıraklı',
+    'çıyan','öküz','ördek','örümcek','örümcekmaymunu','ötleğen','ıstakoz','şaharkan','şahin','şempanze'
   ]);
 
   const BITKI_LIST = new Set([
-    'acur','acımarul','ada','adaçayı','afrika','ahududu','akasya','akmer','akmevsim','akçaağaç',
-    'akçam','aloe','alıç','ananas','anason','anemon','antep','antepfıstığı','ardıç','armut',
-    'arpa','atkestanesi','avokado','ayva','açelya','badem','bakla','balkabağı','bambu','bamya',
-    'barbunya','begonya','bektaşi','bergamot','beyaz','beyazdut','bezelye','biber','biberiye','boncuksöğüt',
-    'brezilya','brokoli','brüksel','bulgur','buğday','böğürtlen','ceviz','cevizi','crispy','cüzdandürdü',
-    'dahlia','dal','dalya','defne','dereotu','dişbudak','domates','dut','elma','elmas',
-    'enginar','erik','fasulye','fesleğen','frenk','frenküzümü','frezya','fulya','fındık','fıstık',
-    'fıstığı','gardenya','gerbera','gilaboru','gladyolus','glayöl','glayör','gloksinya','gonca','greyfurt',
-    'guava','gül','güllaç','güller','gümüş','gürgen','hatmi','havuç','haşhaş','hindiba',
-    'hurma','huş','ihlamur','incir','iris','iğde','jasmin','kabak','kabakçekirdeği','kaktüs',
-    'kamelya','kara','karadut','karanfil','karaçam','karnabahar','karpuz','kasap','kasımpatı','kavak',
-    'kavun','kayın','kayısı','kekik','kenevir','kereviz','kestane','keten','kiraz','kişniş',
-    'krizantem','kuzukulağı','kuşburnu','kök','köknar','kızılcık','ladin','lahana','lala','lale',
-    'lalegül','laleli','lavanta','leylak','limon','lotus','magnolia','mandalina','mango','manolya',
-    'mantar','marul','maydanoz','mağdela','melezfıstık','menekşe','menekşesi','mercimek','mersin','meşe',
-    'mimoza','muz','mısır','nane','nar','nergis','nilüfer','nohut','okaliptüs','orkide',
-    'ortanca','otu','pancar','papatya','papaya','papirüs','patates','patlıcan','pekmez','pelin',
-    'pelit','pirinç','portakal','pırasa','reyhan','rezene','roka','safran','sahil','salatalık',
-    'salkım','salkımsöğüt','sarmaşık','sarmısak','sarımsak','sedir','semizotu','servi','soya','soğan',
-    'sumak','susam','söğüt','sümbül','süsen','tarhun','tere','tilakahaç','tomurcuk','turp',
-    'turunç','vera','vişne','yabanmersini','yaprak','yasemin','yer','yonca','yosun','yulaf',
-    'yumru','zambak','zerdali','zerdeçal','zeytin','çam','çamı','çavdar','çayı','çilek',
-    'çiçek','çiğdem','çörek','çörekotu','çınar','üzüm','üzümü','ıhlamur','ıspanak','şakayık',
-    'şalgam','şebboy','şeftali','şimşir'
+    'abanoz','acemborusu','acur','acımarul','ada','adasoğanı','adaçayı','adaçayıbağı','afyonçiçeği','ahududu',
+    'akasya','akdiken','akdülek','akkavak','akmer','akmevsim','aksancılgül','akçaağaç','akçam','akçağaç',
+    'akşamsefası','aloe','altınbaşak','altınbeli','altınkamış','alıç','ananas','anason','andiz','andız',
+    'andızı','anemon','antep','antepfıstığı','ardıç','armut','arpa','artemisia','atkestanesi','avokado',
+    'ayva','ayçiçeği','azalea','açelya','badem','bakla','baldıran','balgümeci','balkabağı','bambu',
+    'bamya','banana','barbunya','basamakot','begonya','bektaşi','bektaşı','bergamot','beyaz','beyazdut',
+    'beyazyasemin','bezelye','biber','biberiye','boncuksöğüt','bonsai','boruçiçek','boş','brezilya','brokoli',
+    'brüksel','bulgur','burçak','buğday','börülce','böğürtlen','ceviz','cevizi','ciğerotu','crispy',
+    'cüzdandürdü','dahlia','dahliya','dal','dalya','darı','dağarcık','dağmercimek','defne','dereotu',
+    'dişbudak','domates','dut','dülpera','ebegümeci','eflatun','ekin','ekmenek','elma','enginar',
+    'erguvan','erik','eğir','fasulye','fesleğen','frenk','frenküzümü','frezya','fulya','fındık',
+    'fıstık','fıstığı','gardenya','gelincik','gerbera','gilaboru','gladyolus','glayöl','glayör','gloksinya',
+    'gonca','greyfurt','guava','göknar','gül','güllaç','güller','gümüşpalmiye','günebakan','gürgen',
+    'hanımeli','hardal','hatmi','havuç','havuçotu','haşhaş','hibiscus','hibiskus','hindiba','hindistancevizi',
+    'hint','hurma','huş','hıyar','ihlamur','ilkbahar','incir','iris','isimsiz','iğde',
+    'jakaranda','jasmin','kabak','kabakçekirdeği','kaktüs','kala','kalanchoa','kamelya','kamış','karaağaç',
+    'karabiber','karadut','karahindiba','karanfil','karaçam','karnabahar','karpuz','kartopu','kasımpatı','kavak',
+    'kavun','kayın','kayısı','kekik','kenevir','kenger','kereviz','kestane','keten','kibrit',
+    'kiraz','kivi','kişniş','krizantem','kuru','kuzukulağı','kuşburnu','kuşkonmaz','kök','köknar',
+    'küpeli','kına','kınakına','kızılcık','laden','ladin','lahana','lala','lale','lalegül',
+    'laleli','lavanta','leylak','limon','liçi','lotus','magnolia','magnolya','mandalin','mandalina',
+    'mango','manolya','marul','maydanoz','mazı','mağdela','melezfıstık','melisa','menekşe','menekşesi',
+    'menengiç','meneviş','mercanağacı','mercimek','mersin','meşe','mimoza','muhabbetçiçeği','muz','mısır',
+    'nane','nar','nektar','nektarin','nergis','nilüfer','nohut','okaliptüs','okra','orkide',
+    'ortanca','ot','otu','palmiyeağacı','pamuk','pancar','papatya','papaya','papirüs','patates',
+    'patlıcan','pekmez','pelin','pelit','pembe','petunya','peyniraltı','pine','pirinç','poplus',
+    'portakal','pırasa','reyhan','rezene','roka','safran','sahil','salatalık','salep','salkım',
+    'salkımsöğüt','sardunya','sarmaşık','sarmısak','sarımsak','sazlık','sedir','selvi','semizotu','servi',
+    'soya','soğan','sumak','susam','söğüt','sümbül','süsen','sığla','tarhun','tarçın',
+    'taze','tere','terebantin','tilakahaç','tilkikuyruğu','tomurcuk','turp','turunç','ulu','vanilya',
+    'vera','vişne','yabanmersini','yapraklı','yarpuz','yasemin','yaylacık','yeniyaprak','yer','yonca',
+    'yosun','yulaf','yumru','yöre','yıldızçiçeği','zambak','zencefil','zerdali','zerdeçal','zeytin',
+    'çakırdiken','çakşır','çalı','çam','çamaltı','çamı','çavdar','çavuş','çayı','çayır',
+    'çağla','çemen','çilek','çim','çiriş','çitkalın','çiçeği','çiğdem','çoban','çoğaltma',
+    'çuhaçiçeği','çörekotu','çınar','ülfet','üzüm','ıhlamur','ıspanak','ısırgan','şakayık','şalgam',
+    'şebboy','şeftali','şimşir'
   ]);
 
   const ESYA_LIST = new Set([
-    'abajur','afiş','ahşap','akvaryum','amplifikatör','anahtar','anahtarlık','antika','aplik','araba',
-    'asansör','askı','aspiratör','atari','avadanlık','avize','ayna','balta','balyoz','bank',
-    'bant','bardak','barometre','batarya','baton','battaniye','batık','bavul','bayrak','başlık',
-    'beşik','biblo','bidon','bilet','bilgisayar','bisiklet','biskıvi','biçek','blender','bot',
-    'buharlı','bulaşık','buzdolabı','bıçak','bıçağı','cetvel','cezve','cezvenin','cüzdan','cıvata',
-    'damga','defter','dekupaj','demir','demlik','denge','derz','devre','değirmen','dilim',
-    'divan','diş','dolabı','dolap','dolmakalem','dosya','doğrayıcı','duvar','duvit','dövüş',
-    'döşek','düdüklü','dümen','düşes','dış','ek','elektrik','emniyet','emzik','enstrüman',
-    'erpi','etajer','etek','evrak','eyer','fan','fanus','farba','fare','fasulye',
-    'fava','fener','fermuar','fibula','filtre','fincan','fingo','flama','flaster','flaş',
-    'fleksibıl','formika','foto','fotoğraf','frigorifik','fritöz','fuar','fön','fötr','fırça',
-    'fırın','gardırop','gemi','gözlük','gümrüğü','gümüş','güneşlik','hacim','hala','halat',
-    'halı','hamak','hamur','hane','harf','harita','harman','hasır','hat','hatıra',
-    'hava','havan','havlu','hayat','hayvan','haç','hediye','helikopter','helva','henüz',
-    'heybe','heykel','hisar','hisse','hoparlör','huni','hurda','hız','hızar','ibrik',
-    'ibriği','ihtiyat','il','ilac','ilik','imece','imza','indüksiyon','ip','ipek',
-    'iplik','isim','iskele','iskemle','iskorbüt','islamname','istasyon','istek','istif','ithaf',
-    'itiş','ittisaf','içecek','iğne','iş','işkembe','işkence','işleme','işyeri','jakuzi',
-    'jaluzi','janta','jartiyer','jeneratör','jersey','jet','jeton','jiklör','jilet','juke',
-    'kabin','kablosu','kafes','kahve','kaide','kalbur','kalem','kalkan','kalorifer','kalp',
-    'kalın','kalıp','kamp','kamçı','kanal','kandil','kanepe','kano','kanun','kapan',
-    'kapı','karaca','karavan','karpuz','kart','karton','karyola','karşılık','kase','kaslı',
-    'kasnak','kasık','katkı','kaya','kayak','kayık','kazma','kaşe','kaşık','kelepçe',
-    'kemer','kerme','kerpeten','kese','kettle','keçeli','kibrit','kilim','kilit','kilo',
-    'kimya','kitap','klavye','klima','koltuk','komodin','konsol','korniş','koruyucu','kova',
-    'kovan','koyu','kraliçe','kredi','krem','krep','kristal','kulaklık','kupa','kâse',
-    'köşebent','kül','küme','küre','kürek','kürsü','küvet','kılıfı','kıvılcım','laboratuvar',
-    'lacivert','laden','lale','lamba','lame','lamine','lapa','lavanta','lazer','led',
-    'lehim','leke','lens','levha','leğen','leş','lif','liken','lir','lokum',
-    'madalya','maden','madeni','mahmuz','makadam','makara','makas','maket','makina','makine',
-    'makinesi','makinist','makro','maliye','mama','mana','manşet','maraton','marj','martı',
-    'masa','mat','matkap','mavi','mavna','mağara','maş','mecmua','medet','mehter',
-    'mektep','mektup','mendil','menfez','menteşe','menü','mercek','merdiven','metin','metre',
-    'metro','meydan','mikrodalga','mikser','mimari','minder','minibüs','mintan','miras','mireç',
-    'misvak','mizan','mobilya','mocci','moda','model','molekül','mop','morina','motif',
-    'motor','motosiklet','mozaik','muafiyet','muamele','mum','mutfak','mühür','müşteri','mıknatıs',
-    'nadas','nakil','narh','narlı','navlun','nesil','nesim','nevresim','neş','nilüfer',
-    'nizam','not','nota','ocak','oda','odası','odun','ofis','oksijen','okul',
-    'okçu','olta','omurga','omuz','onarım','optik','orak','organ','orman','ot',
-    'otobüs','otomatı','oyma','oymak','oyuncak','padişah','pahalı','pakat','pakdaş','palamar',
-    'palan','palet','palmiye','palto','pampa','panayır','pancar','pano','para','pard',
-    'pardesü','parke','partikül','parç','paspas','pasta','patika','patiska','patlamak','paydos',
-    'payiton','paçal','paşa','pegaz','pek','pelerin','pencere','pense','perde','peri',
-    'perukar','pestil','peynir','picard','pijama','pil','pim','pirinç','pisa','piskopos',
-    'pist','piston','piton','piyade','pişirici','plak','plaket','polit','pompa','poplin',
-    'popo','porno','porselen','porsuk','porta','postaservisi','poster','prefabrik','prens','prinçtarak',
-    'priz','protein','protez','puf','puro','pus','pırasa','pırlanta','radyo','raf',
-    'ranza','robot','rondo','rozet','saat','sabun','sahan','saksı','sandalye','sapı',
-    'sehpa','semaver','serpiştirme','silgi','soba','somun','susak','süpürge','sürahi','sıra',
-    'sırt','tabak','tabaklık','tabağı','tabela','tablası','tablet','tablo','tabure','tahta',
-    'tartı','tava','telefon','televizyon','tencere','tepsi','terazi','termometre','tezgah','tornavida',
-    'tost','tramvay','tren','tutamağı','tutkal','tükenmez','tırmık','tırpan','urgan','uçak',
-    'vantilatör','vapur','vazo','vida','vitrin','yastık','yatak','yorgan','zarf','zincir',
-    'çadır','çakmak','çam','çamaşır','çamur','çanta','çantım','çapa','çarşaf','çatal',
-    'çatı','çay','çaydanlık','çayır','çekiç','çekmece','çekyat','çelik','çene','çengel',
-    'çiklet','çilingir','çivi','çiçek','çiçeklik','çocuk','çorap','çoğunluk','çubuk','çul',
-    'çuvaldız','çırpı','çırpıcı','çıt','ödev','öncü','öpük','örtü','öykü','ütü',
-    'şampuan','şarj','şemsiye','şezlong','şifoniyer','şilte','şişe'
+    'abajur','adaptör','afiş','ahşap','airpods','ajanda','akortman','aksesuar','akvaryum','akünübatarya',
+    'akıllısaat','alarm','albüm','alet','altlık','alıcı','amfi','amplifikatör','anahtar','anahtarlık',
+    'ankalpa','antika','aplik','apron','araba','arabarazı','arabası','aracı','ardiye','asansör',
+    'aseton','askı','aspiratör','astar','atari','avadanlık','avize','ayak','ayakkabı','ayna',
+    'aynalı','ayraç','açacak','açı','balata','balta','balyoz','bank','banka','bant',
+    'bardak','barometre','baron','batanca','batarya','baton','battaniye','batık','bavul','bayrak',
+    'baz','başkanlık','başlık','bebek','berjer','bezi','beşik','biblo','bidon','bilet',
+    'bilezik','bilgisayar','bilye','bisiklet','bisküvi','blender','bloknot','bluetooth','bornoz','bot',
+    'boya','buharlı','buklet','bulaşık','bulaşıkmakinesi','buzdolabı','bıçak','bıçağı','bıçkı','ceket',
+    'cep','cetvel','cezve','cezvenin','cüzdan','cıvata','dahi','davlumbaz','defter','deko',
+    'dekupaj','demir','demlik','devre','değirmen','dikiş','dilim','divan','dolabı','dolap',
+    'dolmakalem','donanım','dosya','doğrayıcı','drone','duvar','duvarsaati','duvit','duş','dövüş',
+    'döşek','düdüklü','dümen','dürbün','düzleştirici','ek','ekipman','ekran','ekrancı','elektrikli',
+    'emniyet','emzik','emziklik','enstrüman','et','etajer','etek','evrak','eyer','eşofman',
+    'fan','fanus','faraş','farba','fener','ferforje','fermuar','fibula','filtre','fincan',
+    'fistan','fiş','flama','flaster','flaş','fleksibıl','fondöten','forklift','formika','fotoğraf',
+    'fotoğrafmakinesi','frigorifik','fritöz','fuar','fön','fötr','fırça','fırçası','fırın','gamepad',
+    'gardrop','gardırop','gecelik','gemi','gemibirimi','geri','gömlek','gözlük','gözlüğü','gümrüğü',
+    'gümüş','güneşgözlüğü','güneşlik','hala','halat','halı','hamak','hamur','hane','harabe',
+    'harddisk','harf','harita','harman','hasır','hat','hatıra','hava','havan','havlu',
+    'hayat','hayvan','hediye','helikopter','helva','hesap','heybe','heykel','hisar','hisse',
+    'hoparlör','huni','hurda','hırka','hız','hızar','ibrik','ibriği','ihtiyat','il',
+    'ilac','ilik','imece','imza','indüksiyon','ipek','iplik','iskele','iskemle','iskorbüt',
+    'islamname','istasyon','istek','istif','ithaf','itiş','ittisaf','içecek','iş','işkembe',
+    'işkence','işleme','işyeri','jakuzi','jaluzi','janta','jartiyer','jeneratör','jersey','jet',
+    'jeton','jiklör','jilet','juke','kabin','kablo','kablosu','kafes','kahve','kahveotomatı',
+    'kaide','kalem','kalemtraş','kalemtıraş','kalkan','kalorifer','kalp','kalıp','kamp','kamçı',
+    'kanal','kandil','kanepe','kano','kanun','kapan','kapı','karavan','kart','karton',
+    'karyola','kasa','kasaba','kasap','kase','kaslı','kasnak','kasık','katkı','kaya',
+    'kayak','kaymak','kayık','kazma','kağıt','kaşe','kaşık','keep','kelepçe','kemer',
+    'kepçe','kerpeten','kese','kettle','kevgir','keçeli','kilim','kilit','kimya','kitap',
+    'klavye','klima','klozet','koltuk','kombi','komodin','konsol','konteyner','korniş','kova',
+    'kovan','koyu','kraker','krem','kristal','kronometre','kulaklık','kulaklığı','kumanda','kupa',
+    'kâse','köşebent','kül','küme','küre','kürek','kürsü','küvet','küçükev','kılıfı',
+    'kıvılcım','kıyma','laboratuvar','lamba','lambası','lame','lamine','laptop','lavabo','lazer',
+    'led','lehim','leke','lens','levha','leğen','losyon','madalya','maden','madeni',
+    'mahmuz','makadam','makara','makas','maket','makina','makine','makineli','makinesi','makinist',
+    'makro','malzeme','mandalı','manşet','marj','markeleri','masa','masası','masaüstü','maskara',
+    'matkap','mavna','maşa','mektep','mektup','mendil','menfez','menteşe','mercek','merdiven',
+    'metre','metro','meydan','meyve','mikrodalga','mikrofon','mikser','mimari','minder','minibüs',
+    'mintan','misvak','mobilya','moda','model','modem','monitör','mont','mop','motor',
+    'motosiklet','mozaik','mum','musluk','mutfak','mutfaktezgahı','mühür','müşteri','nakliye','nesto',
+    'nevresim','not','nota','nüfus','ocak','oda','odası','odun','ofis','oj',
+    'oje','okul','okuma','omurga','omuz','onarım','optik','orta','otobüs','oyma',
+    'oyuncak','oyunkonsolu','pala','palet','palto','pano','pantolon','pardesü','parfüm','parke',
+    'paspas','pasta','pastel','pencere','pense','penseler','perde','pergel','peçete','pijama',
+    'pil','pim','piston','pompa','poplin','porselen','portatif','poster','powerbank','pozitif',
+    'prefabrik','priz','projektör','protez','puro','pırlanta','radyo','raf','ranza','remote',
+    'rende','rimel','robot','rondo','router','rozet','ruj','saat','sabun','sahanlık',
+    'saksı','sakız','salıncak','sandalet','sandalye','sapa','sapı','seccade','sehpa','semaver',
+    'sepeti','serpiştirme','servis','seyahat','silgi','soba','somun','spatula','spor','spot',
+    'susak','süpürge','sürahi','süzgeç','sıkacağı','sıra','sırt','tabak','tabaklık','tabağı',
+    'tabela','tablası','tablet','tablo','tabure','tahta','takvim','tarayıcı','tartı','tatlı',
+    'tava','telefon','televizyon','tencere','tepe','tepsi','terazi','terlik','termometre','testere',
+    'tezgah','tişört','topuklu','tornavida','tost','tramvay','transformatör','tren','tutamağı','tutkal',
+    'tuval','tükenmez','tıraş','tırmık','tırpan','urgan','uçak','valiz','vantilatör','vapur',
+    'vazo','vida','vitrin','webcam','yastık','yatak','yazıcı','yelek','yemek','yorgan',
+    'yüksek','yüksük','zarf','zincir','zımpara','çadır','çakmak','çakı','çalar','çamaşır',
+    'çamaşırmakinesi','çamur','çanta','çantası','çantım','çapa','çarşaf','çatal','çatı','çay',
+    'çaydanlık','çekiç','çekmece','çekpas','çekyat','çene','çengel','çerçeve','çiklet','çikolata',
+    'çikolatalı','çilingir','çivi','çizme','çiçeklik','çocuk','çorap','çoğunluk','çubuk','çul',
+    'çuvaldız','çırpı','çırpıcı','çıt','ödev','öncü','öpük','örtü','ütü','ısıtıcı',
+    'şakül','şamandıra','şamdan','şampuan','şarj','şarjcihazı','şeker','şemsiye','şezlong','şifoniyer',
+    'şilte','şimşek','şişe','şort','şömine'
   ]);
 
   // Kategori key → kelime listesi eşlemesi
@@ -16303,7 +16870,7 @@ const SinirsizWord = (() => {
     if (cell) {
       cell.textContent = letter;
       cell.className = 'w-cell has-letter pop';
-      try { Sound.keyPress(); } catch(e) {}
+      try { Sound.keyPress(); Haptics.light(); } catch(e) {}
       setTimeout(() => cell.classList.remove('pop'), 150);
     }
   }
@@ -16381,7 +16948,6 @@ const SinirsizWord = (() => {
   }
 
   function showGameOver() {
-    console.log('[SW] showGameOver çağrıldı');
     const panel = document.getElementById('sw-game-over');
     if (!panel) return;
     panel.style.display = 'block';
@@ -16450,6 +17016,18 @@ const UI = (() => {
 
   function switchTab(tab) {
     // Şifre sekmesi her zaman açık — cevap her durumda gösterilir
+
+    // 🧹 Açık modal panelleri temizle (Wordle, Sınırsız, Sayısal)
+    // Bu paneller body'ye taşınmış olabilir — tab değişince kalıcı görünmesinler
+    try {
+      ['word-game-over', 'sw-game-over', 'num-session-over'].forEach(id => {
+        const p = document.getElementById(id);
+        if (p) {
+          p.classList.remove('show-fixed');
+          p.style.display = 'none';
+        }
+      });
+    } catch(e) {}
 
     // Mobilde drawer açıksa tab seçildiğinde otomatik kapansın
     try {
@@ -17469,7 +18047,7 @@ function boot() {
     if (!isNativePlatform() && 'serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         // 🔄 AGRESIF GÜNCELLEME — eski cache'leri temizle, yeni sürümü zorla
-        const APP_VERSION = '1.3.0'; // her release'de değiştir
+        const APP_VERSION = '1.3.1'; // her release'de değiştir
         const STORED_VERSION = localStorage.getItem('ah_app_version');
 
         if (STORED_VERSION !== APP_VERSION) {
@@ -17688,6 +18266,33 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+
+  // ═══════════════════════════════════════════════════════════════
+  // 🎮 GLOBAL GAME FEEL — buton tıklamalarında tactile feedback
+  // ═══════════════════════════════════════════════════════════════
+  // Tek event listener tüm butonları kapsar (event delegation).
+  // Capacitor native cihazda hafif titreşim + ses verir.
+  // Web'de sadece ses (haptic no-op).
+  //
+  // ⚠️ NOT: Klavye tuşları (.k) ve Sudoku tuşları (.sdk-num) bu listede YOK,
+  // çünkü onların kendi sesleri (Sound.keyPress) ayrı çağrılıyor.
+  // Çift ses çalmaması için ayrı tutuldu.
+  document.addEventListener('click', function(e) {
+    const target = e.target.closest(
+      'button, .icon-btn, .lang-btn, .diff-btn, .share-btn, ' +
+      '.is-start-btn, .is-link-btn, .is-new-btn, .is-submit-btn, .is-finish-btn, ' +
+      '.iw-accept-btn, .iw-skip-btn, .ach-share-btn, .sw-next-btn, ' +
+      '[role="button"], [data-tap]'
+    );
+    if (!target) return;
+    // Disabled / loading butonlarda atla
+    if (target.disabled || target.classList.contains('loading')) return;
+    // Klavye/sudoku tuşları kendi sesini çalıyor — atla
+    if (target.classList.contains('k') || target.classList.contains('sdk-num')) return;
+    // Hafif feedback - dikkat dağıtmayacak şekilde
+    try { Haptics.light(); } catch(e) {}
+    try { Sound.click(); } catch(e) {}
+  }, { passive: true });
 });
 </script>
 </body>
