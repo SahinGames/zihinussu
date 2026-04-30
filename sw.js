@@ -1,7 +1,7 @@
-// Zihin Üssü Service Worker - v1.3.1
+// Zihin Üssü Service Worker - v1.3.2
 // Strateji: Network-first (her zaman taze HTML), fallback offline cache
 
-const CACHE_VERSION = 'zihinussu-v1.3.1';
+const CACHE_VERSION = 'zihinussu-v1.3.2';
 const APP_SHELL = [
   './',
   './index.html',
