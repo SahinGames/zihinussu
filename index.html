@@ -229,18 +229,19 @@ header {
 }
 
 .icon-btn {
-  width: 36px; height: 36px;
+  width: 44px; height: 44px;
   border-radius: 50%;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--text2);
+  border: 1px solid var(--border3);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 18px;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 .icon-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--border3); }
+.icon-btn:active { transform: scale(0.92); }
 .icon-btn.active { background: rgba(212, 166, 69, 0.15); border-color: var(--gold); color: var(--gold); }
 
 /* ===================================
@@ -344,13 +345,13 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 12px;
+  padding: 14px 12px;
   background: transparent;
   border: none;
-  color: var(--text2);
+  color: var(--text);
   font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
@@ -390,8 +391,8 @@ header {
   position: relative;
 }
 .drawer-icon {
-  font-size: 18px;
-  width: 22px;
+  font-size: 22px;
+  width: 26px;
   text-align: center;
   flex-shrink: 0;
 }
@@ -428,11 +429,11 @@ header {
   .drawer-nav { padding: 12px 10px; }
   .drawer-item {
     justify-content: flex-start;
-    padding: 12px 14px;
-    gap: 12px;
+    padding: 16px 14px;
+    gap: 14px;
   }
   .drawer-label { display: inline; }
-  .drawer-icon { font-size: 20px; width: auto; }
+  .drawer-icon { font-size: 24px; width: auto; }
 
   #app {
     margin-left: 0;
@@ -617,6 +618,13 @@ header {
   perspective: 250px;
   will-change: transform;
   aspect-ratio: 1 / 1;
+  /* BUG 10 fix (Android Capacitor): hücrenin arkasında görünen autofill/öneri yazılarını engelle */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-fill-color: var(--text);
+  caret-color: transparent;
 }
 
 .w-cell.has-letter { border-color: var(--border3); transform: scale(1.04); }
@@ -671,16 +679,16 @@ header {
 
 .k {
   flex: 1;
-  height: 44px;
+  height: 52px;
   min-width: 0;
-  max-width: 42px;
-  border-radius: 5px;
+  max-width: 48px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg3);
   color: var(--text);
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.1s, transform 0.08s;
   display: flex;
@@ -700,11 +708,12 @@ header {
 .k:hover { background: var(--bg4); border-color: var(--border2); }
 .k:active { transform: scale(0.95); }
 .k.wide {
-  flex: 1.6;
-  max-width: 60px;
-  font-size: 9px;
+  flex: 1.8;
+  max-width: 72px;
+  font-size: 11px;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 .k.correct { background: var(--correct); border-color: var(--correct2); color: var(--correct-text); }
 .k.present { background: var(--present); border-color: var(--present2); color: var(--present-text); }
@@ -1878,36 +1887,46 @@ header {
 
 .diff-btn {
   flex: 1;
-  padding: 10px 0;
+  padding: 12px 0;
   border-radius: var(--r2);
-  border: 1px solid var(--border2);
+  border: 1.5px solid var(--border2);
   background: var(--bg2);
-  color: var(--text2);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
+  color: var(--text);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.15s;
   text-align: center;
 }
 
+.diff-btn:hover { background: var(--bg3); border-color: var(--border3); }
+.diff-btn:active { transform: scale(0.97); }
+
 .diff-btn.active-easy {
-  background: rgba(61,139,90,0.15);
+  background: rgba(61,139,90,0.25);
   border-color: var(--correct2);
   color: var(--correct-text);
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(61,139,90,0.2);
 }
 
 .diff-btn.active-medium {
-  background: var(--gold3);
+  background: rgba(212,166,69,0.25);
   border-color: var(--gold);
-  color: var(--gold2);
+  color: var(--gold);
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(212,166,69,0.25);
 }
 
 .diff-btn.active-hard {
-  background: rgba(191,90,79,0.15);
+  background: rgba(191,90,79,0.25);
   border-color: var(--coral2);
   color: var(--coral2);
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(191,90,79,0.2);
 }
 
 .num-question-card {
@@ -2001,20 +2020,27 @@ header {
 .num-input:focus { border-color: var(--gold); }
 
 .num-submit {
-  background: var(--gold3);
+  background: linear-gradient(135deg, var(--gold), #c79a3a);
   border: 1px solid var(--gold);
   border-radius: var(--r2);
-  padding: 12px 24px;
-  color: var(--gold2);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
+  padding: 14px 28px;
+  color: #1a1410;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.15s;
   text-transform: uppercase;
+  box-shadow: 0 2px 12px rgba(212, 166, 69, 0.25);
 }
 
-.num-submit:hover { background: rgba(200,168,75,0.2); }
+.num-submit:hover {
+  background: linear-gradient(135deg, #e0b04f, var(--gold));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(212, 166, 69, 0.4);
+}
+.num-submit:active { transform: scale(0.97); }
 
 .num-result {
   margin-top: 16px;
@@ -2102,22 +2128,29 @@ header {
 
 .next-q-btn {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   border-radius: var(--r2);
-  border: 1px solid var(--border2);
-  background: var(--bg3);
-  color: var(--text2);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
+  border: 1px solid var(--gold);
+  background: linear-gradient(135deg, var(--gold), #c79a3a);
+  color: #1a1410;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.15s;
-  margin-top: 12px;
+  margin-top: 14px;
   display: none;
+  box-shadow: 0 2px 12px rgba(212, 166, 69, 0.3);
 }
 
-.next-q-btn:hover { background: var(--bg4); color: var(--text); }
+.next-q-btn:hover {
+  background: linear-gradient(135deg, #e0b04f, var(--gold));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(212, 166, 69, 0.4);
+}
+.next-q-btn:active { transform: scale(0.97); }
 
 /* ===================================
    MYSTERY MODE
@@ -2212,19 +2245,34 @@ header {
 }
 
 .step-submit {
-  background: var(--indigo3);
+  background: linear-gradient(135deg, var(--indigo2), #6a5ad6);
   border: 1px solid var(--indigo2);
   border-radius: var(--r);
-  padding: 10px 18px;
-  color: var(--indigo2);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 11px;
-  letter-spacing: 1px;
+  padding: 12px 22px;
+  color: #fff;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.15s;
+  box-shadow: 0 2px 10px rgba(90,79,191,0.25);
 }
 
-.step-submit:hover { background: rgba(90,79,191,0.25); }
+.step-submit:hover {
+  background: linear-gradient(135deg, #6a5ad6, var(--indigo2));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(90,79,191,0.4);
+}
+.step-submit:active { transform: scale(0.97); }
+.step-submit:disabled {
+  background: var(--bg3);
+  color: var(--text2);
+  border-color: var(--border2);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 
 /* v6.4: Retry butonu (yanlış cevaplı kart için) */
 .step-retry-row {
@@ -2653,23 +2701,35 @@ header {
     max-width: min(310px, calc(100vw - 32px));
     max-height: min(310px, 42vw);
     gap: 4px;
+    margin-bottom: 4px;
   }
-  .k {
-    height: 42px;
-    font-size: 11px;
-    border-radius: 5px;
-  }
-  .k.wide { font-size: 9px; }
-  .w-cell {
-    font-size: clamp(18px, 5vw, 26px) !important;
+  #sw-grid {
+    margin-bottom: 4px;
   }
   .keyboard {
     max-width: 100vw;
     padding: 0 2px;
+    margin-top: 0;
+    margin-bottom: 6px;
+  }
+  .k {
+    height: 50px;
+    font-size: 15px;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+  .k.wide { font-size: 11px; font-weight: 700; }
+  .w-cell {
+    font-size: clamp(18px, 5vw, 26px) !important;
+  }
+  .feedback-panel {
+    padding: 12px;
+    margin-bottom: 8px;
   }
 .kb-key.wide {
-    min-width: 46px !important;
-    font-size: 10px !important;
+    min-width: 56px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
   }
   .nav-tabs {
     overflow-x: auto;
@@ -6693,69 +6753,116 @@ const AIFeedback = (() => {
     win_1: [
       "İlk tahminde bulmak mı? Bu seviyede oyuncu nadirdir.",
       "Tek hamlede. Sezgini takdir ediyorum.",
-      "Bu kelimeyi adeta hissettirdin. Olağanüstü."
+      "Bu kelimeyi adeta hissettirdin. Olağanüstü.",
+      "Tek atışta — istatistiksel olarak günde 100 oyuncudan 1'i bunu yapar.",
+      "Şans mı, sezgi mi? Belki ikisinin birleşimi.",
+      "İlk tahmin = doğru kelime. Oyunun en zor yanını ilk hamlede geçtin.",
+      "Bu, profesyonel oyuncuların bile haftada en fazla 1-2 kez yapabildiği şey.",
+      "Saniyeler içinde, tek deneme. Zihnin bugün tetikte.",
+      "Hiç bilgi yokken doğru kelimeyi seçtin. İlginç bir tesadüf — ya da değil."
     ],
     win_2: [
       "İki tahminde. Kafan bugün berrak.",
       "Hızlı düşünme ve doğru analiz. İyi iş.",
-      "İkinci hamlede bitti. Bu türden bir netlik az görülür."
+      "İkinci hamlede bitti. Bu türden bir netlik az görülür.",
+      "İki tahmin — yeşil/sarı ipuçlarını ustaca okudun.",
+      "İlk tahmin keşif, ikincisi vuruş. Klasik strateji, mükemmel uygulama.",
+      "Çok az oyuncu 2 tahminle bitirir. Bugün onlardan birisin.",
+      "Eleme yöntemini iyi kullandın — gereksiz harf israfı yok.",
+      "Hızlı + doğru = iyi gün. Devam et."
     ],
     win_3: [
       "Üç tahminde. Ortalamanın güzel üstünde.",
       "Dengeli bir süreç, güzel bir sonuç.",
-      "Her tahminin bir mantığı vardı. Strateji çalıştı."
+      "Her tahminin bir mantığı vardı. Strateji çalıştı.",
+      "Üç hamlede — istatistiksel olarak 'iyi oyuncu' bandı.",
+      "Sabırlı ve sistemli. Bu yaklaşım uzun vadede kazandırır.",
+      "Üç tahmin: keşif, daraltma, vuruş. Ders kitabı çözümü.",
+      "Ne hızlı ne yavaş — orta yol, doğru yol.",
+      "Her ipucunu işledin. Kararlarını izlemek hoştu."
     ],
     win_4: [
       "Dördüncü tahminde. Klasik bir Wordle zaferi.",
       "Biraz sürüklendi ama doğru yere geldin.",
-      "Kararlıydın, sonunda haklı çıktın."
+      "Kararlıydın, sonunda haklı çıktın.",
+      "Dört hamle — pek çok oyuncunun ortalaması burada.",
+      "Belki üçüncü tahminde tereddüt ettin? Bir dahaki sefere risk al.",
+      "Sağlam bir oyun. Kelime karmaşık olabilir, sen daha karmaşıksın.",
+      "Yarım yolda durmadın. Önemli olan bu."
     ],
     win_5: [
       "Beşinci tahminde, son anlarda toparladın.",
       "Baskı altında çözüm bulmak da bir beceridir.",
-      "Zorlandın ama pes etmedin. Bu önemli."
+      "Zorlandın ama pes etmedin. Bu önemli.",
+      "Beş tahmin — sınıra yakın ama sınırın doğru tarafında.",
+      "Adrenalin başladı mı? Bu hissi seviyorum.",
+      "Son iki satıra geldiğinde aklın hızlandı, fark ettim.",
+      "Kazanmak kazanmaktır. Yarın daha rahat olacak."
     ],
     win_6: [
       "Son tahminde! Kalp atışı hızlıydı, değil mi?",
       "Altıncı tahmin, son nefes — ve yaptın.",
-      "Sınırda kazanmak da kazanmaktır. Tebrikler."
+      "Sınırda kazanmak da kazanmaktır. Tebrikler.",
+      "Tam zamanında. 'Sonsuz mod' satırından önce yakaladın.",
+      "Son satır, son şans. Pes etmedin — bu karakteri gösterir.",
+      "İğne deliğinden geçen biri olduğun için. Tebrikler.",
+      "Bugün kelime seninle dövüştü, ama sen daha inatçı çıktın."
     ],
     lose: [
       "Bu sefer olmadı. Ama yarın yeniden başlıyor her şey.",
       "Bazı günler kelime direnç gösterir. Yarın sıra sende.",
-      "Kayıplar da bir şeyler öğretir. Yarın daha keskin olacaksın."
+      "Kayıplar da bir şeyler öğretir. Yarın daha keskin olacaksın.",
+      "Bugünün kelimesi nadir kullanılan bir form — pek çoğu çözemedi.",
+      "İpuçların arasındaki bağlantıyı kaçırdın gibi. Yarın daha dikkatli ol.",
+      "Yenilgi, sonraki zafer için en iyi öğretmendir.",
+      "Sınırsız modunda biraz pratik yap — kalıpları görmek kolaylaşır.",
+      "Bu kelimeye takıldın, ama veri seni gösteriyor: gelişiyorsun."
     ],
     streak_3: [
       "3 günlük seri! Tutarlılık, anlık dâhilikten daha değerlidir.",
       "Üç gün arka arkaya. Bu artık bir alışkanlık.",
-      "Seri sürüyor. Zihin kaslarını zorluyorsun."
+      "Seri sürüyor. Zihin kaslarını zorluyorsun.",
+      "Üçüncü gün — beyin yeni rotini öğrenmeye başladı.",
+      "Üç günde bir alışkanlık şekillenmez ama tohum atılır."
     ],
     streak_7: [
       "7 günlük seri! Bir hafta boyunca her gün buraya geldin.",
       "Bir hafta eksiksiz. Bu disiplin takdire değer.",
-      "Yedi gün — dilbilim yolculuğunda önemli bir kilometre taşı."
+      "Yedi gün — dilbilim yolculuğunda önemli bir kilometre taşı.",
+      "Tam hafta. Bilim diyor ki: alışkanlık burada başlıyor.",
+      "Hafta boyu hiç boş geçmedi. Buna 'kararlılık' deniyor."
     ],
     streak_30: [
       "30 günlük seri! Bu artık yaşam tarzının bir parçası.",
       "Bir ay boyunca her gün. Az kişi bunu başarır.",
-      "30 gün — dedikation kelimesini en iyi sen temsil ediyorsun."
+      "30 gün — 'dedikasyon' kelimesini en iyi sen temsil ediyorsun.",
+      "Otuz gün. Beyin nöronları farklı bir yapı oluşturmuş olmalı şimdi.",
+      "Bir ay boyunca tek bir gün bile atlamadın. Az insan yapar."
     ],
     improve: [
       "Dünden daha hızlıydın. Gelişim görünür hale geldi.",
       "Bir önceki güne kıyasla daha az tahminde buldun. İyi haber.",
-      "Her gün biraz daha keskin. Fark edilir bir ilerleme var."
+      "Her gün biraz daha keskin. Fark edilir bir ilerleme var.",
+      "Geçen haftaya göre ortalaman düştü — yani gelişiyorsun.",
+      "Pattern recognition güçleniyor. Beyin bunu seviyor."
     ],
     comeback: [
       "Dün zorlandın, bugün toplandın. Güçlü geri dönüş.",
       "Devam etmek kendi başına bir başarıdır.",
-      "Dünkü kayıptan sonra geri geldin. Bu karakteri gösterir."
+      "Dünkü kayıptan sonra geri geldin. Bu karakteri gösterir.",
+      "Yenilgi sonrası dönüş — en zor olanı. Yaptın.",
+      "Pes etmemek, kazanmaktan daha değerlidir. Ders alındı."
     ],
     generic: [
       "Kelimeler her gün seni biraz daha tanıyor.",
       "Dil, her gün kullandıkça derinleşir.",
       "Bugünkü düşünce sürecin titizdi.",
       "Gözlemlerim: analiz etme biçimin gelişiyor.",
-      "Her gün küçük bir adım — uzun vadede büyük mesafe."
+      "Her gün küçük bir adım — uzun vadede büyük mesafe.",
+      "Ortalamana yakın bir performans. Bu da bir başarı.",
+      "Sıradan bir gün, ama sıra dışı bir disiplin.",
+      "Beyin egzersizi yapan kasları takdir eder.",
+      "Bugün de buraya geldin — bu zaten önemli."
     ]
   };
 
@@ -13614,21 +13721,31 @@ const Word = (() => {
     // ── MIGRATION GUARD ──────────────────────────────────
     // Eğer kayıtlı hedef kelime bugünkü hedeften farklıysa (havuz değişti
     // veya test için manuel değiştirildi), bugünkü kaydı sıfırla.
-    // Ayrıca kayıtlı tahminlerden biri hedefe eşit değilken "won" işaretliyse
-    // bu da bozuk state'tir, sıfırla.
+    // ⚠️ AMA: Eğer kullanıcı bugün kazandıysa (TODAY.wordWon === true) ve
+    // tahminlerden biri kayıtlı hedefe eşitse, bunu KORU — yoksa sayfa yenilenince
+    // kazanma kayboluyordu. (Bug #4 - 30 Nisan 2026 fix)
     let corrupted = false;
-    if (TODAY.wordTarget && TODAY.wordTarget !== word) corrupted = true;
-    if (!corrupted && TODAY.wordWon && Array.isArray(TODAY.wordGuesses)) {
-      const last = TODAY.wordGuesses[TODAY.wordGuesses.length - 1];
-      if (last && last !== word) corrupted = true;
+    const userAlreadyWon = TODAY.wordWon === true && Array.isArray(TODAY.wordGuesses) && TODAY.wordGuesses.length > 0;
+    const lastGuess = userAlreadyWon ? TODAY.wordGuesses[TODAY.wordGuesses.length - 1] : null;
+    const wonOnSavedTarget = userAlreadyWon && TODAY.wordTarget && lastGuess === TODAY.wordTarget;
+
+    if (wonOnSavedTarget) {
+      // Kullanıcı kayıtlı hedefte zaten kazanmış. Hedefi kayıtlı tut, oyunu sıfırlama.
+      word = TODAY.wordTarget;
+    } else {
+      // Normal akış: bugünkü hedefi kullan, gerekirse sıfırla.
+      if (TODAY.wordTarget && TODAY.wordTarget !== word) corrupted = true;
+      if (!corrupted && TODAY.wordWon && Array.isArray(TODAY.wordGuesses)) {
+        if (lastGuess && lastGuess !== word) corrupted = true;
+      }
+      if (corrupted) {
+        console.warn('[Word] Kelime havuzu değişmiş, bugünkü oyun sıfırlanıyor.');
+        TODAY.wordGuesses = [];
+        TODAY.wordDone = false;
+        TODAY.wordWon = false;
+      }
+      TODAY.wordTarget = word;
     }
-    if (corrupted) {
-      console.warn('[Word] Kelime havuzu değişmiş, bugünkü oyun sıfırlanıyor.');
-      TODAY.wordGuesses = [];
-      TODAY.wordDone = false;
-      TODAY.wordWon = false;
-    }
-    TODAY.wordTarget = word;
     saveToday();
     // ─────────────────────────────────────────────────────
 
