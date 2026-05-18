@@ -1,7 +1,30 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
+
+   <script>
+    // DÜELLO LİNKİ YÖNLENDİRME (Hızlı çözüm v1.3.4.1)
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasDuel = urlParams.has('duel') || window.location.hash.includes('duel');
+      const isInApp = !!(window.Capacitor || window.cordova);
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isAndroid = /Android/i.test(navigator.userAgent);
+
+      if (hasDuel && !isInApp && isMobile) {
+        const duelParam = urlParams.get('duel') || '';
+        const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.zihinussu.app&referrer=duel%3D' + encodeURIComponent(duelParam);
+
+        if (isAndroid) {
+          document.documentElement.innerHTML = '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Zihin Üssü - Düello</title></head><body style="margin:0;padding:0;background:#0a0e27;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;box-sizing:border-box;"><div style="font-size:80px;margin-bottom:20px;">⚔️</div><h1 style="color:#d4a955;font-size:28px;margin:0 0 10px 0;">DÜELLO DAVETİ!</h1><p style="font-size:18px;margin:10px 0 30px 0;">Bir arkadaşın seni Zihin Üssü düellosuna çağırdı 🧠</p><p style="font-size:14px;color:#aaa;margin:0 0 30px 0;">Düelloya katılmak için önce uygulamayı indir:</p><a href="' + playStoreUrl + '" style="background:#d4a955;color:#0a0e27;padding:16px 40px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;letter-spacing:1px;">PLAY STORE\'DAN İNDİR</a><p style="font-size:12px;color:#666;margin-top:40px;">Uygulamayı indirdikten sonra bu linke tekrar tıkla, düelloya başla!</p></body>';
+          setTimeout(function() {
+            window.location.href = playStoreUrl;
+          }, 3000);
+        }
+      }
+    })();
+    </script>
+   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Zihin Üssü — Zeka Oyunları</title>
 <meta name="description" content="Zihin Üssü · Günlük kelime, sayısal, gizem oyunları ve daha fazlası. Türkçe zeka platformu.">
