@@ -6,13 +6,13 @@
     // DÜELLO LİNKİ YÖNLENDİRME (Hızlı çözüm v1.3.4.1)
     (function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const hasDuel = urlParams.has('duel') || window.location.hash.includes('duel');
+      const hasDuel = urlParams.has('d') || urlParams.has('duel') || window.location.hash.includes('duel');
       const isInApp = !!(window.Capacitor || window.cordova);
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const isAndroid = /Android/i.test(navigator.userAgent);
 
       if (hasDuel && !isInApp && isMobile) {
-        const duelParam = urlParams.get('duel') || '';
+        const duelParam = urlParams.get('d') || urlParams.get('duel') || '';
         const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.zihinussu.app&referrer=duel%3D' + encodeURIComponent(duelParam);
 
         if (isAndroid) {
