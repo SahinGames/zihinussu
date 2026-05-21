@@ -1,30 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-
-   <script>
-    // DÜELLO LİNKİ YÖNLENDİRME (Hızlı çözüm v1.3.4.1)
-    (function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasDuel = urlParams.has('d') || urlParams.has('duel') || window.location.hash.includes('duel');
-      const isInApp = !!(window.Capacitor || window.cordova);
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      const isAndroid = /Android/i.test(navigator.userAgent);
-
-      if (hasDuel && !isInApp && isMobile) {
-        const duelParam = urlParams.get('d') || urlParams.get('duel') || '';
-        const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.zihinussu.app&referrer=duel%3D' + encodeURIComponent(duelParam);
-
-        if (isAndroid) {
-          document.documentElement.innerHTML = '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Zihin Üssü - Düello</title></head><body style="margin:0;padding:0;background:#0a0e27;color:#fff;font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:20px;box-sizing:border-box;"><div style="font-size:80px;margin-bottom:20px;">⚔️</div><h1 style="color:#d4a955;font-size:28px;margin:0 0 10px 0;">DÜELLO DAVETİ!</h1><p style="font-size:18px;margin:10px 0 30px 0;">Bir arkadaşın seni Zihin Üssü düellosuna çağırdı 🧠</p><p style="font-size:14px;color:#aaa;margin:0 0 30px 0;">Düelloya katılmak için önce uygulamayı indir:</p><a href="' + playStoreUrl + '" style="background:#d4a955;color:#0a0e27;padding:16px 40px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;letter-spacing:1px;">PLAY STORE\'DAN İNDİR</a><p style="font-size:12px;color:#666;margin-top:40px;">Uygulamayı indirdikten sonra bu linke tekrar tıkla, düelloya başla!</p></body>';
-          setTimeout(function() {
-            window.location.href = playStoreUrl;
-          }, 3000);
-        }
-      }
-    })();
-    </script>
-   <meta charset="UTF-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Zihin Üssü — Zeka Oyunları</title>
 <meta name="description" content="Zihin Üssü · Günlük kelime, sayısal, gizem oyunları ve daha fazlası. Türkçe zeka platformu.">
@@ -3015,6 +2992,20 @@ header {
   font-weight: 700;
   cursor: pointer;
 }
+.sdk-hint-btn {
+  background: rgba(244,196,48,0.12);
+  color: #f4c430;
+  border: 1px solid rgba(244,196,48,0.45);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.sdk-hint-btn:active { transform: scale(0.93); background: rgba(244,196,48,0.22); }
+.sdk-hint-btn:disabled { opacity: 0.4; cursor: default; }
 .sudoku-grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
@@ -3214,6 +3205,60 @@ header {
   letter-spacing: 1px;
 }
 .ad-banner.hidden { display: none; }
+
+/* 💡 Ödüllü İpucu — TR/EN yanındaki ampul ikonu */
+.lang-hint-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  padding: 6px 0;
+  border-radius: 20px;
+  border: 1px solid rgba(244,196,48,0.45);
+  background: rgba(244,196,48,0.1);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-hint-btn.visible { display: flex; }
+.lang-hint-btn:active { transform: scale(0.9); background: rgba(244,196,48,0.22); }
+
+/* 💡 Sınırsız mod — stat barın yanındaki ipucu ampulü */
+.sw-statsrow {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+.sw-statsrow .sw-stats-bar {
+  flex: 1;
+  max-width: none;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.sw-hint-btn {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  margin: 14px 0;
+  border: 1px solid rgba(244,196,48,0.45);
+  background: rgba(244,196,48,0.1);
+  border-radius: 12px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.sw-hint-btn.visible { display: flex; }
+.sw-hint-btn:active { transform: scale(0.92); background: rgba(244,196,48,0.22); }
 
 /* ================================================================
    KELİME ETİMOLOJİSİ
@@ -4874,6 +4919,7 @@ header {
       <div class="lang-toggle">
         <button class="lang-btn active" id="lang-tr" onclick="Word.setLang('tr')">TR</button>
         <button class="lang-btn" id="lang-en" onclick="Word.setLang('en')">EN</button>
+        <button class="lang-hint-btn" id="word-hint-btn" onclick="Word.requestHint()" title="İpucu Al (reklam izle)">💡</button>
       </div>
 
       <div class="day-label" id="word-day-label">Bugünün Sözcüğü · #1</div>
@@ -5017,6 +5063,7 @@ header {
       <div class="sudoku-info-bar">
         <span id="sdk-timer">00:00</span>
         <span id="sdk-mistakes">Hata: 0/3</span>
+        <button class="sdk-hint-btn" id="sdk-hint-btn" onclick="Sudoku.requestHint()" title="İpucu Al (reklam izle)">💡 <span id="sdk-hint-count">3</span></button>
         <button class="sdk-new-btn" onclick="Sudoku.newGame()">Yeni Oyun</button>
       </div>
       <div id="sudoku-grid" class="sudoku-grid"></div>
@@ -5091,11 +5138,14 @@ header {
          SCREEN: SINIRSIZ KELİME (sınırsız wordle)
     ========================================= -->
     <div id="screen-sinirsiz" class="screen">
-      <div class="sw-stats-bar">
-        <div class="stat-chip"><span class="val" id="sw-streak">0</span><span class="lbl">Seri</span></div>
-        <div class="stat-chip"><span class="val" id="sw-played">0</span><span class="lbl">Oynanan</span></div>
-        <div class="stat-chip"><span class="val" id="sw-winpct">0%</span><span class="lbl">Kazanma</span></div>
-        <div class="stat-chip"><span class="val" id="sw-maxstreak">0</span><span class="lbl">Rekor</span></div>
+      <div class="sw-statsrow">
+        <div class="sw-stats-bar">
+          <div class="stat-chip"><span class="val" id="sw-streak">0</span><span class="lbl">Seri</span></div>
+          <div class="stat-chip"><span class="val" id="sw-played">0</span><span class="lbl">Oynanan</span></div>
+          <div class="stat-chip"><span class="val" id="sw-winpct">0%</span><span class="lbl">Kazanma</span></div>
+          <div class="stat-chip"><span class="val" id="sw-maxstreak">0</span><span class="lbl">Rekor</span></div>
+        </div>
+        <button class="sw-hint-btn" id="sw-hint-btn" onclick="SinirsizWord.requestHint()" title="İpucu Al (reklam izle)">💡</button>
       </div>
       <div class="sw-subtitle">Sürekli yeni kelime · Kendi rekorunu kır</div>
       <div id="sw-grid" class="w-grid"></div>
@@ -5376,6 +5426,7 @@ const Sudoku = (() => {
   let grid = [], given = [], solution = [];
   let selected = null, mistakes = 0, timerSec = 0;
   let timerInterval = null, diff = 'easy', gameOver = false;
+  let hintsLeft = 3; // her oyunda 3 ipucu hakkı (zorluk fark etmez)
 
   function isValid(g, idx, val) {
     const row = Math.floor(idx/9), col = idx%9;
@@ -5477,9 +5528,60 @@ const Sudoku = (() => {
     render();
   }
 
+  // 💡 İpucu butonunu güncelle (kalan hak)
+  function updateHintBtn() {
+    const cnt = document.getElementById('sdk-hint-count');
+    const btn = document.getElementById('sdk-hint-btn');
+    if (cnt) cnt.textContent = hintsLeft;
+    if (btn) btn.disabled = (hintsLeft <= 0 || gameOver);
+  }
+
+  // 💡 İpucu ver: seçili boş hücreyi (yoksa rastgele boş hücreyi) doğru sayıyla doldur
+  function doHint() {
+    if (gameOver || hintsLeft <= 0) return;
+    // Hedef hücre: seçili ve boş/yanlışsa onu, yoksa rastgele bir boş hücre
+    let target = null;
+    if (selected !== null && !given[selected] && grid[selected] !== solution[selected]) {
+      target = selected;
+    } else {
+      const empties = [];
+      for (let i = 0; i < 81; i++) {
+        if (!given[i] && grid[i] !== solution[i]) empties.push(i);
+      }
+      if (!empties.length) return;
+      target = empties[Math.floor(Math.random() * empties.length)];
+    }
+    grid[target] = solution[target];
+    given[target] = true; // ipucu hücresi kilitlensin (değiştirilemez)
+    hintsLeft--;
+    selected = null;
+    try { Sound.sudokuCorrect(); Haptics.light(); } catch(e) {}
+    updateHintBtn();
+    render();
+    saveState();
+    // İpucuyla bulmaca tamamlandıysa kazanma
+    if (grid.every((v, i) => v === solution[i])) {
+      try { Sound.sudokuWin(); Haptics.heavy(); } catch(e) {}
+      endGame(true);
+    }
+  }
+
+  // 💡 Reklam izle → ipucu ver (oyun başına 3 hak)
+  function requestHint() {
+    if (gameOver) { try { UI.toast('Oyun bitti 😊'); } catch(e) {} return; }
+    if (hintsLeft <= 0) { try { UI.toast('Bu oyun için ipucu hakkın doldu (3/3)'); } catch(e) {} return; }
+    try {
+      AdManager.showRewarded(
+        () => { doHint(); },
+        () => { try { UI.toast('Reklam tamamlanmadı, ipucu verilmedi'); } catch(e) {} }
+      );
+    } catch(e) { doHint(); }
+  }
+
   function endGame(won) {
     gameOver = true;
     clearInterval(timerInterval);
+    updateHintBtn(); // oyun bitti → ipucu butonu pasif
     // 📊 Analytics
     try { Analytics.trackGameEnd('sudoku', won, mistakes, { sec: timerSec, diff }); } catch(e) {}
     // 🏆 Achievements
@@ -5518,7 +5620,7 @@ const Sudoku = (() => {
     try {
       localStorage.setItem('ah_sudoku', JSON.stringify({
         grid, given, solution, diff,
-        mistakes, timerSec, gameOver,
+        mistakes, timerSec, gameOver, hintsLeft,
         savedAt: Date.now()
       }));
     } catch(e) {}
@@ -5541,6 +5643,7 @@ const Sudoku = (() => {
       mistakes = s.mistakes || 0;
       timerSec = s.timerSec || 0;
       gameOver = s.gameOver || false;
+      hintsLeft = (typeof s.hintsLeft === 'number') ? s.hintsLeft : 3;
       return true;
     } catch(e) { return false; }
   }
@@ -5565,11 +5668,13 @@ const Sudoku = (() => {
     selected = null;
     mistakes = 0;
     gameOver = false;
+    hintsLeft = 3; // her yeni oyunda 3 ipucu hakkı
     document.getElementById('sudoku-complete').style.display = 'none';
     // 📊 Analytics
     try { Analytics.trackGameStart('sudoku'); } catch(e) {}
     startTimer();
     render();
+    updateHintBtn();
     saveState();
   }
 
@@ -5592,12 +5697,13 @@ const Sudoku = (() => {
       document.querySelectorAll('.sdk-diff').forEach(b => b.classList.remove('active'));
       const diffBtn = document.getElementById('sdk-' + diff);
       if (diffBtn) diffBtn.classList.add('active');
+      updateHintBtn();
     } else {
       newGame();
     }
   }
 
-  return { init, newGame, setDiff, inputNum, selectCell, saveState };
+  return { init, newGame, setDiff, inputNum, selectCell, saveState, requestHint };
 })();
 
 /* ================================================================
@@ -7229,26 +7335,33 @@ function isNativePlatform() {
 ===================================================================== */
 const AdConfig = {
   enabled: true,           // ✅ Play Store build'de aktif
-  showBanners: false,      // 🚫 Banner kaldırıldı (kullanıcı dostu)
-  showInterstitial: true,  // ✅ TEK reklam noktası: oyun KAYBEDİLDİĞİNDE
-  showRewarded: false,     // 🚫 Rewarded kaldırıldı (basit para sistemi)
-  showOnFirstDays: false,  // İlk 3 gün koruma — yeni kullanıcı sadakat
+  showBanners: false,      // 🚫 Banner kapalı (kullanıcı dostu)
+  showInterstitial: true,  // ✅ Oyun sonu (kazanç + kayıp)
+  showRewarded: true,      // ✅ İpucu için ödüllü reklam AÇIK
+  showOnFirstDays: false,  // İlk günler koruması aktif
 
-  // ⚠️ BU ID'LER GOOGLE'IN TEST ID'LERİ! Gerçek ID'lerinle değiştir
+  // ✅ GERÇEK AdMob ID'leri (rewarded artık test değil!)
   adIds: {
     appId:        'ca-app-pub-8786714927873826~4282276383',
     banner:       'ca-app-pub-8786714927873826/5930399972',
     interstitial: 'ca-app-pub-8786714927873826/9175510412',
-    rewarded:     'ca-app-pub-3940256099942544/5224354917',
+    rewarded:     'ca-app-pub-8786714927873826/8883387446',
   },
 
-  interstitialEveryNGames: 4, // her X oyundan sonra interstitial
+  // ── Interstitial sıklık kontrolü (frequency capping) ──
+  firstDaysProtection:       3,     // İlk 3 gün hiç interstitial yok
+  interstitialEveryNGames:   1,     // Her oyun aday (şans + ara + cap throttle eder)
+  interstitialChance:        0.45,  // %45 rastgele gösterim şansı
+  interstitialMinGapMs:      90000, // En az 90 sn ara (üst üste yok)
+  interstitialMaxPerSession: 4,     // Oturum başına max 4 reklam
 };
 
 const AdManager = (() => {
   let gamesCompleted = 0;
   let admobReady = false;
   let AdMobPlugin = null;
+  let lastInterstitialTs = 0;
+  let interstitialsThisSession = 0;
 
   // Capacitor ortamında mı? AdMob plugin yüklü mü?
   function detectPlugin() {
@@ -7260,32 +7373,40 @@ const AdManager = (() => {
     return AdMobPlugin;
   }
 
-  // ⏱️ Akıllı interstitial gösterim — ilk 3 gün ve her 4 oyunda 1
+  // İlk günler koruması — yeni kullanıcıya reklam gösterme
+  function withinFirstDaysProtection() {
+    if (AdConfig.showOnFirstDays) return false;
+    try {
+      const k = 'ah_first_open_ts';
+      let firstOpen = parseInt(localStorage.getItem(k) || '0');
+      if (!firstOpen) { firstOpen = Date.now(); localStorage.setItem(k, String(firstOpen)); }
+      const daysSince = (Date.now() - firstOpen) / 86400000;
+      return daysSince < (AdConfig.firstDaysProtection || 0);
+    } catch(e) { return false; }
+  }
+
+  // 🎲 Interstitial gösterilmeli mi? — tüm sıklık kuralları burada
   function shouldShowInterstitial() {
     if (!AdConfig.enabled || !AdConfig.showInterstitial) return false;
-    if (Premium.isActive()) return false;
-
-    // İlk 3 gün koruması
-    try {
-      const firstOpenKey = 'ah_first_open_ts';
-      let firstOpen = parseInt(localStorage.getItem(firstOpenKey) || '0');
-      if (!firstOpen) {
-        firstOpen = Date.now();
-        localStorage.setItem(firstOpenKey, String(firstOpen));
-      }
-      const daysSince = (Date.now() - firstOpen) / 86400000;
-      if (daysSince < 3) return false; // İlk 3 gün hiç reklam yok
-    } catch(e) {}
-
-    // Her 4 oyunda 1
-    gamesCompleted++;
-    return gamesCompleted % AdConfig.interstitialEveryNGames === 0;
+    try { if (Premium.isActive()) return false; } catch(e) {}
+    if (!admobReady || !AdMobPlugin) return false;
+    if (withinFirstDaysProtection()) return false;
+    // Oturum başına max
+    if (interstitialsThisSession >= AdConfig.interstitialMaxPerSession) return false;
+    // Min zaman aralığı (üst üste reklam engeli)
+    if (Date.now() - lastInterstitialTs < AdConfig.interstitialMinGapMs) return false;
+    // Her N oyunda bir aday
+    if (AdConfig.interstitialEveryNGames > 1 &&
+        gamesCompleted % AdConfig.interstitialEveryNGames !== 0) return false;
+    // Rastgele şans (tahmin edilemez, darlamayan)
+    if (Math.random() > AdConfig.interstitialChance) return false;
+    return true;
   }
 
   async function init() {
     if (!AdConfig.enabled) return;
     if (!detectPlugin()) {
-      // Web/dev mode'da AdMob native plugin yok — bu beklenen durum, sessizce skip
+      // Web/dev mode'da AdMob native plugin yok — beklenen durum, sessizce skip
       return;
     }
     try {
@@ -7302,7 +7423,7 @@ const AdManager = (() => {
   // ──── BANNER ────────────────────────────────────────────
   async function showBanner() {
     if (!AdConfig.enabled || !AdConfig.showBanners) return;
-    if (Premium.isActive()) return;
+    try { if (Premium.isActive()) return; } catch(e) {}
     if (!admobReady || !AdMobPlugin) return;
     try {
       await AdMobPlugin.showBanner({
@@ -7316,48 +7437,46 @@ const AdManager = (() => {
   }
 
   function initBanners() {
-    // Premium ise veya AdConfig kapalıysa → banner div'leri gizle
-    if (Premium.isActive() || !AdConfig.enabled || !AdConfig.showBanners) {
+    if ((typeof Premium !== 'undefined' && Premium.isActive()) || !AdConfig.enabled || !AdConfig.showBanners) {
       document.querySelectorAll('.ad-banner').forEach(ad => ad.style.display = 'none');
       return;
     }
-    // AdMob plugin yüklüyse gerçek banner göster; web'de div'ler gizli kalır
     if (admobReady) {
       showBanner();
     } else {
-      // Web preview'da banner div'leri gizli kalsın, görsel bozukluk olmasın
       document.querySelectorAll('.ad-banner').forEach(ad => ad.style.display = 'none');
     }
   }
 
   // ──── INTERSTITIAL ──────────────────────────────────────
-  async function onGameComplete(callback) {
+  // Oyun bitince çağır: sayaç artır + sıklık uygunsa göster
+  async function maybeShowInterstitial(callback) {
     gamesCompleted++;
     const done = () => { if (callback) callback(); };
-    if (!AdConfig.enabled || !AdConfig.showInterstitial) return done();
-    if (Premium.isActive()) return done();
-    if (gamesCompleted % AdConfig.interstitialEveryNGames !== 0) return done();
-    if (!admobReady || !AdMobPlugin) return done();
+    if (!shouldShowInterstitial()) return done();
     try {
       await AdMobPlugin.prepareInterstitial({ adId: AdConfig.adIds.interstitial });
       await AdMobPlugin.showInterstitial();
+      lastInterstitialTs = Date.now();
+      interstitialsThisSession++;
+      try { Analytics.trackAdShown('interstitial'); } catch(e) {}
       done();
     } catch(e) { done(); }
   }
 
-  // ──── REWARDED (Mystery retry) ─────────────────────────
+  // ──── REWARDED (İpucu için "izle-kazan") ─────────────────
   async function showRewarded(onSuccess, onCancel) {
     if (!AdConfig.enabled || !AdConfig.showRewarded) {
-      // AdMob kapalı: mevcut "ücretsiz retry" akışı
+      // Rewarded kapalı veya web/dev: ödülü direkt ver
       if (onSuccess) onSuccess();
       return;
     }
-    if (Premium.isActive()) { if (onSuccess) onSuccess(); return; }
+    try { if (Premium.isActive()) { if (onSuccess) onSuccess(); return; } } catch(e) {}
     if (!admobReady || !AdMobPlugin) { if (onSuccess) onSuccess(); return; }
     try {
       await AdMobPlugin.prepareRewardVideoAd({ adId: AdConfig.adIds.rewarded });
-      try { Analytics.trackAdShown('rewarded'); } catch(e) {}
       const result = await AdMobPlugin.showRewardVideoAd();
+      try { Analytics.trackAdShown('rewarded'); } catch(e) {}
       if (result && result.reward) {
         try { Analytics.trackAdRewarded('watched'); } catch(e) {}
         if (onSuccess) onSuccess();
@@ -7371,7 +7490,7 @@ const AdManager = (() => {
     }
   }
 
-  return { init, initBanners, onGameComplete, showRewarded };
+  return { init, initBanners, maybeShowInterstitial, showRewarded };
 })();
 
 
@@ -7528,7 +7647,7 @@ const HowTo = (() => {
 const Rating = (() => {
   const KEY        = 'ah_rating';
   // PLAY STORE'DA YAYINLAMADAN ÖNCE: sefa'nın gerçek package name'i buraya
-  const STORE_URL  = 'https://play.google.com/store/apps/details?id=com.zihinussu.app';
+  const STORE_URL  = 'https://play.google.com/store/apps/details?id=com.sahingames.github.io/zihinussu';
   // iOS için: 'https://apps.apple.com/app/id000000000'
 
   let selectedVal  = 0;
@@ -13910,6 +14029,13 @@ const Word = (() => {
       showFeedback();
     }
 
+    // 💡 İpucu butonu: oyun aktifse göster (bittiyse gizle)
+    toggleHintBtn(!done);
+
+    // ⚔️ Normal moda dönüldü → TR/EN seçimini geri göster
+    const langTog = document.querySelector('#screen-word .lang-toggle');
+    if (langTog) langTog.style.display = '';
+
     document.getElementById('word-day-label').textContent =
       `Bugünün Sözcüğü · #${getDayIndex() + 1} · ${lang.toUpperCase()}`;
 
@@ -13917,6 +14043,7 @@ const Word = (() => {
   }
 
   function setLang(l) {
+    if (duelMode) return; // ⚔️ Düelloda dil değiştirilemez (düello kelimesini bozar)
     if (l === lang) return; // aynı dile basıldıysa hiçbir şey yapma
 
     // ── TR↔EN GEÇİŞ KORUMASI (Bug #4 fix v3 - savunmacı) ──
@@ -14277,12 +14404,13 @@ const Word = (() => {
           }
         } catch(e) {}
 
-        // 💰 Interstitial — SADECE KAYBETTİĞİNDE (basit para sistemi)
-        // Kazanma anında reklam yok — kullanıcı keyifle ayrılsın
+        // 💰 Interstitial — hem kazanç hem kayıpta dene; sıklık mantığı karar verir
+        // (kazanma efekti/confetti oynasın diye kazançta biraz daha geç)
         try {
-          if (isLoss && AdManager.shouldShowInterstitial()) {
-            setTimeout(() => AdManager.showInterstitial(() => {}), 3000);
-          }
+          const adDelay = isLoss ? 3000 : 1800;
+          setTimeout(() => {
+            try { AdManager.maybeShowInterstitial(() => {}); } catch(e) {}
+          }, adDelay);
         } catch(e) {}
       }, guesses.length * 80 + 200);
     } else {
@@ -14345,6 +14473,8 @@ const Word = (() => {
     }
     panel.style.display = 'block';
     panel.classList.add('show-fixed');
+    // 💡 Oyun bitti → ipucu butonunu gizle
+    toggleHintBtn(false);
     // Panel'i body'ye taşı — parent z-index/transform sorunlarını aş
     if (panel.parentElement !== document.body) {
       document.body.appendChild(panel);
@@ -14448,6 +14578,11 @@ const Word = (() => {
       panel.style.display = 'none';
       panel.classList.remove('show-fixed');
     }
+    // 💡 Düelloda ipucu yok
+    toggleHintBtn(false);
+    // ⚔️ Düelloda TR/EN seçimi gizle (dil değişimi düelloyu bozar)
+    const langTog = document.querySelector('#screen-word .lang-toggle');
+    if (langTog) langTog.style.display = 'none';
     const oldBtn = document.getElementById('word-go-duello-btn');
     if (oldBtn) oldBtn.remove();
 
@@ -14616,7 +14751,26 @@ const Word = (() => {
     }
   }
 
-  return { init, setLang, share, startDuel, exitDuel, showHint };
+  // 💡 Ödüllü ipucu butonunu göster/gizle
+  function toggleHintBtn(show) {
+    const btn = document.getElementById('word-hint-btn');
+    if (!btn) return;
+    btn.classList.toggle('visible', !!show);
+  }
+
+  // 💡 Ödüllü ipucu: reklam izle → 1 harf aç (düello modunda kapalı)
+  function requestHint() {
+    if (done || !word) { try { UI.toast('İpucu sadece oyun sırasında 😊'); } catch(e) {} return; }
+    if (duelMode) { try { UI.toast('Düelloda ipucu yok ⚔️'); } catch(e) {} return; }
+    try {
+      AdManager.showRewarded(
+        () => { showHint(); },
+        () => { try { UI.toast('Reklam tamamlanmadı, ipucu verilmedi'); } catch(e) {} }
+      );
+    } catch(e) { showHint(); }
+  }
+
+  return { init, setLang, share, startDuel, exitDuel, showHint, requestHint };
 })();
 
 /* =====================================================================
@@ -16929,24 +17083,32 @@ const Duello = (() => {
     renderHistory();
   }
 
-  function checkIncomingFromURL() {
+  function checkIncomingFromURL(urlStr) {
     try {
-      const params = new URLSearchParams(window.location.search);
+      // urlStr verilirse (Capacitor deep link) ondan, yoksa window.location'dan oku
+      let search = '';
+      if (urlStr) {
+        const qIdx = urlStr.indexOf('?');
+        search = qIdx >= 0 ? urlStr.slice(qIdx) : '';
+      } else {
+        search = window.location.search;
+      }
+      const params = new URLSearchParams(search);
       const d = params.get('d');
-      if (!d) return;
+      if (!d) return false;
       // DoS koruma: 500 karakterden büyük payload reddedilir
       if (d.length > 500) {
         console.warn('[Duello] Payload çok büyük, reddedildi');
-        return;
+        return false;
       }
       const payload = decodePayload(d);
-      if (!payload) return;
+      if (!payload) return false;
       // Kelime doğrulama: 5 harf + Türkçe alfabe
-      if (typeof payload.w !== 'string' || payload.w.length !== 5) return;
+      if (typeof payload.w !== 'string' || payload.w.length !== 5) return false;
       const upper = payload.w.toUpperCase();
       if (!/^[A-ZÇĞIİÖŞÜ]{5}$/.test(upper)) {
         console.warn('[Duello] Geçersiz karakter, reddedildi');
-        return;
+        return false;
       }
       payload.w = upper;
       // İsim güvenlik: 30 karakter sınırı + tehlikeli karakterleri temizle
@@ -16958,7 +17120,23 @@ const Duello = (() => {
       try { Analytics.trackDuelloIncoming(payload.n); } catch(e) {}
       // Otomatik düello sekmesine geç + incoming göster
       showIncomingBox();
-    } catch (e) {}
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // ⚔️ Capacitor deep link handler — app linke tıklanarak açıldığında çağrılır
+  // (appUrlOpen event'i veya getLaunchUrl cold-start'tan gelir)
+  function handleDeepLink(url) {
+    try {
+      if (!url) return;
+      const found = checkIncomingFromURL(url);
+      if (found) {
+        // Düello sekmesine geç ki kullanıcı daveti görsün
+        try { UI.switchTab('duello'); } catch(e) {}
+        try { showTab('create'); } catch(e) {}
+        showIncomingBox();
+      }
+    } catch(e) {}
   }
 
   function showIncomingBox() {
@@ -17010,12 +17188,14 @@ const Duello = (() => {
       return;
     }
 
-    // Geçerli kelime mi? VALID_TR seti varsa kontrol et, yoksa kabul
-    const isValidWord = (typeof VALID_TR !== 'undefined' && VALID_TR.has(word)) ||
-                        new Set(word.split('')).size >= 3;
+    // 🔒 Düello kelimesi ÇÖZÜLEBİLİR olmalı: çözen kişi sözlükten (VALID_TR)
+    // kelime yazmak zorunda. Bu yüzden hedef kelime de VALID_TR'de OLMALI,
+    // yoksa karşı taraf onu asla yazamaz → düello kazanılamaz.
+    const hasDict = (typeof VALID_TR !== 'undefined' && VALID_TR.size > 0);
+    const isValidWord = hasDict ? VALID_TR.has(word) : (new Set(word.split('')).size >= 3);
     if (!isValidWord) {
       wordEl.classList.add('invalid');
-      UI.toast('Geçerli bir kelime gir');
+      UI.toast('"' + word + '" sözlükte yok — çözülebilir bir kelime seç');
       return;
     }
 
@@ -17234,7 +17414,7 @@ const Duello = (() => {
   }
 
   return { init, showTab, createDuel, copyLink, shareWhatsApp, acceptIncoming,
-           openHistoryItem, recordResult, quickShareWord, renderHistory };
+           openHistoryItem, recordResult, quickShareWord, renderHistory, handleDeepLink };
 })();
 
 /* =====================================================================
@@ -17283,6 +17463,7 @@ const SinirsizWord = (() => {
       buildKeyboard();
       renderAll();
       updateStatBar();
+      toggleHintBtn(true); // aktif oyun → ipucu göster
     }
   }
 
@@ -17296,6 +17477,7 @@ const SinirsizWord = (() => {
     buildKeyboard();
     hideGameOver();
     updateStatBar();
+    toggleHintBtn(true); // yeni oyun → ipucu göster
   }
 
   function buildGrid() {
@@ -17510,6 +17692,7 @@ const SinirsizWord = (() => {
   function showGameOver() {
     const panel = document.getElementById('sw-game-over');
     if (!panel) return;
+    toggleHintBtn(false); // oyun bitti → ipucu gizle
     panel.style.display = 'block';
     panel.classList.add('show-fixed');
     if (panel.parentElement !== document.body) {
@@ -17558,7 +17741,43 @@ const SinirsizWord = (() => {
     else add(key);
   }
 
-  return { init, newGame, onKey };
+  // 💡 Ödüllü ipucu butonunu göster/gizle
+  function toggleHintBtn(show) {
+    const btn = document.getElementById('sw-hint-btn');
+    if (btn) btn.classList.toggle('visible', !!show);
+  }
+
+  // 💡 İpucu: doğru bir harfi göster (henüz bilinmeyen pozisyondan)
+  function showHint() {
+    if (done || !word) return;
+    const guessedPositions = new Set();
+    guesses.forEach(g => {
+      for (let i = 0; i < g.length; i++) {
+        if (g[i] === word[i]) guessedPositions.add(i);
+      }
+    });
+    const avail = [];
+    for (let i = 0; i < word.length; i++) {
+      if (!guessedPositions.has(i)) avail.push(i);
+    }
+    if (!avail.length) return;
+    const pos = avail[Math.floor(Math.random() * avail.length)];
+    try { UI.toast(`💡 İpucu: ${pos+1}. harf "${word[pos]}"`, 5000); } catch(e) {}
+    try { Sound.win(); } catch(e) {}
+  }
+
+  // 💡 Reklam izle → ipucu ver
+  function requestHint() {
+    if (done || !word) { try { UI.toast('İpucu sadece oyun sırasında 😊'); } catch(e) {} return; }
+    try {
+      AdManager.showRewarded(
+        () => { showHint(); },
+        () => { try { UI.toast('Reklam tamamlanmadı, ipucu verilmedi'); } catch(e) {} }
+      );
+    } catch(e) { showHint(); }
+  }
+
+  return { init, newGame, onKey, requestHint };
 })();
 
 /* =====================================================================
@@ -18791,6 +19010,26 @@ function boot() {
       App.addListener('resume', () => {
         // Şu an özel bir aksiyon yok, tab değişiminde zaten init oluyor
       });
+
+      // ⚔️ DEEP LINK — düello linkine tıklanınca app açıkken gelir
+      // Bu listener olmadan düello linkleri app'te çalışmaz (1 yıllık bug fix)
+      App.addListener('appUrlOpen', (data) => {
+        try {
+          if (data && data.url && typeof Duello !== 'undefined' && Duello.handleDeepLink) {
+            Duello.handleDeepLink(data.url);
+          }
+        } catch(e) { console.warn('[DeepLink] appUrlOpen işlenemedi', e); }
+      });
+
+      // ⚔️ COLD START — app kapalıyken linke tıklanıp açıldıysa launch URL'i işle
+      try {
+        App.getLaunchUrl().then((res) => {
+          if (res && res.url && typeof Duello !== 'undefined' && Duello.handleDeepLink) {
+            // Boot tamamlansın diye küçük gecikme (modüller hazır olsun)
+            setTimeout(() => { try { Duello.handleDeepLink(res.url); } catch(e) {} }, 800);
+          }
+        }).catch(() => {});
+      } catch(e) {}
     }
   } catch(e) {
     console.warn('[Capacitor App] lifecycle listeners kurulamadı', e);
