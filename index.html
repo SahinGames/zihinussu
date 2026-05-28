@@ -4,6 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Zihin Üssü — Zeka Oyunları</title>
+<script>
+/* 🔗 AKILLI YÖNLENDİRME (düello + davet linkleri)
+   SADECE web sürümünde (github.io) + telefonda + linkte ?d= veya ?inv= varsa çalışır.
+   • Android: uygulama yüklüyse açar; değilse Google Play'e gider.
+   • iOS: uygulama yüklüyse açar; değilse App Store'a gider (ID girilince).
+   • Masaüstü / uygulama içi / parametresiz → hiçbir şey yapmaz, web oyunu normal açılır.
+   Not: Uygulama içinde (localhost) çalışmaz; orada bu blok sessizce atlanır. */
+(function(){
+  try {
+    var host = location.hostname || '';
+    if (host.indexOf('github.io') === -1) return;     // uygulama içi (localhost) → atla
+    if (window.Capacitor) return;                       // ekstra güvenlik: app içi → atla
+
+    var qs = location.search || '';
+    var params = new URLSearchParams(qs);
+    if (!params.get('d') && !params.get('inv')) return; // paylaşım linki değil → web oyun
+
+    var ua = navigator.userAgent || '';
+    var isAndroid = /android/i.test(ua);
+    var isIOS = /iphone|ipad|ipod/i.test(ua) ||
+                (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    if (!isAndroid && !isIOS) return;                   // masaüstü → web oyun
+
+    if (sessionStorage.getItem('zu_redir')) return;     // tekrar dönüşte döngü olmasın
+    sessionStorage.setItem('zu_redir', '1');
+
+    var ANDROID_PKG = 'com.zihinussu.app';
+    var PLAY_URL = 'https://play.google.com/store/apps/details?id=' + ANDROID_PKG;
+    var IOS_APPSTORE_ID = '';  // ⬅️ App Store'a çıkınca buraya SAYISAL ID'yi yaz (örn: '1234567890')
+
+    if (isAndroid) {
+      // intent:// → uygulama yüklüyse açar, değilse browser_fallback_url'e (Play Store) gider
+      var intentUrl = 'intent://open' + qs +
+        '#Intent;scheme=zihinussu;package=' + ANDROID_PKG +
+        ';S.browser_fallback_url=' + encodeURIComponent(PLAY_URL) + ';end';
+      location.replace(intentUrl);
+      return;
+    }
+
+    if (isIOS) {
+      var store = IOS_APPSTORE_ID ? ('https://apps.apple.com/app/id' + IOS_APPSTORE_ID) : '';
+      var t0 = Date.now();
+      location.replace('zihinussu://open' + qs);        // önce uygulamayı dene
+      setTimeout(function(){
+        // ~1.3 sn içinde uygulama açılmadıysa (sayfa hâlâ görünür) → App Store / web
+        if (!document.hidden && (Date.now() - t0) < 2500) {
+          if (store) location.replace(store);
+          else sessionStorage.removeItem('zu_redir'); // ID yoksa web oyunu açık kalsın
+        }
+      }, 1300);
+      return;
+    }
+  } catch(e) { /* hata olursa web oyunu normal açılır */ }
+})();
+</script>
 <meta name="description" content="Zihin Üssü · Günlük kelime, sayısal, gizem oyunları ve daha fazlası. Türkçe zeka platformu.">
 <meta name="theme-color" content="#07070d">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -243,6 +298,297 @@ header {
 .icon-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--border3); }
 .icon-btn:active { transform: scale(0.92); }
 .icon-btn.active { background: rgba(212, 166, 69, 0.15); border-color: var(--gold); color: var(--gold); }
+
+/* 🛒 Header mağaza butonu — altın gösterimli, dikkat çekici */
+.header-coins-btn {
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 22px;
+  border: 1px solid var(--gold);
+  background: rgba(212, 166, 69, 0.12);
+  color: var(--gold2);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  white-space: nowrap;
+}
+.header-coins-btn:hover { background: rgba(212, 166, 69, 0.22); }
+.header-coins-btn:active { transform: scale(0.94); }
+.header-coins-btn #header-coins { font-size: 14px; letter-spacing: 0.5px; }
+
+/* 🎨 Tema seçici (mağazadaki "Temalarım" bölümü) */
+.theme-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.theme-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.theme-chip:hover { border-color: var(--border3); }
+.theme-chip.active {
+  border-color: var(--gold);
+  background: rgba(212, 166, 69, 0.12);
+  color: var(--gold2);
+}
+.theme-chip-icon { font-size: 15px; }
+.theme-chip-check { color: var(--gold2); font-weight: 700; }
+
+/* 💡 İpucu envanteri bilgi şeridi */
+.shop-hint-banner {
+  background: rgba(212, 166, 69, 0.10);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.shop-hint-banner strong { color: var(--gold2); }
+
+/* Mağazada "KULLAN" butonu (sahip olunan ama aktif olmayan tema) */
+.shop-buy-btn.use {
+  border-color: var(--gold);
+  background: rgba(212, 166, 69, 0.12);
+  color: var(--gold2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   📊 İÇGÖRÜLER / İSTATİSTİK EKRANI — düzenli kart tasarımı
+═══════════════════════════════════════════════════════════ */
+#insights-content { padding: 4px 2px 8px; }
+
+/* Üst 3 ana metrik kartı */
+.mini-analytics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ma-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 14px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.ma-card.ma-loss { border-color: rgba(255,90,90,0.25); }
+.ma-card.ma-time { border-color: rgba(90,170,255,0.22); }
+.ma-icon { font-size: 20px; line-height: 1; }
+.ma-num { font-size: 22px; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+.ma-card.ma-loss .ma-num { color: #ff7a7a; }
+.ma-card.ma-time .ma-num { font-size: 16px; color: #6ab0ff; }
+.ma-lbl { font-size: 11px; color: var(--text2); line-height: 1.2; }
+.ma-sub { font-size: 10px; color: var(--text3, var(--text2)); margin-top: 2px; opacity: 0.85; }
+
+/* Bölüm başlıkları + kapsayıcı */
+.insights-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.insights-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold2);
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+}
+
+/* Sayı ızgarası (Genel, Düello akışı) */
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.insights-stat {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+}
+.is-val { font-size: 18px; font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+.is-lbl { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+/* Sekme süreleri — yatay çubuklar */
+.insights-bars { display: flex; flex-direction: column; gap: 9px; }
+.insights-bar-row {
+  display: grid;
+  grid-template-columns: 72px 1fr 56px;
+  align-items: center;
+  gap: 8px;
+}
+.ib-label { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ib-bar {
+  height: 8px;
+  background: var(--bg2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.ib-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  border-radius: 5px;
+  min-width: 3px;
+  transition: width 0.4s ease;
+}
+.ib-val { font-size: 11px; color: var(--text2); text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+
+/* Oyun performansı — satırlar */
+.insights-game-row {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 11px 12px;
+  margin-bottom: 8px;
+}
+.insights-game-row:last-child { margin-bottom: 0; }
+.igr-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.igr-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.igr-stats span { font-size: 11px; color: var(--text2); }
+.igr-stats b { color: var(--gold2); font-weight: 700; }
+
+/* Boş durum + eylem butonları */
+.insights-empty, .mini-analytics-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text2);
+  font-size: 14px;
+}
+.mae-icon { font-size: 36px; margin-bottom: 10px; }
+.mae-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.mae-msg { font-size: 13px; color: var(--text2); }
+.insights-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.insights-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.insights-btn:hover { border-color: var(--border3); }
+.insights-btn:active { transform: scale(0.97); }
+.insights-btn.warn { color: #ff7a7a; border-color: rgba(255,90,90,0.25); }
+
+/* ⚙️ Ayarlar açılır menüsü */
+header { position: relative; }
+.settings-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 12px;
+  min-width: 220px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r2);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+  padding: 6px;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+.settings-menu.open {
+  display: flex;
+  animation: settingsPop 0.18s ease;
+}
+@keyframes settingsPop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.settings-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  text-align: left;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.settings-menu-item:hover, .settings-menu-item:active {
+  background: rgba(255,255,255,0.06);
+}
+.settings-menu-item .smi-icon {
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.settings-menu-item .smi-state {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--gold2);
+  font-family: 'JetBrains Mono', monospace;
+}
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 999;
+  display: none;
+}
+.settings-backdrop.show { display: block; }
+
+/* ☰ Hamburger butonu — güzelleştirilmiş (soluk görünüm düzeltildi) */
+.hamburger-btn {
+  font-size: 20px !important;
+  color: var(--gold2) !important;
+  border-color: var(--gold) !important;
+  background: rgba(212, 166, 69, 0.10) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  padding: 0 !important;
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif !important;
+}
+.hamburger-btn:hover {
+  background: rgba(212, 166, 69, 0.20) !important;
+  color: var(--gold2) !important;
+}
 
 /* ===================================
    NAV TABS
@@ -1263,6 +1609,31 @@ header {
   font-weight: 600;
   cursor: pointer;
 }
+
+/* ⏱️ "Sizi Davet Eden" alanı */
+.im-inviter-section { margin-top: 18px; }
+.im-inviter-hint {
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.im-inviter-timer {
+  font-size: 12px;
+  color: var(--gold2);
+  margin-top: 8px;
+  text-align: center;
+}
+.im-inviter-done, .im-inviter-expired {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 13px;
+  background: var(--bg2);
+  color: var(--text2);
+}
+.im-inviter-expired { color: #d89a3a; }
 
 /* 🎁 Welcome Invite Modal */
 .invite-welcome-modal {
@@ -2797,6 +3168,32 @@ header {
   margin-bottom: 12px;
   padding: 0 2px;
 }
+/* 🏆 Günlük / Haftalık / Tüm Zamanlar dönem sekmeleri */
+.lb-period-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  background: var(--bg2);
+  padding: 4px;
+  border-radius: 12px;
+}
+.lb-period-btn {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.lb-period-btn.active {
+  background: var(--gold);
+  color: #07070d;
+}
 .lb-week-label {
   font-size: 11px;
   color: var(--text2);
@@ -3354,6 +3751,18 @@ header {
 }
 .feedback-panel.has-message {
   display: block !important;
+}
+
+/* 🔧 Adım 1 fix: Analiz paneli, harf ızgarasının altında / klavyenin üstünde,
+   normal akışta dursun. position:relative — scanline (::before) elemanının
+   kayıp gidip harflerin üstüne binmesini engeller. */
+.feedback-panel.fb-below-keyboard {
+  position: relative;
+  z-index: 1;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  clear: both;
+  animation: fadeRise 0.4s ease;
 }
 
 /* ================================================================
@@ -4814,31 +5223,38 @@ header {
 </head>
 <body>
 
-<!-- Landscape uyarısı (mobilde yan çevirince) -->
-<div class="landscape-warning">
-  <div class="lw-icon">📱</div>
-  <div class="lw-title">Telefonu Dik Tut</div>
-  <div class="lw-text">Zihin Üssü en iyi dikey modda çalışır. Telefonunu çevirip oyuna devam edebilirsin.</div>
-</div>
-
 <canvas id="bgc"></canvas>
 
 <div id="app">
 
   <!-- HEADER -->
   <header>
-    <button class="icon-btn hamburger-btn" id="hamburger-btn" onclick="document.querySelector('.drawer').classList.toggle('mobile-open'); document.querySelector('.drawer-backdrop').classList.toggle('show')" title="Menü" aria-label="Menüyü aç">☰</button>
+    <button class="icon-btn hamburger-btn" id="hamburger-btn" onclick="document.querySelector('.drawer').classList.toggle('mobile-open'); document.querySelector('.drawer-backdrop').classList.toggle('show')" title="Oyunlar" aria-label="Oyun menüsünü aç">☰</button>
     <div class="logo-mark">ZİHİN<span>ÜSSÜ</span></div>
     <div class="header-right">
-
-
-
-      <button class="icon-btn" id="sound-btn" onclick="UI.toggleSound()" title="Ses">🔊</button>
-      <button class="icon-btn" id="cb-btn" onclick="UI.toggleColorBlind()" title="Renk körü modu">🎨</button>
-      <button class="icon-btn" id="howto-btn" onclick="HowTo.show()" title="Nasıl Oynanır">?</button>
-      <button class="icon-btn" onclick="UI.openInviteModal()" title="Arkadaş Davet Et">👥</button>
-      <button class="icon-btn" onclick="UI.openStats()" title="İstatistikler">◈</button>
+      <button class="header-coins-btn" id="header-coins-btn" onclick="UI.openShop()" title="Mağaza — Altınlarını harca">🛒 <span id="header-coins">0</span></button>
+      <button class="icon-btn" id="settings-btn" onclick="UI.toggleSettingsMenu(event)" title="Ayarlar" aria-label="Ayarlar menüsü">⚙️</button>
     </div>
+
+    <!-- ⚙️ Ayarlar açılır menüsü -->
+    <div class="settings-menu" id="settings-menu">
+      <button class="settings-menu-item" onclick="UI.openStats(); UI.closeSettingsMenu()">
+        <span class="smi-icon">◈</span> İstatistikler
+      </button>
+      <button class="settings-menu-item" onclick="UI.openInviteModal(); UI.closeSettingsMenu()">
+        <span class="smi-icon">👥</span> Arkadaş Davet Et
+      </button>
+      <button class="settings-menu-item" onclick="HowTo.show(); UI.closeSettingsMenu()">
+        <span class="smi-icon">?</span> Nasıl Oynanır
+      </button>
+      <button class="settings-menu-item" id="settings-sound-item" onclick="UI.toggleSound(); UI.refreshSettingsMenu()">
+        <span class="smi-icon">🔊</span> Ses <span class="smi-state" id="smi-sound-state">Açık</span>
+      </button>
+      <button class="settings-menu-item" id="settings-cb-item" onclick="UI.toggleColorBlind(); UI.refreshSettingsMenu()">
+        <span class="smi-icon">🎨</span> Renk Körü Modu <span class="smi-state" id="smi-cb-state">Kapalı</span>
+      </button>
+    </div>
+    <div class="settings-backdrop" id="settings-backdrop" onclick="UI.closeSettingsMenu()"></div>
   </header>
 
   <!-- TABS -->
@@ -4874,7 +5290,7 @@ header {
     </div>
     <nav class="drawer-nav" role="navigation" aria-label="Oyun seçimi">
       <button class="drawer-item" data-tab="word"      onclick="UI.switchTab('word')">
-        <span class="drawer-icon">📝</span><span class="drawer-label">Kelime</span>
+        <span class="drawer-icon">📝</span><span class="drawer-label">Günlük Kelime</span>
       </button>
       <button class="drawer-item" data-tab="number"    onclick="UI.switchTab('number')">
         <span class="drawer-icon">🔢</span><span class="drawer-label">Sayısal</span>
@@ -5273,8 +5689,13 @@ header {
 
     <!-- Haftalık sıralama paneli -->
     <div id="lb-panel-weekly" style="display:none">
+      <div class="lb-period-tabs">
+        <button class="lb-period-btn active" id="lbp-daily" onclick="UI.showLbPeriod('daily')">Günlük</button>
+        <button class="lb-period-btn" id="lbp-weekly" onclick="UI.showLbPeriod('weekly')">Haftalık</button>
+        <button class="lb-period-btn" id="lbp-alltime" onclick="UI.showLbPeriod('alltime')">Tüm Zamanlar</button>
+      </div>
       <div class="lb-info-bar">
-        <span class="lb-week-label" id="lb-week-label">Bu Hafta</span>
+        <span class="lb-week-label" id="lb-week-label">Bugün</span>
         <span class="lb-your-rank" id="lb-your-rank"></span>
       </div>
       <div id="lb-list" class="lb-list">
@@ -5282,10 +5703,10 @@ header {
       </div>
       <div class="lb-footer">
         <div class="lb-name-row">
-          <input id="lb-name-input" class="lb-name-input" type="text" maxlength="12" placeholder="Kullanıcı adın..." />
+          <input id="lb-name-input" class="lb-name-input" type="text" maxlength="12" placeholder="Takma adın (boşsa kodun görünür)..." />
           <button class="lb-save-btn" onclick="UI.saveLbName()">Kaydet</button>
         </div>
-        <div class="lb-disclaimer">Skorlar bu cihazda saklanır.</div>
+        <div class="lb-disclaimer">Takma ad benzersiz olmalı. Boş bırakırsan davet kodun görünür.</div>
       </div>
     </div>
 
@@ -5402,6 +5823,293 @@ header {
   </div>
 </div>
 
+
+<!-- 🔥 FIREBASE — davet sistemi + global liderlik tablosu için -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ================================================================
+   🔥 FIREBASE BAŞLATMA
+   - Davet sistemi (kim kimi davet etti, davet sayısı)
+   - Global liderlik tablosu (günlük/haftalık/tüm zamanlar)
+   - İnternet yoksa sessizce devre dışı (oyunun gerisi çalışır)
+================================================================ */
+var FB = (function() {
+  var db = null;
+  var ready = false;
+  var firebaseConfig = {
+    apiKey: "AIzaSyBWRof5jeAe2OimY9WLJcLWX81ewlOrlfI",
+    authDomain: "zihinussu.firebaseapp.com",
+    projectId: "zihinussu",
+    storageBucket: "zihinussu.firebasestorage.app",
+    messagingSenderId: "555642123401",
+    appId: "1:555642123401:web:62ebb99f3d78973be18258"
+  };
+
+  function init() {
+    try {
+      if (typeof firebase === 'undefined' || !firebase.initializeApp) {
+        console.warn('[FB] Firebase SDK yüklenemedi (internet yok olabilir)');
+        return false;
+      }
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      ready = true;
+      console.log('[FB] Firebase bağlandı ✓');
+      return true;
+    } catch(e) {
+      console.warn('[FB] Firebase başlatılamadı:', e.message);
+      return false;
+    }
+  }
+
+  function isReady() { return ready && db !== null; }
+  function getDB() { return db; }
+
+  // ─── 👥 DAVET SİSTEMİ (Firestore) ───────────────────────────────
+  // users koleksiyonu: her kullanıcının kodu, kimi davet ettiği, davet sayısı
+
+  // Kullanıcıyı Firebase'e kaydet (ilk açılışta, yoksa oluştur)
+  // code: kendi kodu, name: takma ad (varsa)
+  function registerUser(code, name) {
+    if (!isReady() || !code) return Promise.resolve(false);
+    try {
+      var ref = db.collection('users').doc(code);
+      return ref.get().then(function(snap) {
+        if (!snap.exists) {
+          return ref.set({
+            code: code,
+            name: name || '',
+            invitedBy: '',
+            inviteCount: 0,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(function(){ return true; });
+        }
+        return true;
+      });
+    } catch(e) { return Promise.resolve(false); }
+  }
+
+  // "Sizi davet eden" kodunu uygula: inviterCode geçerliyse onun sayısını +1 yap
+  // myCode: bu kullanıcının kodu, inviterCode: girdiği davet eden kodu
+  // Döner: {ok:true} | {ok:false, reason:'...'}
+  function applyInviter(myCode, inviterCode) {
+    if (!isReady()) return Promise.resolve({ ok: false, reason: 'Bağlantı yok — internet gerekli' });
+    if (!inviterCode) return Promise.resolve({ ok: false, reason: 'Kod boş' });
+    inviterCode = inviterCode.trim().toUpperCase();
+    if (inviterCode === myCode) return Promise.resolve({ ok: false, reason: 'Kendi kodunu giremezsin' });
+
+    try {
+      var inviterRef = db.collection('users').doc(inviterCode);
+      var myRef = db.collection('users').doc(myCode);
+      return inviterRef.get().then(function(inviterSnap) {
+        if (!inviterSnap.exists) {
+          return { ok: false, reason: 'Böyle bir kod yok' };
+        }
+        // Davet edenin sayısını +1 yap, kendi kaydına invitedBy yaz
+        // ⚠️ SUNUCU TARAFI KORUMA: Önce KENDİ kaydımı oku — daha önce
+        // bir davet kodu kullanmışsam (invitedBy dolu) tekrar saydırma.
+        // Bu, uygulamayı silip yeniden kurarak davet edeni şişirmeyi engeller.
+        return db.runTransaction(function(tx) {
+          // Tüm okumalar yazmalardan ÖNCE yapılmalı (Firestore kuralı)
+          return tx.get(myRef).then(function(mySnap) {
+            if (mySnap.exists && mySnap.data().invitedBy) {
+              return { __already: true };          // zaten kullanmış
+            }
+            return tx.get(inviterRef).then(function(snap) {
+              var cur = (snap.data() && snap.data().inviteCount) || 0;
+              tx.update(inviterRef, { inviteCount: cur + 1 });
+              tx.set(myRef, { invitedBy: inviterCode }, { merge: true });
+              return { count: cur + 1 };
+            });
+          });
+        }).then(function(r) {
+          if (r && r.__already) {
+            return { ok: false, reason: 'Zaten bir davet kodu kullandın' };
+          }
+          return { ok: true, inviterNewCount: r.count };
+        });
+      }).catch(function(e) {
+        return { ok: false, reason: 'Hata: ' + e.message };
+      });
+    } catch(e) {
+      return Promise.resolve({ ok: false, reason: 'Hata oluştu' });
+    }
+  }
+
+  // Bu kullanıcının kaç kişiyi davet ettiğini Firebase'den çek
+  function getMyInviteCount(myCode) {
+    if (!isReady() || !myCode) return Promise.resolve(0);
+    try {
+      return db.collection('users').doc(myCode).get().then(function(snap) {
+        return (snap.exists && snap.data().inviteCount) || 0;
+      }).catch(function(){ return 0; });
+    } catch(e) { return Promise.resolve(0); }
+  }
+
+  // ─── 🏆 LİDERLİK TABLOSU (Firestore) ────────────────────────────
+  // leaderboard koleksiyonu: her kullanıcı için TEK doküman (kod = id)
+  // İçinde: name, code, dailyPts+dailyDate, weeklyPts+weeklyWeek, allTimePts
+  // Tarih etiketi eskiyse o dönemin puanı sıfırlanır (gün/hafta değişimi).
+
+  // Bugünün tarih etiketi: "2026-05-25"
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  // Bu haftanın etiketi: "W2026-05-25" (içinde bulunulan haftanın PAZARTESİ tarihi)
+  // 🔧 Eski ISO formülü yıl sonu gibi durumlarda kayabiliyordu; bu yöntem net.
+  function weekKey() {
+    var d = new Date();
+    var day = d.getDay();                 // 0=Pazar, 1=Pzt ... 6=Cmt
+    var diff = (day === 0) ? 6 : (day - 1); // Pazartesi'ye kaç gün geri
+    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() - diff);
+    return 'W' + monday.getFullYear() + '-' +
+           String(monday.getMonth()+1).padStart(2,'0') + '-' +
+           String(monday.getDate()).padStart(2,'0');
+  }
+
+  // Skor ekle — kullanıcının tek dokümanına puan ekler, dönem sıfırlamasını yönetir
+  // code: kullanıcı kodu, name: gösterilecek ad (boşsa kod), pts: eklenecek puan
+  function submitScore(code, name, pts) {
+    if (!isReady() || !code || !pts) return Promise.resolve(false);
+    try {
+      var ref = db.collection('leaderboard').doc(code);
+      var tday = todayKey();
+      var twk = weekKey();
+      return db.runTransaction(function(tx) {
+        return tx.get(ref).then(function(snap) {
+          var data = snap.exists ? snap.data() : {};
+          // Günlük: tarih değiştiyse sıfırla
+          var dailyPts = (data.dailyDate === tday) ? (data.dailyPts || 0) : 0;
+          // Haftalık: hafta değiştiyse sıfırla
+          var weeklyPts = (data.weeklyWeek === twk) ? (data.weeklyPts || 0) : 0;
+          var allTimePts = data.allTimePts || 0;
+          var newData = {
+            code: code,
+            name: (name || data.name || ''),
+            dailyPts: dailyPts + pts,
+            dailyDate: tday,
+            weeklyPts: weeklyPts + pts,
+            weeklyWeek: twk,
+            allTimePts: allTimePts + pts,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          tx.set(ref, newData, { merge: true });
+          return true;
+        });
+      }).then(function(){ return true; }).catch(function(e){
+        console.warn('[FB] submitScore hata:', e.message); return false;
+      });
+    } catch(e) { return Promise.resolve(false); }
+  }
+
+  // Liderlik tablosunu çek — period: 'daily' | 'weekly' | 'alltime'
+  // En yüksek N oyuncuyu döndürür: [{name, code, pts}, ...]
+  // 🔧 DÜZELTME: Günlük/haftalık için "en yüksek ham puanlı 50" çekmek yerine
+  // SADECE bugünün/bu haftanın etiketine sahip kayıtları çekiyoruz. Böylece
+  // dünden kalma yüksek puanlı kayıtlar listeyi tıkayıp aktif oyuncuları
+  // dışarıda bırakamaz. (Tek eşitlik filtresi olduğu için ekstra index gerekmez.)
+  function getLeaderboard(period, limitN) {
+    if (!isReady()) return Promise.resolve(null); // null = internet yok
+    limitN = limitN || 50;
+    var tday = todayKey();
+    var twk = weekKey();
+    try {
+      var query;
+      if (period === 'daily') {
+        // Sadece BUGÜN puan almış oyuncular
+        query = db.collection('leaderboard').where('dailyDate', '==', tday);
+      } else if (period === 'weekly') {
+        // Sadece BU HAFTA puan almış oyuncular
+        query = db.collection('leaderboard').where('weeklyWeek', '==', twk);
+      } else {
+        // Tüm zamanlar: tek alan → doğrudan sıralı + limitli (index gerekmez)
+        query = db.collection('leaderboard').orderBy('allTimePts', 'desc').limit(limitN);
+      }
+      return query.get().then(function(snap) {
+        var rows = [];
+        snap.forEach(function(doc) {
+          var d = doc.data();
+          var pts;
+          if (period === 'daily') pts = d.dailyPts || 0;
+          else if (period === 'weekly') pts = d.weeklyPts || 0;
+          else pts = d.allTimePts || 0;
+          if (pts > 0) {
+            rows.push({ name: d.name || '', code: d.code || doc.id, pts: pts });
+          }
+        });
+        // Puana göre sırala ve en yüksek N'i al
+        rows.sort(function(a,b){ return b.pts - a.pts; });
+        return rows.slice(0, limitN);
+      }).catch(function(e){
+        console.warn('[FB] getLeaderboard hata:', e.message); return [];
+      });
+    } catch(e) { return Promise.resolve([]); }
+  }
+
+  // İsim müsait mi? (başka kod tarafından alınmamış mı)
+  // Döner: Promise<true|false>  (true = müsait)
+  function checkNameAvailable(name, myCode) {
+    if (!isReady() || !name) return Promise.resolve(false);
+    name = name.trim();
+    try {
+      return db.collection('leaderboard').where('name', '==', name).get().then(function(snap) {
+        var taken = false;
+        snap.forEach(function(doc) {
+          if (doc.id !== myCode) taken = true; // başka biri almış
+        });
+        return !taken;
+      }).catch(function(){ return false; });
+    } catch(e) { return Promise.resolve(false); }
+  }
+
+  // İsmi ATOMİK olarak rezerve et — eşzamanlı iki kişi aynı ismi ALAMAZ.
+  // 'nicknames' koleksiyonu: doküman id = küçük harfli isim, içinde { code }.
+  // Aynı kullanıcı isim değiştirirse eski ismi otomatik serbest bırakılır.
+  // Döner: Promise<{ok:true}> | Promise<{ok:false, reason:'taken'|'err'}>
+  function reserveName(code, name) {
+    if (!isReady() || !code || !name) return Promise.resolve({ ok:false, reason:'err' });
+    name = name.trim();
+    var nameLower = name.toLowerCase();
+    var nickRef = db.collection('nicknames').doc(nameLower);
+    var lbRef = db.collection('leaderboard').doc(code);
+    try {
+      return db.runTransaction(function(tx) {
+        // Firestore kuralı: tüm okumalar yazmalardan ÖNCE
+        return tx.get(nickRef).then(function(nickSnap) {
+          return tx.get(lbRef).then(function(lbSnap) {
+            // İsim başka biri tarafından alınmış mı?
+            if (nickSnap.exists && nickSnap.data().code !== code) {
+              return { ok:false, reason:'taken' };
+            }
+            // Bu kullanıcının ESKİ ismini serbest bırak
+            var oldName = lbSnap.exists ? (lbSnap.data().name || '') : '';
+            var oldLower = oldName.toLowerCase();
+            if (oldLower && oldLower !== nameLower) {
+              tx.delete(db.collection('nicknames').doc(oldLower));
+            }
+            // Yeni ismi rezerve et + liderlik kaydına yaz
+            tx.set(nickRef, { code: code });
+            tx.set(lbRef, { code: code, name: name }, { merge: true });
+            return { ok:true };
+          });
+        });
+      }).then(function(r){ return r; }).catch(function(e){
+        console.warn('[FB] reserveName hata:', e.message);
+        return { ok:false, reason:'err' };
+      });
+    } catch(e) { return Promise.resolve({ ok:false, reason:'err' }); }
+  }
+
+  return {
+    init: init, isReady: isReady, getDB: getDB,
+    registerUser: registerUser, applyInviter: applyInviter, getMyInviteCount: getMyInviteCount,
+    submitScore: submitScore, getLeaderboard: getLeaderboard,
+    checkNameAvailable: checkNameAvailable, reserveName: reserveName
+  };
+})();
+</script>
 
 <script>
 /* ================================================================
@@ -5570,6 +6278,14 @@ const Sudoku = (() => {
   function requestHint() {
     if (gameOver) { try { UI.toast('Oyun bitti 😊'); } catch(e) {} return; }
     if (hintsLeft <= 0) { try { UI.toast('Bu oyun için ipucu hakkın doldu (3/3)'); } catch(e) {} return; }
+    // 💡 Önce satın alınmış ipucu var mı? Varsa reklamsız kullan
+    try {
+      if (Shop.useHint()) {
+        try { UI.toast('💡 İpucu paketinden kullanıldı'); } catch(e) {}
+        doHint();
+        return;
+      }
+    } catch(e) {}
     try {
       AdManager.showRewarded(
         () => { doHint(); },
@@ -5739,7 +6455,7 @@ const Achievements = (() => {
       desc: '3 veya daha az tahminde Wordle çözdün', tier: 'silver'
     },
     win_2_tries: {
-      icon: '🌟', title: 'Şans veya Zekâ',
+      icon: '🌟', title: 'Şans veya Zeka',
       desc: '2 tahminde Wordle çözdün', tier: 'gold'
     },
     win_1_try: {
@@ -5960,6 +6676,41 @@ const Invite = (() => {
     return localStorage.getItem(KEY_USED) === '1';
   }
 
+  // ─── ⏱️ 24 SAATLİK DAVET PENCERESİ ──────────────────────────────
+  // Kullanıcı "Sizi Davet Eden" kodunu sadece ilk açılıştan itibaren
+  // 24 saat içinde girebilir. Süre dolunca buton deaktif olur.
+  const KEY_FIRST = 'ah_invite_first_open';
+  const WINDOW_MS = 24 * 60 * 60 * 1000; // 24 saat
+
+  // İlk açılış zamanını işaretle (yoksa şimdi yaz)
+  function markFirstOpen() {
+    try {
+      if (!localStorage.getItem(KEY_FIRST)) {
+        localStorage.setItem(KEY_FIRST, String(Date.now()));
+      }
+    } catch(e) {}
+  }
+
+  // Davet kodu girme süresi hâlâ açık mı?
+  function isInviteWindowOpen() {
+    if (hasUsedCode()) return false; // zaten kullandı
+    try {
+      const first = parseInt(localStorage.getItem(KEY_FIRST) || '0', 10);
+      if (!first) return true; // henüz işaretlenmemişse açık say
+      return (Date.now() - first) < WINDOW_MS;
+    } catch(e) { return true; }
+  }
+
+  // Kalan süreyi milisaniye olarak döndür (0 = süre doldu)
+  function getInviteWindowRemainingMs() {
+    try {
+      const first = parseInt(localStorage.getItem(KEY_FIRST) || '0', 10);
+      if (!first) return WINDOW_MS;
+      const remaining = WINDOW_MS - (Date.now() - first);
+      return remaining > 0 ? remaining : 0;
+    } catch(e) { return 0; }
+  }
+
   // Yeni kullanıcı bir kodu kullandı (girdi)
   function applyCode(code) {
     if (!code || hasUsedCode()) {
@@ -6027,9 +6778,17 @@ const Invite = (() => {
   }
 
   // URL'den davet kodu varsa otomatik uygula
-  function checkUrlInvite() {
+  // urlStr verilirse (Capacitor deep link) ondan, yoksa window.location'dan oku
+  function checkUrlInvite(urlStr) {
     try {
-      const params = new URLSearchParams(window.location.search);
+      let search = '';
+      if (urlStr) {
+        const qIdx = urlStr.indexOf('?');
+        search = qIdx >= 0 ? urlStr.slice(qIdx) : '';
+      } else {
+        search = window.location.search;
+      }
+      const params = new URLSearchParams(search);
       const inv = params.get('inv');
       if (inv && !hasUsedCode()) {
         // İlk açılışta hatırla, kullanıcı manuel onaylayınca uygula
@@ -6068,7 +6827,8 @@ const Invite = (() => {
 
   return {
     getMyCode, getInvitesSent, applyCode, getShareText,
-    shareViaWhatsApp, copyMyCode, checkUrlInvite, hasUsedCode
+    shareViaWhatsApp, copyMyCode, checkUrlInvite, hasUsedCode,
+    markFirstOpen, isInviteWindowOpen, getInviteWindowRemainingMs
   };
 })();
 
@@ -6133,6 +6893,8 @@ const Progress = (() => {
     const s = getState();
     s.coins = (s.coins || 0) + amount;
     save(s);
+    // 🛒 Header'daki altın sayısını anında güncelle
+    try { if (typeof UI !== 'undefined' && UI.updateHeaderCoins) UI.updateHeaderCoins(); } catch(e) {}
     return s.coins;
   }
 
@@ -6141,6 +6903,8 @@ const Progress = (() => {
     if ((s.coins || 0) < amount) return false;
     s.coins -= amount;
     save(s);
+    // 🛒 Header'daki altın sayısını anında güncelle
+    try { if (typeof UI !== 'undefined' && UI.updateHeaderCoins) UI.updateHeaderCoins(); } catch(e) {}
     return true;
   }
 
@@ -6284,12 +7048,12 @@ const Shop = (() => {
   const KEY_OWNED = 'ah_owned';
 
   const ITEMS = [
-    { id: 'freeze_1',  type: 'freeze',  amount: 1,  cost: 50,  icon: '❄️', label: 'Streak Freeze (1 adet)' },
-    { id: 'freeze_5',  type: 'freeze',  amount: 5,  cost: 200, icon: '❄️', label: 'Streak Freeze (5 adet)' },
-    { id: 'theme_amber',  type: 'theme',  amount: 'amber',  cost: 100, icon: '🌅', label: 'Tema: Amber Şafak' },
-    { id: 'theme_ocean',  type: 'theme',  amount: 'ocean',  cost: 100, icon: '🌊', label: 'Tema: Okyanus Mavisi' },
-    { id: 'hint_pack_3', type: 'hint',  amount: 3,  cost: 75,  icon: '💡', label: 'İpucu Paketi (3 adet)' },
-    { id: 'hint_pack_10', type: 'hint',  amount: 10,  cost: 200, icon: '💡', label: 'İpucu Paketi (10 adet)' },
+    { id: 'freeze_1',  type: 'freeze',  amount: 1,  cost: 120, icon: '❄️', label: 'Streak Freeze (1 adet)' },
+    { id: 'freeze_5',  type: 'freeze',  amount: 5,  cost: 450, icon: '❄️', label: 'Streak Freeze (5 adet)' },
+    { id: 'theme_amber',  type: 'theme',  amount: 'amber',  cost: 250, icon: '🌅', label: 'Tema: Amber Şafak' },
+    { id: 'theme_ocean',  type: 'theme',  amount: 'ocean',  cost: 250, icon: '🌊', label: 'Tema: Okyanus Mavisi' },
+    { id: 'hint_pack_3', type: 'hint',  amount: 3,  cost: 150, icon: '💡', label: 'İpucu Paketi (3 adet)' },
+    { id: 'hint_pack_10', type: 'hint',  amount: 10,  cost: 400, icon: '💡', label: 'İpucu Paketi (10 adet)' },
   ];
 
   // 💰 Coin satın alma paketleri (Google Play IAP)
@@ -6304,7 +7068,12 @@ const Shop = (() => {
   function buyCoinPack(packId) {
     const pack = COIN_PACKS.find(p => p.id === packId);
     if (!pack) return;
-    // Native ortamda Google Play Billing çağrısı — şimdilik test
+    // iOS: satın alma henüz aktif değil (App Store StoreKit ayrı) — bedava verme!
+    if (typeof _IS_IOS !== 'undefined' && _IS_IOS) {
+      try { UI.toast('Satın alma yakında aktif olacak 🙂', 3000); } catch(e) {}
+      return;
+    }
+    // Native (Android) ortamda Google Play Billing çağrısı — şimdilik test
     if (isNativePlatform() && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.GooglePlayBilling) {
       // Gerçek satın alma akışı — sonradan entegre edilecek
       try {
@@ -6318,7 +7087,12 @@ const Shop = (() => {
     }
   }
 
-  return { ITEMS, COIN_PACKS, getOwned, isOwned, buy, buyCoinPack };
+  const KEY_ACTIVE_THEME = 'ah_active_theme';
+  const KEY_HINTS = 'ah_hints';
+
+  return { ITEMS, COIN_PACKS, getOwned, isOwned, buy, buyCoinPack,
+           getActiveTheme, setActiveTheme, applyActiveTheme, getOwnedThemes,
+           getHints, useHint, addHints };
 
   function getOwned() {
     try { return JSON.parse(localStorage.getItem(KEY_OWNED) || '[]'); }
@@ -6327,6 +7101,67 @@ const Shop = (() => {
 
   function isOwned(id) {
     return getOwned().includes(id);
+  }
+
+  // ─── 🎨 TEMA YÖNETİMI ───────────────────────────────────────────
+  // Aktif tema adı: 'default' | 'amber' | 'ocean'
+  function getActiveTheme() {
+    try { return localStorage.getItem(KEY_ACTIVE_THEME) || 'default'; }
+    catch(e) { return 'default'; }
+  }
+
+  // Sahip olunan temaların listesini döndürür (her zaman 'default' dahil)
+  function getOwnedThemes() {
+    const owned = getOwned();
+    const themes = [{ name: 'default', label: 'Gece Yarısı', icon: '🌙' }];
+    ITEMS.filter(i => i.type === 'theme' && owned.includes(i.id)).forEach(i => {
+      themes.push({ name: i.amount, label: i.label.replace('Tema: ', ''), icon: i.icon });
+    });
+    return themes;
+  }
+
+  // Temayı aktif eder ve ekrana uygular (sadece sahip olunan + default geçer)
+  function setActiveTheme(name) {
+    if (name !== 'default') {
+      // sahip olunuyor mu kontrol et
+      const item = ITEMS.find(i => i.type === 'theme' && i.amount === name);
+      if (!item || !isOwned(item.id)) {
+        return { ok: false, reason: 'Bu temaya sahip değilsin' };
+      }
+    }
+    try { localStorage.setItem(KEY_ACTIVE_THEME, name); } catch(e) {}
+    applyActiveTheme();
+    return { ok: true };
+  }
+
+  // data-theme attribute'unu set/temizle — açılışta ve değişince çağrılır
+  function applyActiveTheme() {
+    const name = getActiveTheme();
+    try {
+      if (name === 'default') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', name);
+      }
+    } catch(e) {}
+  }
+
+  // ─── 💡 İPUCU ENVANTERİ ─────────────────────────────────────────
+  function getHints() {
+    try { return parseInt(localStorage.getItem(KEY_HINTS) || '0', 10) || 0; }
+    catch(e) { return 0; }
+  }
+  function addHints(n) {
+    try { localStorage.setItem(KEY_HINTS, String(getHints() + n)); } catch(e) {}
+  }
+  // Bir ipucu kullanmayı dener; varsa düşer ve true döner, yoksa false
+  function useHint() {
+    const h = getHints();
+    if (h > 0) {
+      try { localStorage.setItem(KEY_HINTS, String(h - 1)); } catch(e) {}
+      return true;
+    }
+    return false;
   }
 
   function buy(id) {
@@ -6346,14 +7181,13 @@ const Shop = (() => {
       const owned = getOwned();
       owned.push(id);
       try { localStorage.setItem(KEY_OWNED, JSON.stringify(owned)); } catch(e) {}
+      // Satın alınca otomatik aktif et ve uygula
+      try { setActiveTheme(item.amount); } catch(e) {}
     } else if (item.type === 'freeze') {
       try { StreakFreeze.add(item.amount); } catch(e) {}
     } else if (item.type === 'hint') {
-      // Hint envanterı (gelecek v1.3'te kullanılacak)
-      try {
-        const hints = JSON.parse(localStorage.getItem('ah_hints') || '0') || 0;
-        localStorage.setItem('ah_hints', String(hints + item.amount));
-      } catch(e) {}
+      // İpucu envanterine ekle — oyunlarda reklamsız kullanılır
+      addHints(item.amount);
     }
 
     try { Sound.win(); UI.toast(`${item.icon} ${item.label} alındı!`, 3000); } catch(e) {}
@@ -6948,7 +7782,7 @@ const AIFeedback = (() => {
       "Bu kelimeye takıldın, ama veri seni gösteriyor: gelişiyorsun."
     ],
     streak_3: [
-      "3 günlük seri! Tutarlılık, anlık dâhilikten daha değerlidir.",
+      "3 günlük seri! Tutarlılık, anlık dahilikten daha değerlidir.",
       "Üç gün arka arkaya. Bu artık bir alışkanlık.",
       "Seri sürüyor. Zihin kaslarını zorluyorsun.",
       "Üçüncü gün — beyin yeni rotini öğrenmeye başladı.",
@@ -7052,7 +7886,7 @@ const Etymology = (() => {
     'MUTLU': { m: 'Sevinçli, neşeli, hoşnut.', o: 'Türkçe "kut" (uğur, bereket) kökünden. -lu ekiyle "bereketli" anlamı.', u: '"Mutlu son" masal ve film dilinin klişesidir.' },
     'HUZUR': { m: 'Sakinlik, ruhsal rahatlık.', o: 'Arapça "huzuur" — hazır bulunmak, manevi varlık. Sükunete evrildi.', u: '"Huzur bulmak" yoğunluktan sonra dinlenmektir.' },
     'KADER': { m: 'Alın yazısı; önceden belirlenmiş yaşam.', o: 'Arapça "qadar" — ölçmek, takdir etmek. İslam kültürüyle dilimize girdi.', u: '"Kader seni beni karşılaştırdı." Duygusal anlatılarda çok kullanılır.' },
-    'HAYAT': { m: 'Yaşam; canlı olma hâli.', o: 'Arapça "hayaat" — yaşamak. Hayvan, hayıt da aynı kökten.', u: '"Hayat devam ediyor." Türkçede "yaşam" ile eşanlamlı kullanılır.' },
+    'HAYAT': { m: 'Yaşam; canlı olma hali.', o: 'Arapça "hayaat" — yaşamak. Hayvan, hayıt da aynı kökten.', u: '"Hayat devam ediyor." Türkçede "yaşam" ile eşanlamlı kullanılır.' },
     'DÜNYA': { m: 'Üzerinde yaşadığımız gezegen; evren.', o: 'Arapça "dunyaa" — yakın, aşağı. Ahiret karşıtı olarak "bu dünya" anlamı.', u: '"Dünya küçük" rastlantısal karşılaşmalarda söylenir.' },
     'HIZLI': { m: 'Çabuk hareket eden; süratli.', o: 'Türkçe "hız" kökü — Arapça kökenli görünse de Türkçeleşmiştir.', u: '"Hızlı yaşamak" modern kent yaşamının tanımıdır.' },
     'YALAN': { m: 'Gerçek olmayan söz; aldatıcı bilgi.', o: 'Eski Türkçe "yal-" kökü — gizlemek, örtmek. Yalaka da aynı kökten.', u: '"Yalanın ayağı kısadır." En eski atasözlerindendir.' },
@@ -7326,29 +8160,150 @@ function isNativePlatform() {
 
 
 /* =====================================================================
-   AD CONFIG — GOOGLE ADMOB ENTEGRASYON HAZIRLIK
-   Play Store'a build'e geçince:
-     1. AdConfig.enabled = true yap
-     2. adIds'leri kendi AdMob hesabından aldığın gerçek ID'lerle değiştir
-     3. `npm install @capacitor-community/admob` + `npx cap sync`
-     4. Bu kadar — banner otomatik gösterilir, Mystery retry rewarded olur
+   💾 KALICI DEPOLAMA KÖPRÜSÜ (Capacitor Preferences <-> localStorage)
+   ---------------------------------------------------------------------
+   SORUN: Android'de localStorage (WebView depolaması) uygulama güncellemesi,
+   cache temizliği veya OEM agresif temizliğinde silinebiliyor. Tüm oyun
+   verisi (altın, seri, ilerleme) localStorage'da olduğu için kaybolıyordu.
+
+   ÇÖZÜM: Her localStorage yazımını native Preferences (Android'de
+   SharedPreferences) ile yedekle. SharedPreferences güncellemede SİLİNMEZ.
+   Açılışta Preferences'tan localStorage'a geri yükle.
+
+   GÜVENLİ: Preferences eklentisi yoksa (tarayıcı / eklenti kurulmamış) köprü
+   sessizce devre dışı kalır, localStorage normal çalışır. Oyun bozulmaz.
 ===================================================================== */
+const PersistBridge = (() => {
+  // Sadece bu öneklerle başlayan anahtarlar yedeklenir (oyun verisi).
+  // Geçici/önemsiz şeyler (analytics event log vb.) hariç tutulabilir.
+  const PREFIX = 'ah_';
+  let Prefs = null;
+  let ready = false;
+
+  function getPrefs() {
+    try {
+      if (isNativePlatform() && window.Capacitor && window.Capacitor.Plugins) {
+        return window.Capacitor.Plugins.Preferences || null;
+      }
+    } catch(e) {}
+    return null;
+  }
+
+  // Açılışta: Preferences'taki tüm ah_ anahtarlarını localStorage'a geri yükle.
+  // localStorage'da olmayan (silinmiş) ama Preferences'ta olan veriler geri gelir.
+  async function restore() {
+    Prefs = getPrefs();
+    if (!Prefs) return; // Eklenti yok → sessizce çık, localStorage olduğu gibi kalır
+    try {
+      const { keys } = await Prefs.keys();
+      if (Array.isArray(keys)) {
+        for (const k of keys) {
+          try {
+            const cur = localStorage.getItem(k);
+            // localStorage'da yoksa (silinmişse) Preferences'tan geri yükle
+            if (cur === null) {
+              const { value } = await Prefs.get({ key: k });
+              if (value !== null && value !== undefined) {
+                // Köprüyü tetiklememek için doğrudan orijinal setItem'ı kullan
+                _origSet.call(localStorage, k, value);
+              }
+            }
+          } catch(e) {}
+        }
+      }
+      ready = true;
+    } catch(e) {
+      console.warn('[PersistBridge] restore hata:', e);
+    }
+  }
+
+  // localStorage.setItem orijinalini sakla, sonra sarmala
+  const _origSet = localStorage.setItem.bind(localStorage);
+  const _origRemove = localStorage.removeItem.bind(localStorage);
+
+  function install() {
+    Prefs = getPrefs();
+    if (!Prefs) return; // Eklenti yok → köprü kurulmaz
+
+    localStorage.setItem = function(key, value) {
+      _origSet.call(localStorage, key, value); // Önce her zaman localStorage'a yaz
+      // Sadece oyun verisini (ah_ önekli) Preferences'a yedekle
+      if (typeof key === 'string' && key.indexOf(PREFIX) === 0) {
+        try { Prefs.set({ key: key, value: String(value) }); } catch(e) {}
+      }
+    };
+
+    localStorage.removeItem = function(key) {
+      _origRemove.call(localStorage, key);
+      if (typeof key === 'string' && key.indexOf(PREFIX) === 0) {
+        try { Prefs.remove({ key: key }); } catch(e) {}
+      }
+    };
+  }
+
+  return { restore, install };
+})();
+
+
+/* =====================================================================
+   AD CONFIG — GOOGLE ADMOB ENTEGRASYON
+   Platform otomatik algılama:
+   - Android: reklamlar AÇIK (Android AdMob ID'leri kullanılır)
+   - iOS:     reklamlar AÇIK (iOS AdMob ID'leri kullanılır)
+   Reklam KURALLARI (sıklık, ipucu, ilk gün koruması) iki platformda AYNI.
+   Sadece reklam ID'leri platforma göre otomatik seçilir (zorunlu — AdMob
+   her platform için ayrı uygulama/ID ister).
+
+   ⚠️ iOS'ta reklamı KAPATMAK istersen: _IOS_ADS_ENABLED = false yap.
+===================================================================== */
+// iOS mu? (Capacitor platform algılama)
+function _isIOSPlatform() {
+  try {
+    if (window.Capacitor && typeof window.Capacitor.getPlatform === 'function') {
+      return window.Capacitor.getPlatform() === 'ios';
+    }
+  } catch(e) {}
+  return false;
+}
+const _IS_IOS = _isIOSPlatform();
+const _IOS_ADS_ENABLED = true; // iOS'ta reklamlar AÇIK (kapatmak istersen false yap)
+
+/* ── Platforma göre AdMob ID setleri ──────────────────────────────────
+   Android ID'leri Android'de, iOS ID'leri iOS'ta kullanılır.
+   Android ID'lerini iOS'ta KULLANMA — AdMob hesabı askıya alınabilir!
+
+   📌 FURKAN/ŞAHİN İÇİN: iOS ID'lerini AdMob panelinden alınca, aşağıdaki
+   _IOS_AD_IDS içindeki "BURAYA_IOS_..." yazan 3 değeri değiştir:
+     - appId        → iOS App ID (sonu ~ ile biten)
+     - interstitial → iOS Geçiş reklamı birim ID'si (sonu / ile biten)
+     - rewarded     → iOS Ödüllü reklam birim ID'si (sonu / ile biten)
+   banner şu an kapalı olduğu için iOS banner ID'si gerekmez (istersen ekle).
+*/
+const _ANDROID_AD_IDS = {
+  appId:        'ca-app-pub-8786714927873826~4282276383',
+  banner:       'ca-app-pub-8786714927873826/5930399972',
+  interstitial: 'ca-app-pub-8786714927873826/9175510412',
+  rewarded:     'ca-app-pub-8786714927873826/8883387446',
+};
+const _IOS_AD_IDS = {
+  appId:        'ca-app-pub-8656247713397274~7729089421',  // iOS App ID
+  banner:       'ca-app-pub-8656247713397274/2444973154',  // banner kapalı (placeholder, kullanılmıyor)
+  interstitial: 'ca-app-pub-8656247713397274/2444973154',  // iOS Geçiş (Interstitial)
+  rewarded:     'ca-app-pub-8656247713397274/3193050832',  // iOS Ödüllü (Rewarded)
+};
+
 const AdConfig = {
-  enabled: true,           // ✅ Play Store build'de aktif
+  // Android'de açık; iOS'ta _IOS_ADS_ENABLED true ise açık
+  enabled: _IS_IOS ? _IOS_ADS_ENABLED : true,
   showBanners: false,      // 🚫 Banner kapalı (kullanıcı dostu)
   showInterstitial: true,  // ✅ Oyun sonu (kazanç + kayıp)
   showRewarded: true,      // ✅ İpucu için ödüllü reklam AÇIK
   showOnFirstDays: false,  // İlk günler koruması aktif
 
-  // ✅ GERÇEK AdMob ID'leri (rewarded artık test değil!)
-  adIds: {
-    appId:        'ca-app-pub-8786714927873826~4282276383',
-    banner:       'ca-app-pub-8786714927873826/5930399972',
-    interstitial: 'ca-app-pub-8786714927873826/9175510412',
-    rewarded:     'ca-app-pub-8786714927873826/8883387446',
-  },
+  // ✅ Platforma göre otomatik seçilen AdMob ID'leri
+  adIds: _IS_IOS ? _IOS_AD_IDS : _ANDROID_AD_IDS,
 
-  // ── Interstitial sıklık kontrolü (frequency capping) ──
+  // ── Interstitial sıklık kontrolü (frequency capping) — İKİ PLATFORMDA AYNI ──
   firstDaysProtection:       3,     // İlk 3 gün hiç interstitial yok
   interstitialEveryNGames:   1,     // Her oyun aday (şans + ara + cap throttle eder)
   interstitialChance:        0.45,  // %45 rastgele gösterim şansı
@@ -7403,8 +8358,25 @@ const AdManager = (() => {
     return true;
   }
 
+  // iOS ID'leri henüz girilmediyse (placeholder) reklamı başlatma — hata önler
+  function adIdsAreReal() {
+    try {
+      const ids = AdConfig.adIds || {};
+      const vals = [ids.appId, ids.interstitial, ids.rewarded];
+      for (const v of vals) {
+        if (!v || String(v).indexOf('BURAYA_') === 0) return false;
+      }
+    } catch(e) { return false; }
+    return true;
+  }
+
   async function init() {
     if (!AdConfig.enabled) return;
+    if (!adIdsAreReal()) {
+      // iOS ID'leri henüz yapıştırılmamış (placeholder) — sessizce skip, uygulama çökmez
+      console.warn('[AdMob] Bu platform için gerçek reklam ID\'leri girilmemiş, reklam başlatılmadı.');
+      return;
+    }
     if (!detectPlugin()) {
       // Web/dev mode'da AdMob native plugin yok — beklenen durum, sessizce skip
       return;
@@ -7466,25 +8438,24 @@ const AdManager = (() => {
 
   // ──── REWARDED (İpucu için "izle-kazan") ─────────────────
   async function showRewarded(onSuccess, onCancel) {
-    if (!AdConfig.enabled || !AdConfig.showRewarded) {
-      // Rewarded kapalı veya web/dev: ödülü direkt ver
-      if (onSuccess) onSuccess();
-      return;
-    }
+    // Rewarded kapalı veya web/dev ortamı: reklam yok, ödülü direkt ver
+    if (!AdConfig.enabled || !AdConfig.showRewarded) { if (onSuccess) onSuccess(); return; }
     try { if (Premium.isActive()) { if (onSuccess) onSuccess(); return; } } catch(e) {}
     if (!admobReady || !AdMobPlugin) { if (onSuccess) onSuccess(); return; }
     try {
-      await AdMobPlugin.prepareRewardVideoAd({ adId: AdConfig.adIds.rewarded });
-      const result = await AdMobPlugin.showRewardVideoAd();
-      try { Analytics.trackAdShown('rewarded'); } catch(e) {}
-      if (result && result.reward) {
-        try { Analytics.trackAdRewarded('watched'); } catch(e) {}
-        if (onSuccess) onSuccess();
-      } else {
-        try { Analytics.trackAdRewarded('closed'); } catch(e) {}
-        if (onCancel) onCancel();
+      // ⚠️ Bu reklam birimi AdMob'da "Ödüllü geçiş reklamı" (Rewarded Interstitial)
+      // formatında. Bu yüzden ödüllü VIDEO değil, ödüllü GEÇİŞ metotlarını kullanıyoruz.
+      if (typeof AdMobPlugin.prepareRewardInterstitialAd !== 'function') {
+        if (onSuccess) onSuccess(); // plugin desteklemiyorsa kullanıcıyı mağdur etme
+        return;
       }
+      await AdMobPlugin.prepareRewardInterstitialAd({ adId: AdConfig.adIds.rewarded });
+      await AdMobPlugin.showRewardInterstitialAd();
+      try { Analytics.trackAdShown('rewarded'); } catch(e) {}
+      try { Analytics.trackAdRewarded('watched'); } catch(e) {}
+      if (onSuccess) onSuccess();
     } catch(e) {
+      // Reklam yüklenemedi/gösterilemedi → ödül verme
       try { Analytics.trackAdRewarded('failed'); } catch(e) {}
       if (onCancel) onCancel();
     }
@@ -7646,9 +8617,14 @@ const HowTo = (() => {
 
 const Rating = (() => {
   const KEY        = 'ah_rating';
-  // PLAY STORE'DA YAYINLAMADAN ÖNCE: sefa'nın gerçek package name'i buraya
-  const STORE_URL  = 'https://play.google.com/store/apps/details?id=com.sahingames.github.io/zihinussu';
-  // iOS için: 'https://apps.apple.com/app/id000000000'
+  // 🏪 Mağaza linkleri — platforma göre otomatik seçilir
+  const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.zihinussu.app';
+  // 📌 App Store linki: Uygulama App Store'da yayınlanınca buraya gerçek ID gelecek.
+  //    Örn: 'https://apps.apple.com/app/id1234567890'
+  //    Şu an placeholder — iOS'ta yayınlanmadığı için Play Store'a düşmez, güvenli davranır.
+  const APP_STORE_URL  = 'BURAYA_APP_STORE_LINKI_GELECEK';
+  // Platforma göre doğru mağazayı seç
+  const STORE_URL = (typeof _IS_IOS !== 'undefined' && _IS_IOS) ? APP_STORE_URL : PLAY_STORE_URL;
 
   let selectedVal  = 0;
   let pendingDelay = null;
@@ -7789,7 +8765,12 @@ const Rating = (() => {
         return;
       }
     } catch(e) {}
-    // Fallback: Play Store URL
+    // iOS App Store linki henüz girilmemişse (placeholder) — yanlış yere gönderme
+    if (!STORE_URL || String(STORE_URL).indexOf('BURAYA_') === 0) {
+      try { UI.toast('Değerlendirme yakında aktif olacak 🙂', 3000); } catch(e) {}
+      return;
+    }
+    // Fallback: platforma göre doğru mağaza URL'si
     window.open(STORE_URL, '_blank');
   }
 
@@ -7863,41 +8844,52 @@ const Leaderboard = (() => {
 
   // Skor ekle: mode = 'word'|'number'|'mystery'|'sudoku', guesses = mode'a göre anlamlı metrik, win = bool
   function addScore(mode, guesses, win) {
-    const week = getWeekKey();
-    const name = getName();
-    if (!name) return; // İsim yoksa ekleme
-
-    const scores = loadScores();
-    if (!scores[week]) scores[week] = {};
-    if (!scores[week][name]) {
-      scores[week][name] = { name, pts: 0, wins: 0, games: 0, bestGuess: 99, week };
-    }
-
-    const entry = scores[week][name];
-    entry.games++;
+    // Puanı hesapla (kazanmadıysa 0)
+    let pts = 0;
     if (win) {
-      entry.wins++;
-      let pts = 0;
       if (mode === 'word') {
-        // Az tahminde daha fazla puan (1 tahmin = 60, 6 tahmin = 10)
         pts = Math.max(10, 70 - guesses * 10);
       } else if (mode === 'number') {
-        // guesses burada session toplam puanı
         pts = Math.max(1, Math.round(guesses));
       } else if (mode === 'mystery') {
-        // Gizem sabit 50 puan (tamamlama ödülü)
         pts = 50;
       } else if (mode === 'sudoku') {
-        // Süre ne kadar kısa, puan o kadar yüksek; 5 dk altı = 100, 15 dk = 10
         const sec = Math.max(60, guesses);
         pts = Math.max(10, 400 - Math.floor(sec / 3));
       } else {
         pts = 10;
       }
-      entry.pts += pts;
-      if (mode === 'word' && guesses < entry.bestGuess) entry.bestGuess = guesses;
     }
-    saveScores(scores);
+
+    // ── Yerel kayıt (eski sistem — isim varsa) ──
+    const name = getName();
+    if (name) {
+      const week = getWeekKey();
+      const scores = loadScores();
+      if (!scores[week]) scores[week] = {};
+      if (!scores[week][name]) {
+        scores[week][name] = { name, pts: 0, wins: 0, games: 0, bestGuess: 99, week };
+      }
+      const entry = scores[week][name];
+      entry.games++;
+      if (win) {
+        entry.wins++;
+        entry.pts += pts;
+        if (mode === 'word' && guesses < entry.bestGuess) entry.bestGuess = guesses;
+      }
+      saveScores(scores);
+    }
+
+    // ── 🔥 Firebase'e gönder (global sıralama) — isim olmasa da KODLA gönderilir ──
+    // İnternet yoksa sessizce atlar (FB.submitScore içinde isReady kontrolü var)
+    if (win && pts > 0) {
+      try {
+        if (typeof FB !== 'undefined' && FB.isReady() && typeof Invite !== 'undefined') {
+          const myCode = Invite.getMyCode();
+          FB.submitScore(myCode, name || '', pts);
+        }
+      } catch(e) {}
+    }
   }
 
   // Haftalık sıralamayı getir (en yüksek puan önce)
@@ -8022,7 +9014,7 @@ const WORD_DEFS = {
   'KEBAP':'Izgarada pişen et.', 'KEDER':'Üzüntü.', 'KEDİ':'Evcil küçük yırtıcı.', 'KEHRİBAR':'Sarı reçine taşı.',
   'KELEBEK':'Renkli kanatlı böcek.', 'KELİME':'Söz birim.', 'KEMAL':'Olgunluk; erkek ismi.', 'KEMER':'Bel bağı; kavisli yapı.',
   'KENAR':'Köşe, sınır.', 'KEPEK':'Tahıl kabuğu; saç dökünt.', 'KERPETEN':'Çekme aleti.', 'KERVAN':'Ticaret kafilesi.',
-  'KESİM':'Bir bölge; biçim.', 'KEYİF':'Hoş hâl.', 'KEÇİ':'Boynuzlu evcil hayvan.', 'KEŞİF':'Yeni bir şey bulma.',
+  'KESİM':'Bir bölge; biçim.', 'KEYİF':'Hoş hal.', 'KEÇİ':'Boynuzlu evcil hayvan.', 'KEŞİF':'Yeni bir şey bulma.',
   'KIBLE':'Mekke yönü.', 'KIDEM':'Eskiden olma; tecrübe.', 'KILIÇ':'Kesici silah.', 'KIMIZ':'Mayalanmış at sütü.',
   'KIRGI':'Kırgın, küs.', 'KISIK':'Az, kısılmış.', 'KISIR':'Verimsiz; bulgur yemeği.', 'KISMET':'Pay, talih.',
   'KITAB':'Kitap.', 'KIYAS':'Karşılaştırma.', 'KIYI':'Su kenarı.', 'KIZAK':'Kaydırılan araç.',
@@ -8033,7 +9025,7 @@ const WORD_DEFS = {
   'KOTRA':'Yelkenli tekne.', 'KOVAN':'Arıların evi.', 'KOYUN':'Çiftlik hayvanı.', 'KOZA':'İpek böceğinin örgüsü.',
   'KRAL':'Hükümdar.', 'KREDİ':'Borç verme.', 'KUFFA':'Sepet.', 'KULAK':'Duyma organı.',
   'KULUP':'Topluluk.', 'KUMAR':'Şans oyunu.', 'KUMAŞ':'Dokuma malzeme.', 'KURAL':'Düstur.',
-  'KURAN':'Kuran-ı Kerim.', 'KURBA':'Kurban.', 'KURDA':'Kurdele.', 'KURNAZ':'Hilekâr.',
+  'KURAN':'Kuran-ı Kerim.', 'KURBA':'Kurban.', 'KURDA':'Kurdele.', 'KURNAZ':'Hilekar.',
   'KURTUL':'Kurtulmak.', 'KURUL':'Heyet.', 'KUSUR':'Eksiklik, hata.', 'KUTSAL':'Kutsi, mübarek.',
   'KUTUP':'Dünyanın iki ucu.', 'KUVVE':'Güç, kuvvet.', 'KUYRUK':'Hayvan arka uzantısı.', 'KUYUM':'Altın işi.',
   'KUZEY':'Yön.', 'KUŞAK':'Bel bağı; kuşak (jenerasyon).', 'KÖKEN':'Köken, kaynak.', 'KÖPEK':'Evcil sadık hayvan.',
@@ -8055,11 +9047,11 @@ const WORD_DEFS = {
   'MANDA':'Manda; siyasi vekalet.', 'MANEN':'Manen, ruhsal olarak.', 'MANGAL':'Kömür ızgara.', 'MAREŞAL':'En yüksek askeri rütbe.',
   'MARJ':'Pay; sayfa kenar.', 'MASUM':'Suçsuz.', 'MAVİ':'Renk.', 'MAYIN':'Patlayıcı tuzak.',
   'MAYIS':'Yılın 5. ayı.', 'MAZUR':'Kabul edilmiş özür.', 'MAĞAZ':'Mağaza.', 'MEDYA':'İletişim araçları.',
-  'MEKAN':'Yer, ortam.', 'MEKİK':'Dokuma aleti.', 'MELEK':'İlahî varlık.', 'MENBA':'Kaynak.',
+  'MEKAN':'Yer, ortam.', 'MEKİK':'Dokuma aleti.', 'MELEK':'İlahi varlık.', 'MENBA':'Kaynak.',
   'MENTOL':'Naneden çıkan koku.', 'MERAK':'İlgi, ilgilenme.', 'MERAS':'Mera.', 'MERHEM':'Yara ilacı.',
   'MERKEZ':'Orta nokta.', 'MERMER':'Sert taş.', 'MEYDA':'Meydan.', 'MEYVE':'Bitki ürünü.',
   'MEZAR':'Defin yeri.', 'MEZE':'Ufak yiyecek.', 'MOBİL':'Hareketli.', 'MODA':'Geçici akım.',
-  'MODEL':'Örnek; manken.', 'MORAL':'Ruh hâli.', 'MOTOR':'Hareket aleti.', 'MOZAİK':'Renkli taş kaplamak.',
+  'MODEL':'Örnek; manken.', 'MORAL':'Ruh hali.', 'MOTOR':'Hareket aleti.', 'MOZAİK':'Renkli taş kaplamak.',
   'MUTLAK':'Kesin.', 'MÜZE':'Sergi yeri.', 'MİDE':'Sindirim organı.', 'MİDYE':'Deniz kabuklusu.',
   'MİLİS':'Halk savaşçısı.', 'MİMAR':'Yapı tasarımcısı.', 'MİNARE':'Cami kulesi.', 'MİRAS':'Bırakılan mal.',
   'MİSAL':'Örnek.', 'NABIZ':'Damar atışı.', 'NACAK':'Küçük balta.', 'NAFAKA':'Eş ya da çocuk geçinme parası.',
@@ -8075,7 +9067,7 @@ const WORD_DEFS = {
   'OFKE':'Öfke.', 'OFSAYT':'Futbolda kural.', 'OKLAVA':'Hamur açma çubuğu.', 'OKUMA':'Yazılan harfleri çözme.',
   'OKYAN':'Okyanus.', 'OKŞAM':'Sevgi gösterisi.', 'OLAĞAN':'Olağan, normal.', 'OLDUM':'Oldum.',
   'OLUMU':'Olumlu.', 'OMUR':'Omurga parçası.', 'OMUZ':'Vücut bölümü.', 'ONAYI':'Onayı.',
-  'ONLAR':'Üçüncü çoğul kişi.', 'ORDU':'Askerî güç.', 'ORHAN':'Yaygın erkek ismi.', 'ORMAN':'Sık ağaçlık.',
+  'ONLAR':'Üçüncü çoğul kişi.', 'ORDU':'Askeri güç.', 'ORHAN':'Yaygın erkek ismi.', 'ORMAN':'Sık ağaçlık.',
   'ORTAK':'Pay sahibi.', 'OTLU':'Otlu.', 'OYNAK':'Hareketli.', 'OYUNC':'Oyuncak.',
   'OZON':'Atmosfer gazı.', 'PADİŞAH':'Osmanlı imparatoru.', 'PALMİYE':'Tropik ağaç.', 'PAMUK':'Yumuşak lif.',
   'PANEL':'Tartışma; kontrol levhası.', 'PANİK':'Ani korku.', 'PARAF':'Kısa imza.', 'PARK':'Yeşil alan.',
@@ -8089,14 +9081,14 @@ const WORD_DEFS = {
   'PİRİN':'Pirinç (tahıl).', 'PİYAN':'Piyano.', 'PİŞİR':'Pişirmek.', 'RABIT':'Bağ, irtibat.',
   'RAFLA':'Raflarda.', 'RAHAT':'Sıkıntısız.', 'RAKET':'Tenis aleti.', 'RAKKE':'Rakka.',
   'RAKİP':'Yarışan kişi.', 'RAMAK':'Birazcık, kıl payı.', 'RAMAZAN':'Oruç ayı.', 'RANDE':'Randevu.',
-  'RAPOR':'Resmî yazı.', 'RASTLA':'Rastlamak.', 'RAUND':'Maç turu.', 'RAYBA':'Delik açma.',
+  'RAPOR':'Resmi yazı.', 'RASTLA':'Rastlamak.', 'RAUND':'Maç turu.', 'RAYBA':'Delik açma.',
   'RAYİÇ':'Geçer fiyat.', 'RAĞBET':'İlgi.', 'REDDE':'Reddetme.', 'REJİM':'Yönetim biçimi; diyet.',
   'RESİM':'Çizim, fotoğraf.', 'REZIL':'Aşağılanmış.', 'REÇEL':'Meyve şekerlemesi.', 'REÇET':'Reçete.',
   'RIHTI':'Rıhtım.', 'RISKL':'Riskli.', 'ROMAN':'Uzun düz yazı eseri.', 'RUMUZ':'Sembol, takma ad.',
-  'RUSYA':'Ülke adı.', 'RÜYA':'Uyku görüsü.', 'RÜZGÂR':'Esinti.', 'RÜŞVET':'Yasadışı para vermek.',
+  'RUSYA':'Ülke adı.', 'RÜYA':'Uyku görüsü.', 'RÜZGAR':'Esinti.', 'RÜŞVET':'Yasadışı para vermek.',
   'RİTUE':'Ritüel.', 'SAADET':'Mutluluk.', 'SABAH':'Günün başı.', 'SABRI':'Sabrı, dayanıklılığı.',
   'SABUN':'Temizleme maddesi.', 'SADAK':'Ok kabı.', 'SADIK':'Vefalı.', 'SAHAF':'Eski kitap satıcısı.',
-  'SAHTE':'Asıl olmayan.', 'SAHİP':'Mâlik.', 'SAKAL':'Yüzdeki tüy.', 'SAKAR':'Beceriksiz.',
+  'SAHTE':'Asıl olmayan.', 'SAHİP':'Malik.', 'SAKAL':'Yüzdeki tüy.', 'SAKAR':'Beceriksiz.',
   'SAKAT':'Engelli.', 'SAKIN':'Aman, dikkat.', 'SAKİN':'Sessiz.', 'SALDI':'Bıraktı.',
   'SALON':'Geniş oda.', 'SALİH':'Doğru, dürüst.', 'SAMUR':'Kürk hayvanı.', 'SANAT':'İnsan estetik üretimi.',
   'SANCAK':'Bayrak.', 'SANDA':'Sandalye.', 'SANIK':'Suçlanan kişi.', 'SANSAR':'Küçük yırtıcı.',
@@ -8165,7 +9157,7 @@ const WORD_DEFS = {
   'YORGAN':'Yatak örtüsü.', 'YORUM':'Açıklama.', 'YOĞUN':'Sıkı.', 'YOĞURT':'Mayalanmış süt.',
   'YUMRU':'Şişlik; bezelye gibi.', 'YUMUŞ':'Yumuşak.', 'YUNUS':'Memeli deniz canlısı.', 'YUVA':'Kuş yatağı; ev.',
   'YÜREK':'Kalp.', 'YÜZÜK':'Parmak takısı.', 'YİRMİ':'20 sayısı.', 'YİYEC':'Yiyecek.',
-  'ZARLA':'Zar atarak.', 'ZARİF':'Şık, ince.', 'ZATEN':'Hâlihazırda.', 'ZEHİR':'Toksin.',
+  'ZARLA':'Zar atarak.', 'ZARİF':'Şık, ince.', 'ZATEN':'Halihazırda.', 'ZEHİR':'Toksin.',
   'ZEKAT':'Zekat ibadeti.', 'ZELİL':'Aşağılanmış.', 'ZENGİ':'Zengin.', 'ZERRE':'Çok küçük parça.',
   'ZEVKL':'Zevkli.', 'ZEYBE':'Zeybek.', 'ZEYTİN':'Yağ meyvesi.', 'ZINCIR':'Halkalı tel.',
   'ZIPLA':'Zıplamak.', 'ZIRH':'Korunma elbisesi.', 'ZIRVA':'Saçma söz.', 'ZIYAD':'Ziyade, çok.',
@@ -8182,7 +9174,7 @@ const WORD_DEFS = {
   'ÖLDÜR':'Hayatına son ver.', 'ÖLÇEK':'Ölçü birimi.', 'ÖNCEDEN':'Daha önce.', 'ÖPÜCÜ':'Öpücük.',
   'ÖRDEK':'Yüzen kuş.', 'ÖRNEK':'Misal.', 'ÖRTEN':'Üstüne kapayan.', 'ÖSEÇ':'Geçit, dağ geçidi.',
   'ÖTANAZ':'Ölüme yardım.', 'ÖZGÜR':'Hür.', 'ÖZNEL':'Subjektif.', 'ÜLKER':'Çikolata markası.',
-  'ÜMITS':'Ümitsiz.', 'ÜNLEM':'Ünlem işareti.', 'ÜRKEK':'Korkak.', 'ÜTOPYA':'Hayalî mükemmel toplum.',
+  'ÜMITS':'Ümitsiz.', 'ÜNLEM':'Ünlem işareti.', 'ÜRKEK':'Korkak.', 'ÜTOPYA':'Hayali mükemmel toplum.',
   'ÜVEY':'Üvey.', 'ÜYELİK':'Üyelik.', 'ÜZGÜN':'Hüzünlü.', 'ÜÇGEN':'Üç köşeli şekil.',
   'İADE':'Geri verme.', 'İBADET':'Tapınma.', 'İBARE':'Söz, deyim.', 'İBRAHİM':'Erkek ismi.',
   'İCMAL':'Özet.', 'İDARE':'Yönetim.', 'İDDİA':'Sav, tez.', 'İFADE':'Anlatım.',
@@ -8212,6 +9204,7 @@ const WORD_DEFS = {
 
 // Türkçe günlük kelimeler (oynanacak hedef kelimeler)
 const WORDS_TR = [
+  'BOKLU','SIÇMA','PENİS','PORNO',
   'ABACI','ABDAL','ABONE','ABİDE','ABİYE','ACABA','ACELE','ACEMİ','ACEZE',
   'ACICA','ACILI','ACIMA','ACUBE','ADALI','ADAMA','ADETA','ADINA','ADRES',
   'ADSIZ','AFYON','AFİLİ','AFİŞE','AGORA','AGRAF','AHALİ','AHBAP','AHENK',
@@ -8245,7 +9238,7 @@ const WORDS_TR = [
   'BETİK','BETİM','BEYAN','BEYAZ','BEYİN','BEYİT','BEZCİ','BEZEK','BEZEN',
   'BEZME','BEZİŞ','BEŞER','BEŞLİ','BEŞME','BEŞİK','BEŞİZ','BICIL','BIDIK',
   'BIKIŞ','BIKMA','BIYIK','BIZIR','BIÇAK','BIÇIK','BIÇKI','BLOKE','BOBİN',
-  'BODUR','BOHEM','BOHÇA','BOKLU','BOLCA','BOMBA','BOMBE','BORAN','BORDA',
+  'BODUR','BOHEM','BOHÇA','BOLCA','BOMBA','BOMBE','BORAN','BORDA',
   'BORDO','BORSA','BOYLU','BOYNA','BOYUN','BOYUT','BOZMA','BOZUK','BOZUŞ',
   'BOĞAK','BOĞAZ','BOĞUK','BOĞUM','BRANŞ','BRAVO','BRONZ','BRONŞ','BUCAK',
   'BUDAK','BUGÜN','BUHAR','BUHUR','BUKET','BULGU','BULMA','BULUT','BULUŞ',
@@ -8512,12 +9505,12 @@ const WORDS_TR = [
   'PASÖR','PASİF','PATAK','PATAL','PATEN','PATOZ','PATİK','PAUNT','PAYAN',
   'PAYDA','PAYEN','PAYET','PAYLI','PAZAR','PAZEN','PAÇAL','PAÇOZ','PEDAL',
   'PEDER','PEKÇE','PELTE','PELÜR','PELÜŞ','PELİN','PELİT','PEMBE','PENES',
-  'PENGÖ','PENSE','PENYE','PENÇE','PENİS','PERDE','PEREN','PERKİ','PERMA',
+  'PENGÖ','PENSE','PENYE','PENÇE','PERDE','PEREN','PERKİ','PERMA',
   'PERMİ','PERON','PERUK','PERVA','PESEK','PESÜS','PETEK','PEYDA','PEYKE',
   'PEÇİÇ','PEŞLİ','PEŞİN','PIHTI','PINAR','PIRPI','PIRTI','PISMA','PLAKA',
   'PLASE','PLATO','PLATİ','PLAZA','POKER','POLAR','POLAT','POLEN','POLKA',
   'POLÜM','POLİM','POLİP','POLİS','POMAT','POMPA','PONJE','PONZA','POPÇU',
-  'PORNO','PORTE','PORTO','POSTA','POTAS','POTUK','POTUR','POTİN','POYRA',
+  'PORTE','PORTO','POSTA','POTAS','POTUK','POTUR','POTİN','POYRA',
   'POŞET','PRAFA','PRENS','PRESE','PROJE','PROVA','PRUVA','PUDRA','PUFLA',
   'PULCU','PULLU','PULSU','PULUÇ','PUMBA','PUNTO','PUSAT','PUSET','PUSLU',
   'PUSMA','PUVAR','PÖÇÜK','PÜNEZ','PÜREN','PÜRÜZ','PÜSÜR','PÜTÜR','PİGME',
@@ -8562,7 +9555,7 @@ const WORDS_TR = [
   'SEÇİM','SEÇİŞ','SICAK','SIFAT','SIFIR','SIHHİ','SIHRİ','SIKIM','SIKIT',
   'SIKMA','SIKÇA','SIMAK','SINAV','SINAİ','SINIF','SINIK','SINIR','SINMA',
   'SIRAT','SIRCI','SIRIK','SIRIM','SIRLI','SIRMA','SIRÇA','SISKA','SITMA',
-  'SIVIK','SIYGA','SIYGI','SIZAK','SIZIŞ','SIZMA','SIÇAN','SIÇMA','SIĞIN',
+  'SIVIK','SIYGA','SIYGI','SIZAK','SIZIŞ','SIZMA','SIÇAN','SIĞIN',
   'SIĞIR','SIĞLA','SIĞMA','SKALA','SKİNK','SLAYT','SOFRA','SOFTA','SOKAK',
   'SOKET','SOKMA','SOKRA','SOKUM','SOKUR','SOKUŞ','SOLAK','SOLCU','SOLMA',
   'SOLUK','SOLUŞ','SOMAK','SOMON','SOMUN','SOMUT','SOMYA','SONAR','SONAT',
@@ -8581,7 +9574,7 @@ const WORDS_TR = [
   'SÜREÇ','SÜRFE','SÜRGÜ','SÜRME','SÜRRE','SÜRUR','SÜRÜM','SÜRÜŞ','SÜSEN',
   'SÜSLÜ','SÜSME','SÜTLÜ','SÜTRE','SÜTSÜ','SÜTUN','SÜTÇÜ','SÜVEN','SÜVME',
   'SÜYEK','SÜYÜM','SÜZEK','SÜZGÜ','SÜZME','SÜZÜK','SÜZÜŞ','SÜĞME','SİBOP',
-  'SİCİL','SİCİM','SİDİK','SİFON','SİFİN','SİGAR','SİHİR','SİKKE','SİKME',
+  'SİCİL','SİCİM','SİDİK','SİFON','SİFİN','SİGAR','SİHİR','SİKKE',
   'SİLAH','SİLAJ','SİLGİ','SİLKİ','SİLLE','SİLME','SİLİK','SİLİS','SİLİŞ',
   'SİMGE','SİMYA','SİMİT','SİNEK','SİNLE','SİNME','SİNSİ','SİNÜS','SİNİK',
   'SİNİR','SİNİŞ','SİPER','SİPSİ','SİREN','SİRKE','SİRMO','SİROZ','SİRTO',
@@ -8597,7 +9590,7 @@ const WORDS_TR = [
   'TARİZ','TASAR','TASDİ','TASIM','TASMA','TASNİ','TATAR','TATLI','TATMA',
   'TATİL','TAVAF','TAVAN','TAVCI','TAVIR','TAVLA','TAVLI','TAVUK','TAVUS',
   'TAVİK','TAVİZ','TAYFA','TAYGA','TAYIN','TAYİN','TAYİP','TAZİM','TAZİP',
-  'TAZİZ','TAÇLI','TAŞAK','TAŞIL','TAŞIM','TAŞIT','TAŞLI','TAŞMA','TAŞRA',
+  'TAZİZ','TAÇLI','TAŞIL','TAŞIM','TAŞIT','TAŞLI','TAŞMA','TAŞRA',
   'TAŞSI','TAŞÇI','TEALİ','TEATİ','TEBAA','TEBER','TECİL','TECİM','TEDAİ',
   'TEDİP','TEHİR','TEKEL','TEKER','TEKKE','TEKLİ','TEKME','TEKNE','TEKST',
   'TEKÇİ','TEKİL','TEKİN','TEKİR','TEKİT','TELAŞ','TELEF','TELEK','TELEM',
@@ -8644,7 +9637,7 @@ const WORDS_TR = [
   'YALIN','YALIZ','YALPA','YALPI','YAMAK','YAMAN','YAMAÇ','YAMUK','YAMÇI',
   'YANAK','YANAY','YANAZ','YANCI','YANGI','YANIK','YANIT','YANIŞ','YANKI',
   'YANLI','YANMA','YANSI','YAPAK','YAPAY','YAPIK','YAPIM','YAPIT','YAPIŞ',
-  'YAPMA','YARAK','YARAN','YARAR','YARAŞ','YARDA','YAREN','YARGI','YARIK',
+  'YAPMA','YARAN','YARAR','YARAŞ','YARDA','YAREN','YARGI','YARIK',
   'YARIM','YARIN','YARIŞ','YARKA','YARMA','YASAK','YASAL','YASLI','YASMA',
   'YASSI','YATAK','YATAY','YATIK','YATIM','YATIR','YATIŞ','YATMA','YATSI',
   'YATÇI','YAVAN','YAVAŞ','YAVER','YAVRU','YAVSI','YAVUZ','YAYAN','YAYGI',
@@ -11386,8 +12379,8 @@ const MYSTERY_DATA = [
         "ans": 9
       }
     ],
-    "word": "DEVRİ",
-    "etymology": "DEVRİ — Fransız Devrimi"
+    "word": "DEVRİM",
+    "etymology": "DEVRİM — Fransız Devrimi"
   },
   {
     "combined": "1815",
@@ -11561,7 +12554,7 @@ const MYSTERY_DATA = [
     "combined": "1905",
     "label": "Einstein Mucize Yılı",
     "tagline": "1905 yılında 26 yaşındaki Einstein, patent ofisinde memurken biri Nobel'e değer 4 makale yayımladı.",
-    "funFact": "Einstein o yıl 4 ayrı makale yazdı — her biri Nobel'e değerdi. 26 yaşındaydı ve hâlâ patent ofisinde memurdu.",
+    "funFact": "Einstein o yıl 4 ayrı makale yazdı — her biri Nobel'e değerdi. 26 yaşındaydı ve hala patent ofisinde memurdu.",
     "steps": [
       {
         "q": "Monosikletin tekerlek sayısı?",
@@ -11841,7 +12834,7 @@ const MYSTERY_DATA = [
     "combined": "6174",
     "label": "Kaprekar Sabiti",
     "tagline": "6174 sayısı Kaprekar Sabiti'dir: 4 basamaklı herhangi bir sayıdan başlayıp en fazla 7 işlemde 6174'e ulaşılır.",
-    "funFact": "Herhangi 4 rakamlı sayı al. Rakamları büyükten küçüğe diz, küçükten büyüğe dizenden çıkar. En fazla 7 adımda HEP 6174. Neden? Hâlâ tam bilinmiyor.",
+    "funFact": "Herhangi 4 rakamlı sayı al. Rakamları büyükten küçüğe diz, küçükten büyüğe dizenden çıkar. En fazla 7 adımda HEP 6174. Neden? Hala tam bilinmiyor.",
     "steps": [
       {
         "q": "Bir saatin bir fazlası (dakika üzerinden)?",
@@ -12114,8 +13107,8 @@ const MYSTERY_DATA = [
         "ans": 8
       }
     ],
-    "word": "DEVRI",
-    "etymology": "DEVRI — Devrimler Yılı"
+    "word": "DEVRİM",
+    "etymology": "DEVRİM — Devrimler Yılı"
   },
   {
     "combined": "1865",
@@ -12142,8 +13135,8 @@ const MYSTERY_DATA = [
         "ans": 5
       }
     ],
-    "word": "TIYAT",
-    "etymology": "TIYAT — Lincoln'ün Suikastı"
+    "word": "TİYATRO",
+    "etymology": "TİYATRO — Lincoln'ün Suikastı"
   },
   {
     "combined": "1326",
@@ -12198,8 +13191,8 @@ const MYSTERY_DATA = [
         "ans": 1
       }
     ],
-    "word": "SULTA",
-    "etymology": "SULTA — Fatih Sultan Mehmed'in Vefatı"
+    "word": "SULTAN",
+    "etymology": "SULTAN — Fatih Sultan Mehmed'in Vefatı"
   },
   {
     "combined": "1529",
@@ -12226,8 +13219,8 @@ const MYSTERY_DATA = [
         "ans": 9
       }
     ],
-    "word": "SURLA",
-    "etymology": "SURLA — 1. Viyana Kuşatması"
+    "word": "SURLAR",
+    "etymology": "SURLAR — 1. Viyana Kuşatması"
   },
   {
     "combined": "1308",
@@ -12254,8 +13247,8 @@ const MYSTERY_DATA = [
         "ans": 8
       }
     ],
-    "word": "KOMED",
-    "etymology": "KOMED — Divina Commedia"
+    "word": "KOMEDİ",
+    "etymology": "KOMEDİ — Divina Commedia"
   },
   {
     "combined": "1871",
@@ -12282,8 +13275,8 @@ const MYSTERY_DATA = [
         "ans": 1
       }
     ],
-    "word": "BARIK",
-    "etymology": "BARIK — Paris Komünü"
+    "word": "BARİKAT",
+    "etymology": "BARİKAT — Paris Komünü"
   },
   {
     "combined": "1885",
@@ -12310,8 +13303,8 @@ const MYSTERY_DATA = [
         "ans": 5
       }
     ],
-    "word": "HEYKE",
-    "etymology": "HEYKE — Özgürlük Heykeli"
+    "word": "HEYKEL",
+    "etymology": "HEYKEL — Özgürlük Heykeli"
   },
   {
     "combined": "1917",
@@ -12338,8 +13331,8 @@ const MYSTERY_DATA = [
         "ans": 7
       }
     ],
-    "word": "DEVIM",
-    "etymology": "DEVIM — Rus Devrimi"
+    "word": "DEVRİM",
+    "etymology": "DEVRİM — Rus Devrimi"
   },
   {
     "combined": "1933",
@@ -12366,14 +13359,14 @@ const MYSTERY_DATA = [
         "ans": 3
       }
     ],
-    "word": "KARAN",
-    "etymology": "KARAN — Hitler İktidara Geldi"
+    "word": "KARANLIK",
+    "etymology": "KARANLIK — Hitler İktidara Geldi"
   },
   {
     "combined": "1947",
     "label": "Hindistan'ın Bağımsızlığı",
     "tagline": "15 Ağustos 1947'de Hindistan ve Pakistan İngiliz sömürgesinden bağımsızlığını ilan etti.",
-    "funFact": "Hindistan ve Pakistan aynı gece bağımsızlığını ilan etti. Ama sınır çizgisi yalnızca beş hafta önce çizilmişti. O aceleyle çizilen sınır bugün hâlâ çatışmaların kaynağı.",
+    "funFact": "Hindistan ve Pakistan aynı gece bağımsızlığını ilan etti. Ama sınır çizgisi yalnızca beş hafta önce çizilmişti. O aceleyle çizilen sınır bugün hala çatışmaların kaynağı.",
     "steps": [
       {
         "q": "100 eksi 9'un karesi?",
@@ -12450,8 +13443,8 @@ const MYSTERY_DATA = [
         "ans": 9
       }
     ],
-    "word": "GÖKYÜ",
-    "etymology": "GÖKYÜ — Galileo'nun Teleskobu"
+    "word": "GÖKYÜZÜ",
+    "etymology": "GÖKYÜZÜ — Galileo'nun Teleskobu"
   },
   {
     "combined": "1831",
@@ -12590,8 +13583,8 @@ const MYSTERY_DATA = [
         "ans": 4
       }
     ],
-    "word": "KEŞIF",
-    "etymology": "KEŞIF — Lewis ve Clark"
+    "word": "KEŞİF",
+    "etymology": "KEŞİF — Lewis ve Clark"
   },
   {
     "combined": "1829",
@@ -12674,8 +13667,8 @@ const MYSTERY_DATA = [
         "ans": 1
       }
     ],
-    "word": "ÇARLI",
-    "etymology": "ÇARLI — Çar II. Alexander Suikastı"
+    "word": "ÇAR",
+    "etymology": "ÇAR — Çar II. Alexander Suikastı"
   },
   {
     "combined": "1934",
@@ -12702,14 +13695,14 @@ const MYSTERY_DATA = [
         "ans": 4
       }
     ],
-    "word": "YÜRÜY",
-    "etymology": "YÜRÜY — Mao'nun Uzun Yürüyüşü"
+    "word": "YÜRÜYÜŞ",
+    "etymology": "YÜRÜYÜŞ — Mao'nun Uzun Yürüyüşü"
   },
   {
     "combined": "1944",
     "label": "D-Day Çıkarması",
-    "tagline": "6 Haziran 1944'te Müttefikler Normandiya'ya çıktı — tarihin en büyük amfibi harekâtı.",
-    "funFact": "Normandiya çıkarması tarihin en büyük amfibi harekâtıydı. Ama sabah 06:30'da başlaması sahte istihbarat operasyonunun başarısına bağlıydı — Almanlar başka bölgeyi bekliyordu.",
+    "tagline": "6 Haziran 1944'te Müttefikler Normandiya'ya çıktı — tarihin en büyük amfibi harekatı.",
+    "funFact": "Normandiya çıkarması tarihin en büyük amfibi harekatıydı. Ama sabah 06:30'da başlaması sahte istihbarat operasyonunun başarısına bağlıydı — Almanlar başka bölgeyi bekliyordu.",
     "steps": [
       {
         "q": "3 küp eksi 2 küp kaç?",
@@ -12786,8 +13779,8 @@ const MYSTERY_DATA = [
         "ans": 6
       }
     ],
-    "word": "NÜKLE",
-    "etymology": "NÜKLE — Çernobil"
+    "word": "NÜKLEER",
+    "etymology": "NÜKLEER — Çernobil"
   },
   {
     "combined": "1991",
@@ -12814,8 +13807,8 @@ const MYSTERY_DATA = [
         "ans": 1
       }
     ],
-    "word": "SOVYE",
-    "etymology": "SOVYE — Sovyetler Birliği Dağıldı"
+    "word": "SOVYET",
+    "etymology": "SOVYET — Sovyetler Birliği Dağıldı"
   },
   {
     "combined": "1354",
@@ -12870,8 +13863,8 @@ const MYSTERY_DATA = [
         "ans": 7
       }
     ],
-    "word": "RESIM",
-    "etymology": "RESIM — Picasso'nun Guernica'sı"
+    "word": "RESİM",
+    "etymology": "RESİM — Picasso'nun Guernica'sı"
   },
   {
     "combined": "1184",
@@ -12954,8 +13947,8 @@ const MYSTERY_DATA = [
         "ans": 8
       }
     ],
-    "word": "BAĞDA",
-    "etymology": "BAĞDA — Bağdat'ın Düşüşü"
+    "word": "BAĞDAT",
+    "etymology": "BAĞDAT — Bağdat'ın Düşüşü"
   },
   {
     "combined": "1274",
@@ -12982,8 +13975,8 @@ const MYSTERY_DATA = [
         "ans": 4
       }
     ],
-    "word": "RÜZGA",
-    "etymology": "RÜZGA — Moğol Japonya İstilası"
+    "word": "RÜZGAR",
+    "etymology": "RÜZGAR — Moğol Japonya İstilası"
   },
   {
     "combined": "1533",
@@ -13038,8 +14031,8 @@ const MYSTERY_DATA = [
         "ans": 5
       }
     ],
-    "word": "SIPER",
-    "etymology": "SIPER — Çanakkale"
+    "word": "SİPER",
+    "etymology": "SİPER — Çanakkale"
   },
   {
     "combined": "1643",
@@ -13073,7 +14066,7 @@ const MYSTERY_DATA = [
     "combined": "1735",
     "label": "Linné Taksonomi",
     "tagline": "1735 yılında İsveçli Carl von Linné, canlıları Latince iki kelimeyle sınıflandıran taksonomi sistemini yayımladı.",
-    "funFact": "Carl Linné tüm canlıları sınıflandırdı. Binomial isimlendirme sistemi bugün hâlâ kullanılıyor. Latince bilmeden biyoloji okunamaz — Linné'nin mirası bu.",
+    "funFact": "Carl Linné tüm canlıları sınıflandırdı. Binomial isimlendirme sistemi bugün hala kullanılıyor. Latince bilmeden biyoloji okunamaz — Linné'nin mirası bu.",
     "steps": [
       {
         "q": "Bir haikunun toplam hece sayısı?",
@@ -13122,8 +14115,8 @@ const MYSTERY_DATA = [
         "ans": 2
       }
     ],
-    "word": "ELEKT",
-    "etymology": "ELEKT — Franklin ve Yıldırım"
+    "word": "ELEKTRİK",
+    "etymology": "ELEKTRİK — Franklin ve Yıldırım"
   },
   {
     "combined": "1796",
@@ -13150,8 +14143,8 @@ const MYSTERY_DATA = [
         "ans": 6
       }
     ],
-    "word": "AŞISI",
-    "etymology": "AŞISI — Çiçek Aşısı"
+    "word": "AŞI",
+    "etymology": "AŞI — Çiçek Aşısı"
   },
   {
     "combined": "1886",
@@ -13234,8 +14227,8 @@ const MYSTERY_DATA = [
         "ans": 6
       }
     ],
-    "word": "KLONE",
-    "etymology": "KLONE — Klonlama (Dolly)"
+    "word": "KLONLAMA",
+    "etymology": "KLONLAMA — Klonlama (Dolly)"
   },
   {
     "combined": "1512",
@@ -13290,8 +14283,8 @@ const MYSTERY_DATA = [
         "ans": 9
       }
     ],
-    "word": "HİKAY",
-    "etymology": "HİKAY — Candide"
+    "word": "HİKAYE",
+    "etymology": "HİKAYE — Candide"
   },
   {
     "combined": "1312",
@@ -13318,8 +14311,8 @@ const MYSTERY_DATA = [
         "ans": 2
       }
     ],
-    "word": "ŞÖVAL",
-    "etymology": "ŞÖVAL — Tapınak Şövalyeleri Çöküşü"
+    "word": "ŞÖVALYE",
+    "etymology": "ŞÖVALYE — Tapınak Şövalyeleri Çöküşü"
   },
   {
     "combined": "1894",
@@ -13458,8 +14451,8 @@ const MYSTERY_DATA = [
         "ans": 4
       }
     ],
-    "word": "SÜRGÜ",
-    "etymology": "SÜRGÜ — Yahudilerin Fransa'dan Sürgünü"
+    "word": "SÜRGÜN",
+    "etymology": "SÜRGÜN — Yahudilerin Fransa'dan Sürgünü"
   },
   {
     "combined": "1487",
@@ -13486,14 +14479,14 @@ const MYSTERY_DATA = [
         "ans": 7
       }
     ],
-    "word": "AZTEC",
-    "etymology": "AZTEC — Aztekler Tenochtitlan"
+    "word": "AZTEK",
+    "etymology": "AZTEK — Aztekler Tenochtitlan"
   },
   {
     "combined": "1569",
     "label": "Mercator Projeksiyonu",
-    "tagline": "1569 yılında Flemenk kartograf Mercator, bugün hâlâ kullanılan harita projeksiyonunu yayımladı.",
-    "funFact": "Flemish kartograf Mercator günümüzde hâlâ kullanılan harita projeksiyonunu yaptı. Boylamları paralel çizdi — gerçekte meridyenler kutuplarda birleşir. Harita doğru değil, kullanışlı.",
+    "tagline": "1569 yılında Flemenk kartograf Mercator, bugün hala kullanılan harita projeksiyonunu yayımladı.",
+    "funFact": "Flemish kartograf Mercator günümüzde hala kullanılan harita projeksiyonunu yaptı. Boylamları paralel çizdi — gerçekte meridyenler kutuplarda birleşir. Harita doğru değil, kullanışlı.",
     "steps": [
       {
         "q": "3 çarpı 5?",
@@ -13514,14 +14507,14 @@ const MYSTERY_DATA = [
         "ans": 9
       }
     ],
-    "word": "HARİT",
-    "etymology": "HARİT — Mercator Projeksiyonu"
+    "word": "HARİTA",
+    "etymology": "HARİTA — Mercator Projeksiyonu"
   },
   {
     "combined": "1581",
     "label": "Stradivari Doğumu",
-    "tagline": "1581 yılında İtalya'da Antonio Stradivari doğdu — kemanlarının ses sırrı hâlâ bilinmiyor.",
-    "funFact": "Stradivarius keman ustası. Yaptığı kemanların sesi bugün hâlâ geçilemedi. 300 yıl önce nasıl yaptığının sırrı tam bilinmiyor.",
+    "tagline": "1581 yılında İtalya'da Antonio Stradivari doğdu — kemanlarının ses sırrı hala bilinmiyor.",
+    "funFact": "Stradivarius keman ustası. Yaptığı kemanların sesi bugün hala geçilemedi. 300 yıl önce nasıl yaptığının sırrı tam bilinmiyor.",
     "steps": [
       {
         "q": "3 çarpı 5?",
@@ -13548,8 +14541,8 @@ const MYSTERY_DATA = [
   {
     "combined": "1596",
     "label": "Descartes Doğumu",
-    "tagline": "31 Mart 1596'da Fransız filozof René Descartes doğdu — 'Düşünüyorum, o hâlde varım' diyerek modern felsefeyi başlattı.",
-    "funFact": "Descartes 1596'da doğdu. 'Düşünüyorum, o hâlde varım' (Cogito ergo sum) modern felsefenin başlangıcı. Her şeyi sorguladı — ama yatakta kalkmayı sevmedi. Sabah 11'e kadar yatakta düşünürdü.",
+    "tagline": "31 Mart 1596'da Fransız filozof René Descartes doğdu — 'Düşünüyorum, o halde varım' diyerek modern felsefeyi başlattı.",
+    "funFact": "Descartes 1596'da doğdu. 'Düşünüyorum, o halde varım' (Cogito ergo sum) modern felsefenin başlangıcı. Her şeyi sorguladı — ama yatakta kalkmayı sevmedi. Sabah 11'e kadar yatakta düşünürdü.",
     "steps": [
       {
         "q": "3 çarpı 5?",
@@ -13570,8 +14563,8 @@ const MYSTERY_DATA = [
         "ans": 6
       }
     ],
-    "word": "FELSE",
-    "etymology": "FELSE — Descartes Doğumu"
+    "word": "FELSEFE",
+    "etymology": "FELSEFE — Descartes Doğumu"
   },
   {
     "combined": "8849",
@@ -13598,7 +14591,7 @@ const MYSTERY_DATA = [
         "ans": 9
       }
     ],
-    "word": "ZIRVE",
+    "word": "ZİRVE",
     "etymology": "ZIRVE — Farsça kökenli; en yüksek nokta, doruk. Everest'in Nepalce karşılığı 'Gökyüzünün Annesi'dir."
   },
   {
@@ -13633,7 +14626,7 @@ const MYSTERY_DATA = [
     "combined": "5895",
     "label": "Kilimanjaro",
     "tagline": "5895 metre yüksekliğindeki Kilimanjaro, Afrika'nın en yüksek dağıdır — ekvatora yakın olmasına rağmen zirvesi karla kaplıdır.",
-    "funFact": "Kilimanjaro üç volkanik koniden oluşur: Kibo, Mawenzi, Shira. Sadece Kibo hâlâ potansiyel olarak aktiftir. Son 100 yılda zirvedeki buzulların yüzde 85'i eridi.",
+    "funFact": "Kilimanjaro üç volkanik koniden oluşur: Kibo, Mawenzi, Shira. Sadece Kibo hala potansiyel olarak aktiftir. Son 100 yılda zirvedeki buzulların yüzde 85'i eridi.",
     "steps": [
       {
         "q": "Bir insan elinde kaç parmak vardır?",
@@ -13654,7 +14647,7 @@ const MYSTERY_DATA = [
         "ans": 5
       }
     ],
-    "word": "SAFAR",
+    "word": "SAFARİ",
     "etymology": "SAFAR — Arapça 'yolculuk' anlamında; Doğu Afrika'daki safari kelimesinin kökü. Kilimanjaro bölgesi safarilerin kalbidir."
   },
   {
@@ -13738,7 +14731,7 @@ const MYSTERY_DATA = [
         "ans": 8
       }
     ],
-    "word": "SIVRI",
+    "word": "SİVRİ",
     "etymology": "SIVRI — keskin, uç kısmı daralmış. Matterhorn, piramidal silueti nedeniyle dağcıların 'Dağların Kralı' dediği bir simgedir."
   },
   {
@@ -13925,7 +14918,18 @@ function getDayIndex() {
    WORD MODULE
 ===================================================================== */
 const Word = (() => {
-  let lang = 'tr';
+  // 🔧 Adım 2-3 fix: Son seçilen dili hatırla. Açılışta kaydedilen dile dön.
+  function loadSavedLang() {
+    try {
+      const v = localStorage.getItem('ah_word_lang');
+      return (v === 'en' || v === 'tr') ? v : 'tr';
+    } catch(e) { return 'tr'; }
+  }
+  function saveLang(l) {
+    try { localStorage.setItem('ah_word_lang', l); } catch(e) {}
+  }
+
+  let lang = loadSavedLang();
   let word = '';
   let guesses = [];
   let current = '';
@@ -13996,25 +15000,61 @@ const Word = (() => {
     if (duelMode && !done) {
       return;
     }
-    word = getDayWord();
 
-    // ── MIGRATION GUARD (v3 — savunmacı) ─────────────────
-    // Eğer kullanıcı bugün BU DİLDE kazandıysa veya bitirdiyse, kayıtlı hedefi koru.
-    // Bu, dil değişimi / yenileme / havuz değişimi durumlarında ilerlemeyi korur.
-    const userPlayedAlready = TODAY.wordDone === true ||
-                              (Array.isArray(TODAY.wordGuesses) && TODAY.wordGuesses.length > 0);
-    const hasValidTarget = !!TODAY.wordTarget;
+    // 🔧 Adım 2-3 fix: SLOT-TEMELLİ YÜKLEME (tek doğru kaynak = wordSlots)
+    // TR ve EN birbirinden bağımsız slot'larda tutulur. init() her zaman
+    // MEVCUT dilin slot'unu okur; paylaşılan alanlara körü körüne güvenmez.
+    // Böylece: (1) TR/EN karışmaz, (2) tekrar girişte doğru dilin kelimesi gelir.
+    if (!TODAY.wordSlots) TODAY.wordSlots = {};
 
-    if (userPlayedAlready && hasValidTarget) {
-      // Kullanıcı bu oyunu zaten oynamış — kayıtlı hedefi kullan.
-      word = TODAY.wordTarget;
+    // ── GERİYE UYUMLULUK (one-time migration) ──────────────
+    // Eski sürümlerde slot yoktu; ilerleme paylaşılan alanlarda tutuluyordu.
+    // Hiç slot yoksa ama eski veri varsa, onu TR slot'una taşı (eski sürümler
+    // TR ile başlardı). Böylece güncelleme yapan oyuncu bugünkü ilerlemesini
+    // kaybetmez. Sadece bir kez çalışır (sonrasında slot'lar dolu olur).
+    if (!TODAY.wordSlots.tr && !TODAY.wordSlots.en && TODAY.wordTarget &&
+        ((Array.isArray(TODAY.wordGuesses) && TODAY.wordGuesses.length > 0) || TODAY.wordDone)) {
+      TODAY.wordSlots.tr = {
+        guesses: (TODAY.wordGuesses || []).slice(),
+        done: TODAY.wordDone === true,
+        won: TODAY.wordWon === true,
+        target: TODAY.wordTarget
+      };
+    }
+    // ───────────────────────────────────────────────────────
+
+    // Dil butonlarının görünümünü mevcut dile göre ayarla
+    try {
+      const btnTr = document.getElementById('lang-tr');
+      const btnEn = document.getElementById('lang-en');
+      if (btnTr) btnTr.className = 'lang-btn' + (lang === 'tr' ? ' active' : '');
+      if (btnEn) btnEn.className = 'lang-btn' + (lang === 'en' ? ' active' : '');
+    } catch(e) {}
+
+    const slot = TODAY.wordSlots[lang];
+    if (slot && slot.target) {
+      // Bu dilde daha önce oynanmış — slot'tan aynen yükle
+      word = slot.target;
+      TODAY.wordGuesses = (slot.guesses || []).slice();
+      TODAY.wordDone = slot.done === true;
+      TODAY.wordWon = slot.won === true;
+      TODAY.wordTarget = slot.target;
     } else {
-      // Yeni oyun başlıyor — bugünkü hedefi kaydet.
+      // Bu dilde ilk kez oynanıyor — bugünün kelimesini ata, boş state başlat
+      word = getDayWord();
+      TODAY.wordGuesses = [];
+      TODAY.wordDone = false;
+      TODAY.wordWon = false;
       TODAY.wordTarget = word;
-      TODAY.wordGuesses = TODAY.wordGuesses || [];
+      // Slot'u da hemen oluştur ki tutarlı olsun
+      TODAY.wordSlots[lang] = {
+        guesses: [],
+        done: false,
+        won: false,
+        target: word
+      };
     }
     saveToday();
-    // ─────────────────────────────────────────────────────
 
     guesses = TODAY.wordGuesses || [];
     done = TODAY.wordDone || false;
@@ -14046,51 +15086,29 @@ const Word = (() => {
     if (duelMode) return; // ⚔️ Düelloda dil değiştirilemez (düello kelimesini bozar)
     if (l === lang) return; // aynı dile basıldıysa hiçbir şey yapma
 
-    // ── TR↔EN GEÇİŞ KORUMASI (Bug #4 fix v3 - savunmacı) ──
-    // Eskiden: dil değişince TODAY.wordGuesses sıfırlanıyordu, kazanma kayboluyordu.
-    // Yeni: her dil için ayrı slot tutuyoruz; slot kaydı tam, yüklemede de tam.
+    // ── TR↔EN GEÇİŞ KORUMASI (Adım 2-3 fix) ──────────────
+    // Mevcut dilin durumunu slot'a kaydet, dili değiştir, init()'e bırak.
+    // init() artık yeni dilin slot'unu kendisi yükler → tek doğru kaynak.
     // ─────────────────────────────────────────────────────
 
-    // Mevcut dilin state'ini slot'a kaydet (eğer hiç oynanmışsa)
+    // Mevcut dilin state'ini slot'a kaydet (oynanmış ya da hedefi varsa)
     if (!TODAY.wordSlots) TODAY.wordSlots = {};
-    if (TODAY.wordGuesses && TODAY.wordGuesses.length > 0) {
+    if ((TODAY.wordGuesses && TODAY.wordGuesses.length > 0) || TODAY.wordTarget) {
       TODAY.wordSlots[lang] = {
-        guesses: TODAY.wordGuesses.slice(),
+        guesses: (TODAY.wordGuesses || []).slice(),
         done: TODAY.wordDone === true,
         won: TODAY.wordWon === true,
         target: TODAY.wordTarget || word || null
       };
     }
 
-    // Yeni dile geç
+    // Yeni dile geç + kalıcı kaydet
     lang = l;
-    document.getElementById('lang-tr').className = 'lang-btn' + (l === 'tr' ? ' active' : '');
-    document.getElementById('lang-en').className = 'lang-btn' + (l === 'en' ? ' active' : '');
-
-    // Yeni dilin slot'u varsa yükle, yoksa sıfırla
-    const slot = TODAY.wordSlots[l];
-    if (slot && slot.target) {
-      TODAY.wordGuesses = (slot.guesses || []).slice();
-      TODAY.wordDone = slot.done === true;
-      TODAY.wordWon = slot.won === true;
-      TODAY.wordTarget = slot.target;
-      // Lokal state'i de güncelle ki init() öncesi tutarlı olsun
-      guesses = TODAY.wordGuesses.slice();
-      done = TODAY.wordDone;
-      won = TODAY.wordWon;
-    } else {
-      TODAY.wordGuesses = [];
-      TODAY.wordDone = false;
-      TODAY.wordWon = false;
-      TODAY.wordTarget = null;
-      guesses = [];
-      done = false;
-      won = false;
-    }
+    saveLang(l);
     current = '';
 
     saveToday();
-    init();
+    init(); // init() yeni dilin slot'unu yükler ve butonları günceller
   }
 
   function buildGrid() {
@@ -14282,6 +15300,15 @@ const Word = (() => {
     // ⚔️ DÜELLO MODU: TODAY ve ST'yi kirletme — düello bağımsız oynanır
     if (!duelMode) {
       TODAY.wordGuesses = guesses;
+      // 🔧 Adım 2-3 fix: Slot'u da her tahminde güncelle ki yarım oyun da
+      // dil değişimi VE uygulama kapanışında korunsun. init() slot'tan okuyor.
+      if (!TODAY.wordSlots) TODAY.wordSlots = {};
+      TODAY.wordSlots[lang] = {
+        guesses: guesses.slice(),
+        done: TODAY.wordDone === true,
+        won: TODAY.wordWon === true,
+        target: word
+      };
     }
 
     const isWin = guess === word;
@@ -14382,7 +15409,7 @@ const Word = (() => {
 
         if (isWin) TODAY.wordDone = true;
         saveToday();
-        try { updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
+        try { UI.updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
       }
 
       setTimeout(() => {
@@ -14606,8 +15633,21 @@ const Word = (() => {
   function showFeedback() {
     const panel = document.getElementById('word-feedback');
     if (!panel) return;
+    // 🔧 Adım 1 fix: Kişisel Analiz panelini harf ızgarasının ALTINA, klavyenin ÜSTÜNE yerleştir.
+    // Eskiden konum/z-index nedeniyle harflerin üstüne biniyormuş gibi görünüyordu.
+    try {
+      const kb = document.getElementById('keyboard-word');
+      const screen = document.getElementById('screen-word');
+      if (kb && kb.parentNode) {
+        // Klavyenin hemen ÖNÜNE (üstüne) yerleştir → grid ile klavye arasında, normal akışta
+        kb.parentNode.insertBefore(panel, kb);
+      } else if (screen) {
+        screen.appendChild(panel);
+      }
+    } catch(e) {}
     panel.style.display = 'block';
     panel.classList.add('has-message');
+    panel.classList.add('fb-below-keyboard');
     // AIFeedback önce dene, yoksa generateWordFeedback kullan
     let text;
     try { text = AIFeedback.get(ST, TODAY); } catch(e) {}
@@ -14762,6 +15802,14 @@ const Word = (() => {
   function requestHint() {
     if (done || !word) { try { UI.toast('İpucu sadece oyun sırasında 😊'); } catch(e) {} return; }
     if (duelMode) { try { UI.toast('Düelloda ipucu yok ⚔️'); } catch(e) {} return; }
+    // 💡 Önce satın alınmış ipucu var mı? Varsa reklamsız kullan
+    try {
+      if (Shop.useHint()) {
+        try { UI.toast('💡 İpucu paketinden kullanıldı'); } catch(e) {}
+        showHint();
+        return;
+      }
+    } catch(e) {}
     try {
       AdManager.showRewarded(
         () => { showHint(); },
@@ -15001,7 +16049,7 @@ const Num = (() => {
     TODAY.numDone = true;
     TODAY.numAllCorrect = (sessionCorrect === sessionQs.length);
     saveToday();
-    try { updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
+    try { UI.updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
 
     // Feedback
     const fbPanel = document.getElementById('num-feedback');
@@ -15313,7 +16361,7 @@ const Mystery = (() => {
       TODAY.mysteryDone = true;
       TODAY.mysteryAllCorrect = allCorrect;
       saveToday();
-      try { updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
+      try { UI.updateTabState(); } catch(e) { console.warn("updateTabState hata:", e); }
 
       if (allCorrect) {
         // 🏆 Achievements — ilk denemede çözdüyse "Dedektif"
@@ -16361,7 +17409,7 @@ const IsimSehir = (() => {
     'kepçe','kerpeten','kese','kettle','kevgir','keçeli','kilim','kilit','kimya','kitap',
     'klavye','klima','klozet','koltuk','kombi','komodin','konsol','konteyner','korniş','kova',
     'kovan','koyu','kraker','krem','kristal','kronometre','kulaklık','kulaklığı','kumanda','kupa',
-    'kâse','köşebent','kül','küme','küre','kürek','kürsü','küvet','küçükev','kılıfı',
+    'kase','köşebent','kül','küme','küre','kürek','kürsü','küvet','küçükev','kılıfı',
     'kıvılcım','kıyma','laboratuvar','lamba','lambası','lame','lamine','laptop','lavabo','lazer',
     'led','lehim','leke','lens','levha','leğen','losyon','madalya','maden','madeni',
     'mahmuz','makadam','makara','makas','maket','makina','makine','makineli','makinesi','makinist',
@@ -16458,7 +17506,7 @@ const IsimSehir = (() => {
     'huni','huzme','iç','içecek','içelek','içgömlek','iğne','iğneucu','ikonografi','ilaç',
     'ilizg','ille','ilmek','imam','imgi','imici','imkayek','indeks','iner','ip',
     'iplik','ipucu','iskele','iskemle','islaklik','iyot','jakuzi','jartiyer','jel','jelibon',
-    'jiletkutu','jüri','kaban','kablo','kablosuz','kabuk','kabuksoyacağı','kâğıt','kahve','kahveçekirdek',
+    'jiletkutu','jüri','kaban','kablo','kablosuz','kabuk','kabuksoyacağı','kağıt','kahve','kahveçekirdek',
     'kaktüs','kalem','kalemkutu','kalemtıraş','kalkan','kamera','kamış','kanepe','kapı','kapağı',
     'kapak','kardeş','karne','karpuz','kasa','kase','kaset','kaşkol','kaşık','kat',
     'katlanır','kayık','kazak','kebap','kemer','kepçe','kerpeten','kestane','keş','kımız',
@@ -17769,6 +18817,14 @@ const SinirsizWord = (() => {
   // 💡 Reklam izle → ipucu ver
   function requestHint() {
     if (done || !word) { try { UI.toast('İpucu sadece oyun sırasında 😊'); } catch(e) {} return; }
+    // 💡 Önce satın alınmış ipucu var mı? Varsa reklamsız kullan
+    try {
+      if (Shop.useHint()) {
+        try { UI.toast('💡 İpucu paketinden kullanıldı'); } catch(e) {}
+        showHint();
+        return;
+      }
+    } catch(e) {}
     try {
       AdManager.showRewarded(
         () => { showHint(); },
@@ -17998,6 +19054,12 @@ function updateTabState() {
     document.getElementById('stats-modal').classList.remove('open');
   }
 
+  // 🛒 Mağazayı doğrudan aç — istatistik modalını açıp Mağaza sekmesine geç
+  function openShop() {
+    try { openStats(); } catch(e) {}
+    try { showLbTab('shop'); } catch(e) {}
+  }
+
   // ── Leaderboard sekme geçişi ──────────────────────────────
   function showLbTab(tab) {
     document.getElementById('lb-panel-stats').style.display   = tab === 'stats'  ? '' : 'none';
@@ -18010,7 +19072,7 @@ function updateTabState() {
     if (insightsPanel) insightsPanel.style.display = tab === 'insights' ? '' : 'none';
     document.querySelectorAll('.lb-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('lb-tab-' + tab).classList.add('active');
-    if (tab === 'weekly') renderLeaderboard();
+    if (tab === 'weekly') showLbPeriod(currentLbPeriod || 'daily');
     if (tab === 'insights') renderInsights();
     if (tab === 'quests') renderQuests();
     if (tab === 'shop') renderShop();
@@ -18066,6 +19128,31 @@ function updateTabState() {
       const state = Progress.getState();
       let html = '';
 
+      // 🎨 Tema seçici — sahip olunan temalar arasında geçiş
+      const ownedThemes = Shop.getOwnedThemes();
+      const activeTheme = Shop.getActiveTheme();
+      if (ownedThemes.length > 1) {
+        html += '<div class="shop-section-label">🎨 Temalarım</div>';
+        html += '<div class="theme-switcher">';
+        ownedThemes.forEach(t => {
+          const isActive = t.name === activeTheme;
+          html += `
+            <button class="theme-chip ${isActive ? 'active' : ''}" onclick="UI.selectTheme('${t.name}')">
+              <span class="theme-chip-icon">${t.icon}</span>
+              <span class="theme-chip-label">${escapeHtml(t.label)}</span>
+              ${isActive ? '<span class="theme-chip-check">✓</span>' : ''}
+            </button>
+          `;
+        });
+        html += '</div>';
+      }
+
+      // 💡 İpucu envanteri — kaç ipucun var
+      const hintCount = Shop.getHints();
+      if (hintCount > 0) {
+        html += `<div class="shop-hint-banner">💡 Envanterinde <strong>${hintCount}</strong> ipucu var — oyunlarda reklamsız kullanabilirsin</div>`;
+      }
+
       // 💰 Coin paketleri (IAP) — en üstte, dikkat çekici
       html += '<div class="shop-section-label">💰 Altın Paketleri</div>';
       Shop.COIN_PACKS.forEach(pack => {
@@ -18090,17 +19177,41 @@ function updateTabState() {
       Shop.ITEMS.forEach(item => {
         const owned = Shop.isOwned(item.id);
         const canAfford = state.coins >= item.cost;
-        const btnText = owned ? '✓ ALINDI' : `💰 ${item.cost}`;
-        const btnClass = owned ? 'shop-buy-btn owned' : 'shop-buy-btn';
-        const btnDisabled = owned || !canAfford ? 'disabled' : '';
-        const onClick = owned || !canAfford ? '' : `onclick="UI.buyItem('${item.id}')"`;
+
+        // Tema için özel buton: sahip olunuyorsa "Kullan/Aktif", değilse fiyat
+        if (item.type === 'theme') {
+          const isActive = Shop.getActiveTheme() === item.amount;
+          let btnText, btnClass, btnDisabled, onClick;
+          if (isActive) {
+            btnText = '✓ AKTİF'; btnClass = 'shop-buy-btn owned'; btnDisabled = 'disabled'; onClick = '';
+          } else if (owned) {
+            btnText = 'KULLAN'; btnClass = 'shop-buy-btn use'; btnDisabled = ''; onClick = `onclick="UI.selectTheme('${item.amount}')"`;
+          } else {
+            btnText = `💰 ${item.cost}`; btnClass = 'shop-buy-btn'; btnDisabled = canAfford ? '' : 'disabled'; onClick = canAfford ? `onclick="UI.buyItem('${item.id}')"` : '';
+          }
+          html += `
+            <div class="shop-item">
+              <div class="shop-item-icon">${item.icon}</div>
+              <div class="shop-item-info">
+                <div class="shop-item-label">${escapeHtml(item.label)}</div>
+              </div>
+              <button class="${btnClass}" ${btnDisabled} ${onClick}>${btnText}</button>
+            </div>
+          `;
+          return;
+        }
+
+        // Freeze / Hint — eskisi gibi (stack, hep alınabilir)
+        const btnText = `💰 ${item.cost}`;
+        const btnDisabled = !canAfford ? 'disabled' : '';
+        const onClick = !canAfford ? '' : `onclick="UI.buyItem('${item.id}')"`;
         html += `
           <div class="shop-item">
             <div class="shop-item-icon">${item.icon}</div>
             <div class="shop-item-info">
               <div class="shop-item-label">${escapeHtml(item.label)}</div>
             </div>
-            <button class="${btnClass}" ${btnDisabled} ${onClick}>${btnText}</button>
+            <button class="shop-buy-btn" ${btnDisabled} ${onClick}>${btnText}</button>
           </div>
         `;
       });
@@ -18129,6 +19240,19 @@ function updateTabState() {
     } catch(e) {}
   }
 
+  // 🎨 Tema seçimi (sahip olunan temalar arası geçiş)
+  function selectTheme(name) {
+    try {
+      const result = Shop.setActiveTheme(name);
+      if (!result.ok) {
+        toast(result.reason || 'Tema değiştirilemedi');
+        return;
+      }
+      renderShop();
+      try { Sound.click && Sound.click(); } catch(e) {}
+    } catch(e) {}
+  }
+
   // 📊 Profile header güncelle
   function renderProfileHeader() {
     try {
@@ -18143,6 +19267,19 @@ function updateTabState() {
       if (fillEl) fillEl.style.width = pct + '%';
       if (textEl) textEl.textContent = `${state.xp} / ${xpNext} XP`;
       if (coinsEl) coinsEl.textContent = `💰 ${state.coins}`;
+      // 🛒 Header'daki mağaza butonundaki altın sayısını da güncelle
+      updateHeaderCoins();
+    } catch(e) {}
+  }
+
+  // 🛒 Üst bardaki mağaza butonundaki altın miktarını güncelle
+  function updateHeaderCoins() {
+    try {
+      const el = document.getElementById('header-coins');
+      if (el) {
+        const c = Progress.getState().coins || 0;
+        el.textContent = c;
+      }
     } catch(e) {}
   }
 
@@ -18307,65 +19444,124 @@ function updateTabState() {
   }
 
   // ── Leaderboard render ────────────────────────────────────
-  function renderLeaderboard() {
-    const list    = document.getElementById('lb-list');
-    const ranking = Leaderboard.getWeeklyRanking();
-    const myName  = Leaderboard.getName();
+  // 🏆 Aktif liderlik dönemi (daily/weekly/alltime)
+  let currentLbPeriod = 'daily';
 
-    // Hafta etiketi
-    document.getElementById('lb-week-label').textContent = Leaderboard.getCurrentWeekLabel();
+  function showLbPeriod(period) {
+    currentLbPeriod = period;
+    // Sekme butonları
+    ['daily','weekly','alltime'].forEach(p => {
+      const btn = document.getElementById('lbp-' + p);
+      if (btn) btn.classList.toggle('active', p === period);
+    });
+    // Etiket
+    const labels = { daily: 'Bugün', weekly: 'Bu Hafta', alltime: 'Tüm Zamanlar' };
+    const lblEl = document.getElementById('lb-week-label');
+    if (lblEl) lblEl.textContent = labels[period] || '';
+    renderLeaderboard();
+  }
+
+  function renderLeaderboard() {
+    const list = document.getElementById('lb-list');
+    if (!list) return;
+    const myCode = (typeof Invite !== 'undefined') ? Invite.getMyCode() : '';
+    const myName = Leaderboard.getName();
 
     // Kullanıcı adı inputunu doldur
     const inp = document.getElementById('lb-name-input');
     if (inp && myName) inp.value = myName;
 
-    // Sıralama yok
-    if (!ranking.length) {
-      list.innerHTML = '<div class="lb-empty">Henüz skor yok.<br>Oynayarak listeye gir! 🎯</div>';
-      document.getElementById('lb-your-rank').textContent = '';
+    // İnternet yoksa nazik uyarı
+    if (!FB.isReady()) {
+      list.innerHTML = '<div class="lb-empty">🌐 Sıralamayı görmek için<br>internet bağlantısı gereklidir.<br><br>Seviyen ve altının internetsiz de birikmeye devam eder 👍</div>';
+      const rankEl = document.getElementById('lb-your-rank');
+      if (rankEl) rankEl.textContent = '';
       return;
     }
 
-    // Kendi sıramı bul
-    const myIdx = ranking.findIndex(r => r.name === myName);
-    if (myIdx >= 0) {
-      document.getElementById('lb-your-rank').textContent = `Sıran: #${myIdx + 1}`;
-    } else {
-      document.getElementById('lb-your-rank').textContent = myName ? 'Sıralamandasın' : '';
-    }
+    // Yükleniyor
+    list.innerHTML = '<div class="lb-empty">Yükleniyor… ⏳</div>';
 
-    // Satırları oluştur
-    list.innerHTML = '';
-    ranking.forEach((entry, idx) => {
-      const isYou = entry.name === myName;
-      const rank  = idx + 1;
-      const rankClass = rank <= 3 ? `r${rank}` : '';
-      const medals = ['🥇','🥈','🥉'];
-      const rankDisplay = rank <= 3 ? medals[rank-1] : `#${rank}`;
-      const safeName = escapeHtml(entry.name);
+    FB.getLeaderboard(currentLbPeriod, 50).then(function(rows) {
+      if (rows === null) {
+        list.innerHTML = '<div class="lb-empty">🌐 İnternet bağlantısı gereklidir.</div>';
+        return;
+      }
+      if (!rows.length) {
+        list.innerHTML = '<div class="lb-empty">Henüz skor yok.<br>Oynayarak listeye ilk sen gir! 🎯</div>';
+        const rankEl = document.getElementById('lb-your-rank');
+        if (rankEl) rankEl.textContent = '';
+        return;
+      }
 
-      const row = document.createElement('div');
-      row.className = 'lb-row' + (isYou ? ' you' : '') + (rank <= 3 ? ' top3' : '');
-      row.innerHTML = `
-        <div class="lb-rank ${rankClass}">${rankDisplay}</div>
-        <div class="lb-name">${safeName}${isYou ? ' <span style="color:var(--teal2);font-size:10px">(sen)</span>' : ''}</div>
-        <div class="lb-score-col">
-          <div class="lb-pts">${entry.pts} <span style="font-size:10px;opacity:.6">puan</span></div>
-          <div class="lb-detail">${entry.wins}G / ${entry.games}O · En az: ${entry.bestGuess === 99 ? '—' : entry.bestGuess}</div>
-        </div>`;
-      list.appendChild(row);
+      // Kendi sıramı bul (koda göre)
+      const myIdx = rows.findIndex(r => r.code === myCode);
+      const rankEl = document.getElementById('lb-your-rank');
+      if (rankEl) {
+        rankEl.textContent = myIdx >= 0 ? `Sıran: #${myIdx + 1}` : '';
+      }
+
+      list.innerHTML = '';
+      rows.forEach(function(entry, idx) {
+        const isYou = entry.code === myCode;
+        const rank = idx + 1;
+        const rankClass = rank <= 3 ? `r${rank}` : '';
+        const medals = ['🥇','🥈','🥉'];
+        const rankDisplay = rank <= 3 ? medals[rank-1] : `#${rank}`;
+        // İsim yoksa kodu göster
+        const display = entry.name && entry.name.trim() ? entry.name : entry.code;
+        const safeName = escapeHtml(display);
+
+        const row = document.createElement('div');
+        row.className = 'lb-row' + (isYou ? ' you' : '') + (rank <= 3 ? ' top3' : '');
+        row.innerHTML = `
+          <div class="lb-rank ${rankClass}">${rankDisplay}</div>
+          <div class="lb-name">${safeName}${isYou ? ' <span style="color:var(--teal2);font-size:10px">(sen)</span>' : ''}</div>
+          <div class="lb-score-col">
+            <div class="lb-pts">${entry.pts} <span style="font-size:10px;opacity:.6">puan</span></div>
+          </div>`;
+        list.appendChild(row);
+      });
     });
   }
 
-  // ── İsim kaydet ───────────────────────────────────────────
+  // ── İsim kaydet (benzersizlik kontrolüyle) ──────────────────
   function saveLbName() {
     const inp = document.getElementById('lb-name-input');
     if (!inp) return;
     const name = inp.value.trim();
-    if (!name) { toast('Kullanıcı adı boş olamaz!'); return; }
-    Leaderboard.setName(name);
-    toast('İsim kaydedildi: ' + name + ' ✓');
-    renderLeaderboard();
+    if (!name) { toast('Takma adı boş bırakırsan kodunla görünürsün'); return; }
+    if (name.length > 12) { toast('Takma ad en fazla 12 karakter'); return; }
+
+    if (!FB.isReady()) {
+      toast('Bu işlemi yapabilmeniz için bir internet sağlayıcısına bağlı olmanız gerekmektedir.', 4000);
+      return;
+    }
+
+    const myCode = Invite.getMyCode();
+    toast('Kontrol ediliyor…');
+    // 1) Hızlı ön kontrol (eski sistemde kaydedilmiş isimleri de yakalar)
+    FB.checkNameAvailable(name, myCode).then(function(available) {
+      if (!available) {
+        toast('Bu isim kullanılıyor, başka bir tane dene 🙃', 3500);
+        return;
+      }
+      // 2) Atomik rezervasyon — asıl çakışma koruması burada
+      FB.reserveName(myCode, name).then(function(res) {
+        if (!res || !res.ok) {
+          if (res && res.reason === 'taken') {
+            toast('Bu isim kullanılıyor, başka bir tane dene 🙃', 3500);
+          } else {
+            toast('İsim kaydedilemedi, tekrar dene', 3000);
+          }
+          return;
+        }
+        // Başarılı → yerel olarak da kaydet
+        Leaderboard.setName(name);
+        toast('İsim kaydedildi: ' + name + ' ✓');
+        renderLeaderboard();
+      });
+    });
   }
 
   function openPremium() {
@@ -18376,16 +19572,44 @@ function updateTabState() {
     // No-op
   }
 
-  // 👥 Davet kodu kabul et
+  // 👥 Davet kodu kabul et (Sizi Davet Eden)
   function acceptInviteCode(code) {
     try {
-      const result = Invite.applyCode(code);
-      if (result.ok) {
-        toast('🎉 Davet kodu uygulandı! Ödüller hesabına eklendi.', 4000);
-        renderProfileHeader();
-      } else {
-        toast(result.reason || 'Kod uygulanamadı');
+      // 24 saatlik pencere kapandıysa engelle
+      if (!Invite.isInviteWindowOpen()) {
+        toast('Davet kodu girme süresi doldu ⏱️');
+        return;
       }
+      code = (code || '').trim().toUpperCase();
+      if (!code) { toast('Lütfen bir kod gir'); return; }
+
+      // Önce yerel ödülü ver (mevcut sistem: 500 altın + 5 freeze, "zaten kullandın" kontrolü)
+      const result = Invite.applyCode(code);
+      if (!result.ok) {
+        toast(result.reason || 'Kod uygulanamadı');
+        return;
+      }
+
+      // Yerel ödül verildi → şimdi Firebase'de davet edenin sayısını +1 yap
+      toast('🎉 Davet kodu uygulandı! Ödüller hesabına eklendi.', 4000);
+      renderProfileHeader();
+
+      try {
+        if (FB.isReady()) {
+          FB.applyInviter(Invite.getMyCode(), code).then(function(res) {
+            // Firebase tarafı başarısız olsa bile yerel ödül zaten verildi; sessiz geç
+            if (res && res.ok) {
+              console.log('[Davet] Davet eden +1 oldu, yeni sayı:', res.inviterNewCount);
+            } else {
+              console.warn('[Davet] Firebase güncellenemedi:', res && res.reason);
+            }
+          });
+        }
+      } catch(e) {}
+
+      // Modali kapat (varsa) ve yeniden açarak güncel durumu göster
+      const overlay = document.querySelector('.invite-modal-overlay');
+      if (overlay) overlay.remove();
     } catch(e) {
       toast('Hata oluştu, tekrar dene');
     }
@@ -18420,11 +19644,11 @@ function updateTabState() {
         </div>
 
         <div class="im-stats">
-          <div class="im-stat-num">${sent}</div>
-          <div class="im-stat-lbl">DAVET GÖNDERDİN</div>
+          <div class="im-stat-num" id="im-invite-count">${sent}</div>
+          <div class="im-stat-lbl">DAVET ETTİĞİN KİŞİ</div>
         </div>
 
-        <div class="im-milestones">
+        <div class="im-milestones" id="im-milestones">
           <div class="im-mile ${sent >= 3 ? 'done' : ''}">🥉 3 davet → +300 💰</div>
           <div class="im-mile ${sent >= 10 ? 'done' : ''}">🥈 10 davet → +1000 💰</div>
           <div class="im-mile ${sent >= 50 ? 'done' : ''}">🥇 50 davet → +5000 💰 mega bonus</div>
@@ -18434,19 +19658,57 @@ function updateTabState() {
           📲 WhatsApp ile Paylaş
         </button>
 
-        ${!used ? `
-          <div class="im-section" style="margin-top:18px">
-            <div class="im-label">BİR KOD AL?</div>
-            <div class="im-input-row">
-              <input type="text" id="invite-code-input" placeholder="ZUXXXXXX" maxlength="8" style="text-transform:uppercase">
-              <button onclick="UI.acceptInviteCode(document.getElementById('invite-code-input').value)">Uygula</button>
+        ${(() => {
+          // ⏱️ "Sizi Davet Eden" alanı — sadece 24 saatlik pencere açıksa ve daha önce kullanmadıysa
+          if (used) {
+            return `<div class="im-inviter-done">✓ Bir davet kodu kullandın</div>`;
+          }
+          if (!Invite.isInviteWindowOpen()) {
+            return `<div class="im-inviter-expired">⏱️ Davet kodu girme süresi doldu</div>`;
+          }
+          // Kalan süreyi saat:dakika olarak göster
+          const remMs = Invite.getInviteWindowRemainingMs();
+          const remH = Math.floor(remMs / 3600000);
+          const remM = Math.floor((remMs % 3600000) / 60000);
+          const remText = remH > 0 ? `${remH} saat ${remM} dakika` : `${remM} dakika`;
+          return `
+            <div class="im-section im-inviter-section">
+              <div class="im-label">SİZİ DAVET EDEN</div>
+              <div class="im-inviter-hint">Seni davet eden birinin kodunu gir, ikiniz de kazanın</div>
+              <div class="im-input-row">
+                <input type="text" id="invite-code-input" placeholder="ZUXXXXXX" maxlength="8" style="text-transform:uppercase">
+                <button onclick="UI.acceptInviteCode(document.getElementById('invite-code-input').value)">Uygula</button>
+              </div>
+              <div class="im-inviter-timer">⏱️ Kalan süre: ${remText}</div>
             </div>
-          </div>
-        ` : ''}
+          `;
+        })()}
       </div>
     `;
     document.body.appendChild(div);
     setTimeout(() => div.classList.add('visible'), 50);
+
+    // 🔥 Firebase'den gerçek davet sayısını çek ve güncelle (internet varsa)
+    try {
+      if (FB.isReady()) {
+        FB.getMyInviteCount(myCode).then(function(realCount) {
+          const numEl = document.getElementById('im-invite-count');
+          if (numEl) numEl.textContent = realCount;
+          // Milestone işaretlerini de güncelle
+          const mileBox = document.getElementById('im-milestones');
+          if (mileBox) {
+            const miles = mileBox.querySelectorAll('.im-mile');
+            const thresholds = [3, 10, 50];
+            miles.forEach((m, i) => {
+              if (realCount >= thresholds[i]) m.classList.add('done');
+              else m.classList.remove('done');
+            });
+          }
+          // Yerel sayıyı da gerçek sayıyla eşitle (ödül kontrolü için)
+          try { localStorage.setItem('ah_invites_sent', String(realCount)); } catch(e) {}
+        });
+      }
+    } catch(e) {}
   }
 
   function selectPlan(plan) { /* No-op — Premium kaldırıldı */ }
@@ -18487,14 +19749,49 @@ function updateTabState() {
     } catch(e) {}
   }
 
+  // ⚙️ Ayarlar açılır menüsü
+  function toggleSettingsMenu(e) {
+    if (e) { try { e.stopPropagation(); } catch(_){} }
+    const menu = document.getElementById('settings-menu');
+    const backdrop = document.getElementById('settings-backdrop');
+    if (!menu) return;
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) {
+      closeSettingsMenu();
+    } else {
+      refreshSettingsMenu();
+      menu.classList.add('open');
+      if (backdrop) backdrop.classList.add('show');
+    }
+  }
+  function closeSettingsMenu() {
+    const menu = document.getElementById('settings-menu');
+    const backdrop = document.getElementById('settings-backdrop');
+    if (menu) menu.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('show');
+  }
+  // Menüdeki Açık/Kapalı durumlarını güncelle
+  function refreshSettingsMenu() {
+    try {
+      const soundOn = (localStorage.getItem('ah_sound') !== '0');
+      const sEl = document.getElementById('smi-sound-state');
+      if (sEl) sEl.textContent = soundOn ? 'Açık' : 'Kapalı';
+      const cbOn = (document.documentElement.getAttribute('data-cb') === 'on');
+      const cEl = document.getElementById('smi-cb-state');
+      if (cEl) cEl.textContent = cbOn ? 'Açık' : 'Kapalı';
+    } catch(e) {}
+  }
+
   return {
-    switchTab, toast, openStats, closeStats, showLbTab, saveLbName,
+    switchTab, toast, openStats, closeStats, openShop, showLbTab, showLbPeriod, saveLbName,
     openPremium, closePremium, unlockPremium, restorePremium, toggleSound,
     toggleColorBlind, loadColorBlind,
+    toggleSettingsMenu, closeSettingsMenu, refreshSettingsMenu,
     copyInsightsLog, resetInsights,
-    claimQuest, buyItem, buyCoinPack, renderProfileHeader, selectPlan,
+    claimQuest, buyItem, buyCoinPack, selectTheme, renderProfileHeader, updateHeaderCoins, selectPlan,
     acceptInviteCode, openInviteModal,
     escapeHtml,
+    updateTabState,
     get currentTab() { return currentTab; }
   };
 })();
@@ -18705,12 +20002,38 @@ function boot() {
     console.error('[ZihinUssu] Unhandled promise rejection:', e.reason);
   });
 
+  // 🔥 Firebase'i başlat (davet + liderlik için). İnternet yoksa sessizce atlar.
+  try { FB.init(); } catch(e) {}
+
+  // 💾 Kalıcı depolama köprüsü: önce Preferences'tan veriyi geri yükle,
+  // sonra yazma köprüsünü kur, EN SON loadAll() ile dolu veriyi oku.
+  // restore() asenkron — bittiğinde startApp() çağrılır.
+  PersistBridge.restore()
+    .catch(() => {})
+    .then(() => {
+      try { PersistBridge.install(); } catch(e) {}
+      startApp();
+    });
+}
+
+// Asıl başlatma — köprü hazır olduktan sonra çağrılır
+function startApp() {
   loadAll();
   initBg();
   Word.init();
   try { Premium.init(); } catch(e) {}
+  try { Shop.applyActiveTheme(); } catch(e) {} // 🎨 Kayıtlı temayı uygula
   try { UI.loadColorBlind(); } catch(e) {}
   try { Analytics.init(); } catch(e) {}
+  try { UI.updateHeaderCoins(); } catch(e) {} // 🛒 Header altın sayısını başlangıçta göster
+  // ⏱️ 24 saatlik davet penceresi için ilk açılışı işaretle
+  try { Invite.markFirstOpen(); } catch(e) {}
+  // 🔥 Kullanıcıyı Firebase'e kaydet (davet + liderlik için). İnternet yoksa sessizce atlar.
+  try {
+    if (FB.isReady()) {
+      FB.registerUser(Invite.getMyCode(), Leaderboard.getName());
+    }
+  } catch(e) {}
   // 👥 URL'de ?inv=ZUXXXX varsa hoş geldin modali göster
   try { Invite.checkUrlInvite(); } catch(e) {}
 
@@ -18813,8 +20136,87 @@ function boot() {
       }
     } catch(e) {}
   }, 4000);
-  try { AdManager.init(); } catch(e) {}
-  try { AdManager.initBanners(); } catch(e) {}
+  // ── 📱 iOS App Tracking Transparency (ATT) izin penceresi ──
+  // iOS 14+ için zorunlu: izleme izni alınmadan AdMob reklam göstermez.
+  // Bu pencere uygulamanın ilk açılışında bir kez gösterilir.
+  // Apple kuralı: ATT izni AdMob başlatılmadan ÖNCE alınmalı.
+  async function _requestATTPermission() {
+    try {
+      if (!isNativePlatform()) return;
+      const platform = (window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform());
+      if (platform !== 'ios') return; // Sadece iOS
+
+      const ATT = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AppTrackingTransparency;
+      if (!ATT) {
+        console.warn('[ATT] Eklenti bulunamadı — izleme izni istenemedi');
+        return;
+      }
+
+      // Mevcut durumu kontrol et
+      const current = await ATT.getStatus();
+      // Status: authorized / denied / notDetermined / restricted
+      if (current && current.status === 'notDetermined') {
+        // Henüz sorulmamış → şimdi sor
+        await ATT.requestPermission();
+      }
+    } catch(e) {
+      console.warn('[ATT] hata:', e);
+    }
+  }
+
+  // 🚀 ATT izin akışı: önce izin iste, sonra AdMob'u başlat
+  (async () => {
+    await _requestATTPermission();
+    try { AdManager.init(); } catch(e) {}
+    try { AdManager.initBanners(); } catch(e) {}
+  })();
+
+  // ── 🖥️ TAM EKRAN MODU (status bar + Android navigation bar gizle) ──
+  // iOS: üstteki saat/şarj çubuğunu gizler
+  // Android: hem üstteki status bar hem alttaki geri/ana sayfa tuşlarını gizler
+  (function enableFullscreen() {
+    try {
+      if (!isNativePlatform()) return;
+      const Plugins = window.Capacitor && window.Capacitor.Plugins;
+      if (!Plugins) return;
+
+      // StatusBar eklentisi varsa: üst çubuğu gizle + içeriği üste taşıma
+      if (Plugins.StatusBar) {
+        try { Plugins.StatusBar.hide(); } catch(e) {}
+        try { Plugins.StatusBar.setOverlaysWebView({ overlay: true }); } catch(e) {}
+      }
+
+      // Android: alttaki sistem tuşlarını (geri/ana/son uygulamalar) gizle —
+      // "immersive" tam ekran. Eklenti yoksa sessizce atla, hata vermez.
+      const platform = (window.Capacitor.getPlatform && window.Capacitor.getPlatform());
+      if (platform === 'android') {
+        // @capacitor/status-bar bazı sürümlerde navigation bar'ı da yönetebilir;
+        // ayrıca varsa NavigationBar eklentisini dene
+        if (Plugins.NavigationBar && Plugins.NavigationBar.hide) {
+          try { Plugins.NavigationBar.hide(); } catch(e) {}
+        }
+        // AndroidFullScreen tarzı bir eklenti varsa onu da dene
+        if (Plugins.AndroidFullScreen && Plugins.AndroidFullScreen.immersiveMode) {
+          try { Plugins.AndroidFullScreen.immersiveMode(); } catch(e) {}
+        }
+      }
+
+      // ⌨️ Klavye eklentisi — input'a dokununca iOS klavyesinin düzgün açılması için
+      if (Plugins.Keyboard) {
+        try {
+          // resize: 'native' → WebView yeniden boyutlanır, input görünür kalır
+          if (Plugins.Keyboard.setResizeMode) {
+            Plugins.Keyboard.setResizeMode({ mode: 'native' });
+          }
+          // Accessory bar'ı gizle (input üstündeki "Geri/İleri/Bitti" çubuğu)
+          if (Plugins.Keyboard.setAccessoryBarVisible) {
+            Plugins.Keyboard.setAccessoryBarVisible({ isVisible: true });
+          }
+        } catch(e) {}
+      }
+    } catch(e) {}
+  })();
+
   try { Rating.initBackdrop(); } catch(e) {}
   try { Sound.init(); } catch(e) {}
   try { HowTo.init(); } catch(e) {}
@@ -19011,12 +20413,14 @@ function boot() {
         // Şu an özel bir aksiyon yok, tab değişiminde zaten init oluyor
       });
 
-      // ⚔️ DEEP LINK — düello linkine tıklanınca app açıkken gelir
-      // Bu listener olmadan düello linkleri app'te çalışmaz (1 yıllık bug fix)
+      // ⚔️ DEEP LINK — düello/davet linkine tıklanınca app açıkken gelir
+      // Bu listener olmadan linkler app'te çalışmaz
       App.addListener('appUrlOpen', (data) => {
         try {
-          if (data && data.url && typeof Duello !== 'undefined' && Duello.handleDeepLink) {
-            Duello.handleDeepLink(data.url);
+          if (data && data.url) {
+            // Düello (?d=) ve Davet (?inv=) — ikisini de işle
+            try { if (typeof Duello !== 'undefined' && Duello.handleDeepLink) Duello.handleDeepLink(data.url); } catch(e) {}
+            try { if (typeof Invite !== 'undefined' && Invite.checkUrlInvite) Invite.checkUrlInvite(data.url); } catch(e) {}
           }
         } catch(e) { console.warn('[DeepLink] appUrlOpen işlenemedi', e); }
       });
@@ -19024,9 +20428,12 @@ function boot() {
       // ⚔️ COLD START — app kapalıyken linke tıklanıp açıldıysa launch URL'i işle
       try {
         App.getLaunchUrl().then((res) => {
-          if (res && res.url && typeof Duello !== 'undefined' && Duello.handleDeepLink) {
+          if (res && res.url) {
             // Boot tamamlansın diye küçük gecikme (modüller hazır olsun)
-            setTimeout(() => { try { Duello.handleDeepLink(res.url); } catch(e) {} }, 800);
+            setTimeout(() => {
+              try { if (typeof Duello !== 'undefined' && Duello.handleDeepLink) Duello.handleDeepLink(res.url); } catch(e) {}
+              try { if (typeof Invite !== 'undefined' && Invite.checkUrlInvite) Invite.checkUrlInvite(res.url); } catch(e) {}
+            }, 800);
           }
         }).catch(() => {});
       } catch(e) {}
