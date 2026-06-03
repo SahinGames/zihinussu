@@ -1,6 +1,6 @@
 {
-  "minVersionAndroid": "1.0.0",
-  "minVersionIOS": "1.0.0",
+  "minVersionAndroid": "1.4.4",
+  "minVersionIOS": "1.1",
   "androidUrl": "https://play.google.com/store/apps/details?id=com.zihinussu.app",
   "iosUrl": "https://apps.apple.com/us/app/zihin-%C3%BCss%C3%BC/id6774328782",
   "message": "Yeni bir sürüm yayında! Oyuna devam etmek için lütfen güncelle."
