@@ -32,7 +32,7 @@
 
     var ANDROID_PKG = 'com.zihinussu.app';
     var PLAY_URL = 'https://play.google.com/store/apps/details?id=' + ANDROID_PKG;
-    var IOS_APPSTORE_ID = '';  // ⬅️ App Store'a çıkınca buraya SAYISAL ID'yi yaz (örn: '1234567890')
+    var IOS_APPSTORE_ID = '6774328782';
 
     if (isAndroid) {
       // intent:// → uygulama yüklüyse açar, değilse browser_fallback_url'e (Play Store) gider
@@ -896,6 +896,23 @@ header { position: relative; }
   width: 100%;
   font-weight: 600;
 }
+/* 💡 Kalıcı ipucu kutusu — gün etiketinin altında, yeni kelimede temizlenir */
+.word-hint-box {
+  text-align: center;
+  width: 100%;
+  max-width: min(310px, calc(100vw - 32px));
+  margin: 0 auto 10px;
+  padding: 6px 10px;
+  border: 1px dashed var(--gold);
+  border-radius: 8px;
+  background: var(--gold3);
+  color: var(--gold2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-sizing: border-box;
+}
+.word-hint-box .whb-item { display: inline-block; margin: 0 4px; }
 
 .lang-toggle {
   display: flex;
@@ -1025,15 +1042,15 @@ header { position: relative; }
 
 .k {
   flex: 1;
-  height: 52px;
+  height: 60px;
   min-width: 0;
-  max-width: 48px;
+  max-width: 54px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg3);
   color: var(--text);
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 700;
   cursor: pointer;
   transition: background 0.1s, transform 0.08s;
@@ -1055,8 +1072,8 @@ header { position: relative; }
 .k:active { transform: scale(0.95); }
 .k.wide {
   flex: 1.8;
-  max-width: 72px;
-  font-size: 11px;
+  max-width: 84px;
+  font-size: 12px;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   letter-spacing: 0.5px;
   font-weight: 700;
@@ -3070,7 +3087,6 @@ header { position: relative; }
   }
   #word-grid {
     max-width: min(310px, calc(100vw - 32px));
-    max-height: min(310px, 42vw);
     gap: 4px;
     margin-bottom: 4px;
   }
@@ -3084,12 +3100,12 @@ header { position: relative; }
     margin-bottom: 6px;
   }
   .k {
-    height: 50px;
-    font-size: 15px;
+    height: 58px;
+    font-size: 18px;
     border-radius: 6px;
     font-weight: 700;
   }
-  .k.wide { font-size: 11px; font-weight: 700; }
+  .k.wide { font-size: 12px; font-weight: 700; }
   .w-cell {
     font-size: clamp(18px, 5vw, 26px) !important;
   }
@@ -3119,7 +3135,6 @@ header { position: relative; }
 @media (max-width: 360px) {
 #word-grid {
     gap: 3px;
-    max-height: 42vw;
   }
 }
 
@@ -4541,7 +4556,7 @@ header { position: relative; }
   /* Screen'ler — klavye yüksekliği kadar alt padding */
   #screen-word,
   #screen-sinirsiz {
-    padding-bottom: 220px !important;
+    padding-bottom: 245px !important;
   }
   /* Klavyesi olmayan ekranlar normal */
   #screen-isimsehir,
@@ -5313,6 +5328,9 @@ header { position: relative; }
       <button class="drawer-item" data-tab="duello" onclick="UI.switchTab('duello')">
         <span class="drawer-icon">⚔️</span><span class="drawer-label">Düello</span>
       </button>
+      <button class="drawer-item" onclick="UI.openLeaderboard(); document.querySelector('.drawer').classList.remove('mobile-open'); document.querySelector('.drawer-backdrop').classList.remove('show')">
+        <span class="drawer-icon">🏆</span><span class="drawer-label">Sıralama</span>
+      </button>
     </nav>
   </aside>
 
@@ -5339,6 +5357,8 @@ header { position: relative; }
       </div>
 
       <div class="day-label" id="word-day-label">Bugünün Sözcüğü · #1</div>
+
+      <div id="word-hint-box" class="word-hint-box" style="display:none"></div>
 
       <div id="word-grid"></div>
 
@@ -5390,7 +5410,7 @@ header { position: relative; }
         <div class="num-equation" id="num-eq">? + 7 = 15</div>
         <div class="num-hint" id="num-hint"></div>
         <div class="num-input-row">
-          <input type="number" class="num-input" id="num-input" placeholder="?" inputmode="numeric" onkeydown="if(event.key==='Enter') Num.submit()">
+          <input type="number" step="any" class="num-input" id="num-input" placeholder="?" inputmode="decimal" onkeydown="if(event.key==='Enter') Num.submit()">
           <button class="num-submit" onclick="Num.submit()">Gönder</button>
         </div>
         <div class="num-result" id="num-result"></div>
@@ -5640,14 +5660,13 @@ header { position: relative; }
 <div class="modal-bg" id="stats-modal" onclick="if(event.target===this)UI.closeStats()">
   <div class="modal-box">
     <button class="modal-close" onclick="UI.closeStats()">×</button>
-    <div class="modal-title">İstatistikler</div>
+    <div class="modal-title" id="stats-modal-title">İstatistikler</div>
 
     <!-- LEADERBOARD SEKMESİ -->
-    <div class="lb-tabs">
+    <div class="lb-tabs" id="lb-tabs-bar">
       <button class="lb-tab-btn active" id="lb-tab-stats" onclick="UI.showLbTab('stats')">İstatistik</button>
       <button class="lb-tab-btn" id="lb-tab-quests" onclick="UI.showLbTab('quests')">📜 Görevler</button>
       <button class="lb-tab-btn" id="lb-tab-shop" onclick="UI.showLbTab('shop')">🛒 Mağaza</button>
-      <button class="lb-tab-btn" id="lb-tab-weekly" onclick="UI.showLbTab('weekly')">Sıralama</button>
       <button class="lb-tab-btn" id="lb-tab-insights" onclick="UI.showLbTab('insights')">İçgörüler</button>
     </div>
 
@@ -6064,41 +6083,22 @@ var FB = (function() {
     } catch(e) { return Promise.resolve(false); }
   }
 
-  // İsmi ATOMİK olarak rezerve et — eşzamanlı iki kişi aynı ismi ALAMAZ.
-  // 'nicknames' koleksiyonu: doküman id = küçük harfli isim, içinde { code }.
-  // Aynı kullanıcı isim değiştirirse eski ismi otomatik serbest bırakılır.
-  // Döner: Promise<{ok:true}> | Promise<{ok:false, reason:'taken'|'err'}>
+  // İsmi rezerve et — BASİT sürüm (transaction yok, test modunda sorunsuz çalışır).
+  // Çakışma koruması için kayıttan ÖNCE checkNameAvailable çağrılıyor (handler'da).
+  // Not: aynı anda iki kişi aynı ismi alma ihtimali çok düşük; kalıcı çözüm
+  // (transaction + güvenlik kuralları) billing/kurallar düzenlenince eklenecek.
+  // Döner: Promise<{ok:true}> | Promise<{ok:false, reason:'err'}>
   function reserveName(code, name) {
     if (!isReady() || !code || !name) return Promise.resolve({ ok:false, reason:'err' });
     name = name.trim();
-    var nameLower = name.toLowerCase();
-    var nickRef = db.collection('nicknames').doc(nameLower);
-    var lbRef = db.collection('leaderboard').doc(code);
     try {
-      return db.runTransaction(function(tx) {
-        // Firestore kuralı: tüm okumalar yazmalardan ÖNCE
-        return tx.get(nickRef).then(function(nickSnap) {
-          return tx.get(lbRef).then(function(lbSnap) {
-            // İsim başka biri tarafından alınmış mı?
-            if (nickSnap.exists && nickSnap.data().code !== code) {
-              return { ok:false, reason:'taken' };
-            }
-            // Bu kullanıcının ESKİ ismini serbest bırak
-            var oldName = lbSnap.exists ? (lbSnap.data().name || '') : '';
-            var oldLower = oldName.toLowerCase();
-            if (oldLower && oldLower !== nameLower) {
-              tx.delete(db.collection('nicknames').doc(oldLower));
-            }
-            // Yeni ismi rezerve et + liderlik kaydına yaz
-            tx.set(nickRef, { code: code });
-            tx.set(lbRef, { code: code, name: name }, { merge: true });
-            return { ok:true };
-          });
+      return db.collection('leaderboard').doc(code)
+        .set({ code: code, name: name }, { merge: true })
+        .then(function(){ return { ok:true }; })
+        .catch(function(e){
+          console.warn('[FB] reserveName HATA →', e && e.code, '|', e && e.message);
+          return { ok:false, reason:'err' };
         });
-      }).then(function(r){ return r; }).catch(function(e){
-        console.warn('[FB] reserveName hata:', e.message);
-        return { ok:false, reason:'err' };
-      });
     } catch(e) { return Promise.resolve({ ok:false, reason:'err' }); }
   }
 
@@ -6291,7 +6291,7 @@ const Sudoku = (() => {
         () => { doHint(); },
         () => { try { UI.toast('Reklam tamamlanmadı, ipucu verilmedi'); } catch(e) {} }
       );
-    } catch(e) { doHint(); }
+    } catch(e) { try { UI.toast('Reklam gösterilemedi, ipucu verilmedi'); } catch(_) {} }
   }
 
   function endGame(won) {
@@ -6328,6 +6328,10 @@ const Sudoku = (() => {
         complete.style.display = 'block';
       }
     }
+    // 💰 Geçiş reklamı — oyun bitince (kazan/kaybet)
+    setTimeout(() => {
+      try { AdManager.maybeShowInterstitial(() => {}); } catch(e) {}
+    }, 1500);
   }
 
 
@@ -7064,27 +7068,13 @@ const Shop = (() => {
     { id: 'coins_5000',  coins: 5000, price: '₺249.99', sku: 'coins_5000', bonus: 1000, badge: 'EN BÜYÜK' },
   ];
 
-  // IAP placeholder — gerçek Google Play Billing entegrasyonu Capacitor'da
+  // IAP — gerçek satın alma (Google Play Billing / StoreKit) henüz entegre DEĞİL.
+  // ⚠️ GÜVENLİK: Entegre edilene kadar HİÇBİR ortamda (web/Android/iOS) bedava
+  // altın verilmez. Eskiden test bloğu altını bedava ekliyordu — açık kapatıldı.
   function buyCoinPack(packId) {
     const pack = COIN_PACKS.find(p => p.id === packId);
     if (!pack) return;
-    // iOS: satın alma henüz aktif değil (App Store StoreKit ayrı) — bedava verme!
-    if (typeof _IS_IOS !== 'undefined' && _IS_IOS) {
-      try { UI.toast('Satın alma yakında aktif olacak 🙂', 3000); } catch(e) {}
-      return;
-    }
-    // Native (Android) ortamda Google Play Billing çağrısı — şimdilik test
-    if (isNativePlatform() && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.GooglePlayBilling) {
-      // Gerçek satın alma akışı — sonradan entegre edilecek
-      try {
-        UI.toast('Satın alma yakında aktif olacak...', 3000);
-      } catch(e) {}
-    } else {
-      // Web/test ortamı — direkt ekle (geliştirme amaçlı)
-      const totalCoins = pack.coins + (pack.bonus || 0);
-      Progress.addCoins(totalCoins);
-      try { UI.toast(`✨ +${totalCoins} 💰 eklendi (TEST)`, 3000); Sound.win(); } catch(e) {}
-    }
+    try { UI.toast('Satın alma yakında aktif olacak 🙂', 3000); } catch(e) {}
   }
 
   const KEY_ACTIVE_THEME = 'ah_active_theme';
@@ -8160,6 +8150,131 @@ function isNativePlatform() {
 
 
 /* =====================================================================
+   ⬆️ ZORUNLU GÜNCELLEME (Force Update) — hem Android hem iOS
+   ---------------------------------------------------------------------
+   - GitHub'daki version.json'dan minimum sürümü okur.
+   - Telefondaki uygulama sürümü (Capacitor App.getInfo) bundan düşükse,
+     kapatılamayan bir pencere gösterir → kullanıcıyı mağazaya yönlendirir.
+   - İnternet yoksa / dosya okunamazsa: ENGELLEMEZ, oyun normal açılır.
+   - Sadece native (gerçek telefon) ortamda çalışır; tarayıcıda atlanır.
+
+   📌 Zorla güncelleme için: version.json'daki minVersionAndroid /
+      minVersionIOS değerini yeni sürüm numarasına yükselt. Uygulamaya
+      dokunmana gerek yok.
+===================================================================== */
+const ForceUpdate = (() => {
+  // 🔧 version.json adresi — GitHub Pages
+  const VERSION_URL = 'https://sahingames.github.io/zihinussu/version.json';
+
+  // "1.4.2" gibi sürümleri karşılaştır. a < b ise -1, eşit 0, a > b ise 1
+  function compareVersions(a, b) {
+    const pa = String(a || '0').split('.').map(n => parseInt(n, 10) || 0);
+    const pb = String(b || '0').split('.').map(n => parseInt(n, 10) || 0);
+    const len = Math.max(pa.length, pb.length);
+    for (let i = 0; i < len; i++) {
+      const x = pa[i] || 0, y = pb[i] || 0;
+      if (x < y) return -1;
+      if (x > y) return 1;
+    }
+    return 0;
+  }
+
+  // Telefondaki uygulama sürümünü oku (@capacitor/app)
+  async function getCurrentVersion() {
+    try {
+      const App = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+      if (App && typeof App.getInfo === 'function') {
+        const info = await App.getInfo();
+        return info && info.version ? String(info.version) : null;
+      }
+    } catch(e) {}
+    return null;
+  }
+
+  // Kontrolü çalıştır
+  async function check() {
+    // Tarayıcı/dev ortamı → atla
+    if (!isNativePlatform()) return;
+
+    let current = null;
+    try { current = await getCurrentVersion(); } catch(e) {}
+    if (!current) return; // sürüm okunamadıysa engelleme
+
+    let cfg = null;
+    try {
+      const res = await fetch(VERSION_URL + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) return; // dosya yoksa / hata → engelleme
+      cfg = await res.json();
+    } catch(e) {
+      return; // internet yok / okunamadı → engelleme YOK, oyun açılır
+    }
+    if (!cfg) return;
+
+    const isIOS = (typeof _IS_IOS !== 'undefined') ? _IS_IOS : false;
+    const minVer = isIOS ? cfg.minVersionIOS : cfg.minVersionAndroid;
+    const storeUrl = isIOS ? cfg.iosUrl : cfg.androidUrl;
+    if (!minVer) return;
+
+    // Telefon sürümü minimumdan düşükse → zorunlu güncelleme
+    if (compareVersions(current, minVer) < 0) {
+      showUpdateGate(storeUrl, cfg.message);
+    }
+  }
+
+  // Kapatılamayan güncelleme penceresi
+  function showUpdateGate(storeUrl, message) {
+    if (document.getElementById('force-update-overlay')) return; // zaten açık
+    const url = storeUrl || '#';
+    const msg = message || 'Yeni bir sürüm yayında! Devam etmek için lütfen güncelle.';
+
+    const ov = document.createElement('div');
+    ov.id = 'force-update-overlay';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(10,12,20,0.97);' +
+      'display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);';
+    ov.innerHTML =
+      '<div style="max-width:340px;width:100%;text-align:center;background:#161a2b;' +
+      'border:1px solid #2a3252;border-radius:18px;padding:28px 22px;box-shadow:0 12px 40px rgba(0,0,0,0.5);">' +
+        '<div style="font-size:46px;margin-bottom:10px;">⬆️</div>' +
+        '<div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:10px;">Güncelleme Gerekli</div>' +
+        '<div style="font-size:14px;line-height:1.6;color:#c4cae0;margin-bottom:22px;">' + msg + '</div>' +
+        '<button id="force-update-btn" style="width:100%;padding:14px;border:none;border-radius:12px;' +
+        'font-size:16px;font-weight:700;color:#0a0c14;background:linear-gradient(135deg,#4fd1c5,#38b2ac);' +
+        'cursor:pointer;">Şimdi Güncelle</button>' +
+      '</div>';
+    document.body.appendChild(ov);
+
+    // Geri tuşuyla/arkaya tıklamayla kapanmasın diye olayları yut
+    ov.addEventListener('click', (e) => { e.stopPropagation(); });
+
+    const btn = document.getElementById('force-update-btn');
+    if (btn) {
+      btn.onclick = () => {
+        // Mağazayı aç — Browser plugin varsa onunla, yoksa standart yöntemlerle (garanti)
+        let opened = false;
+        try {
+          if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+            window.Capacitor.Plugins.Browser.open({ url: url });
+            opened = true;
+          }
+        } catch(e) {}
+        if (!opened) {
+          try { window.open(url, '_system'); opened = true; } catch(e) {}
+        }
+        if (!opened) {
+          try { window.open(url, '_blank'); opened = true; } catch(e) {}
+        }
+        if (!opened) {
+          try { window.location.href = url; } catch(e) {}
+        }
+      };
+    }
+  }
+
+  return { check };
+})();
+
+
+/* =====================================================================
    💾 KALICI DEPOLAMA KÖPRÜSÜ (Capacitor Preferences <-> localStorage)
    ---------------------------------------------------------------------
    SORUN: Android'de localStorage (WebView depolaması) uygulama güncellemesi,
@@ -8289,7 +8404,7 @@ const _IOS_AD_IDS = {
   appId:        'ca-app-pub-8656247713397274~7729089421',  // iOS App ID
   banner:       'ca-app-pub-8656247713397274/2444973154',  // banner kapalı (placeholder, kullanılmıyor)
   interstitial: 'ca-app-pub-8656247713397274/2444973154',  // iOS Geçiş (Interstitial)
-  rewarded:     'ca-app-pub-8656247713397274/3193050832',  // iOS Ödüllü (Rewarded)
+  rewarded:     'ca-app-pub-8656247713397274/9732877175',  // iOS Ödüllü Geçiş (Rewarded Interstitial)
 };
 
 const AdConfig = {
@@ -8298,7 +8413,7 @@ const AdConfig = {
   showBanners: false,      // 🚫 Banner kapalı (kullanıcı dostu)
   showInterstitial: true,  // ✅ Oyun sonu (kazanç + kayıp)
   showRewarded: true,      // ✅ İpucu için ödüllü reklam AÇIK
-  showOnFirstDays: false,  // İlk günler koruması aktif
+  showOnFirstDays: true,   // 🔓 İlk günler koruması KAPALI — ilk günden itibaren geçiş reklamı çıkabilir
 
   // ✅ Platforma göre otomatik seçilen AdMob ID'leri
   adIds: _IS_IOS ? _IOS_AD_IDS : _ANDROID_AD_IDS,
@@ -8306,7 +8421,7 @@ const AdConfig = {
   // ── Interstitial sıklık kontrolü (frequency capping) — İKİ PLATFORMDA AYNI ──
   firstDaysProtection:       3,     // İlk 3 gün hiç interstitial yok
   interstitialEveryNGames:   1,     // Her oyun aday (şans + ara + cap throttle eder)
-  interstitialChance:        0.45,  // %45 rastgele gösterim şansı
+  interstitialChance:        0.60,  // %60 rastgele gösterim şansı (günlük mod)
   interstitialMinGapMs:      90000, // En az 90 sn ara (üst üste yok)
   interstitialMaxPerSession: 4,     // Oturum başına max 4 reklam
 };
@@ -8317,6 +8432,9 @@ const AdManager = (() => {
   let AdMobPlugin = null;
   let lastInterstitialTs = 0;
   let interstitialsThisSession = 0;
+  let rewardedBusy = false;   // 🔒 Ödüllü reklam yüklenirken/gösterilirken tekrar tıklamayı engelle
+  let lastRewardedTs = 0;     // ⏱️ Son ödüllü reklamın izlendiği zaman (cooldown için)
+  const REWARDED_COOLDOWN_MS = 30000; // 30 sn — bir reklamdan sonra 2. reklam için bekleme
 
   // Capacitor ortamında mı? AdMob plugin yüklü mü?
   function detectPlugin() {
@@ -8341,7 +8459,7 @@ const AdManager = (() => {
   }
 
   // 🎲 Interstitial gösterilmeli mi? — tüm sıklık kuralları burada
-  function shouldShowInterstitial() {
+  function shouldShowInterstitial(chanceOverride) {
     if (!AdConfig.enabled || !AdConfig.showInterstitial) return false;
     try { if (Premium.isActive()) return false; } catch(e) {}
     if (!admobReady || !AdMobPlugin) return false;
@@ -8353,8 +8471,9 @@ const AdManager = (() => {
     // Her N oyunda bir aday
     if (AdConfig.interstitialEveryNGames > 1 &&
         gamesCompleted % AdConfig.interstitialEveryNGames !== 0) return false;
-    // Rastgele şans (tahmin edilemez, darlamayan)
-    if (Math.random() > AdConfig.interstitialChance) return false;
+    // Rastgele şans (tahmin edilemez, darlamayan) — moda özel şans gelirse onu kullan
+    const _chance = (typeof chanceOverride === 'number') ? chanceOverride : AdConfig.interstitialChance;
+    if (Math.random() > _chance) return false;
     return true;
   }
 
@@ -8422,10 +8541,10 @@ const AdManager = (() => {
 
   // ──── INTERSTITIAL ──────────────────────────────────────
   // Oyun bitince çağır: sayaç artır + sıklık uygunsa göster
-  async function maybeShowInterstitial(callback) {
+  async function maybeShowInterstitial(callback, chanceOverride) {
     gamesCompleted++;
     const done = () => { if (callback) callback(); };
-    if (!shouldShowInterstitial()) return done();
+    if (!shouldShowInterstitial(chanceOverride)) return done();
     try {
       await AdMobPlugin.prepareInterstitial({ adId: AdConfig.adIds.interstitial });
       await AdMobPlugin.showInterstitial();
@@ -8441,23 +8560,47 @@ const AdManager = (() => {
     // Rewarded kapalı veya web/dev ortamı: reklam yok, ödülü direkt ver
     if (!AdConfig.enabled || !AdConfig.showRewarded) { if (onSuccess) onSuccess(); return; }
     try { if (Premium.isActive()) { if (onSuccess) onSuccess(); return; } } catch(e) {}
-    if (!admobReady || !AdMobPlugin) { if (onSuccess) onSuccess(); return; }
+    // 🔒 Zaten bir reklam yükleniyor/gösteriliyorsa ikinci tıklamayı yok say (üst üste reklam engeli)
+    if (rewardedBusy) {
+      try { UI.toast('Reklam yükleniyor, lütfen bekle… ⏳'); } catch(e) {}
+      return;
+    }
+    // ⏱️ Son reklamdan bu yana 30 sn geçmediyse 2. reklamı verme
+    const _elapsed = Date.now() - lastRewardedTs;
+    if (lastRewardedTs > 0 && _elapsed < REWARDED_COOLDOWN_MS) {
+      const _kalan = Math.ceil((REWARDED_COOLDOWN_MS - _elapsed) / 1000);
+      try { UI.toast(`Yeni ipucu için ${_kalan} sn bekle ⏳`, 2500); } catch(e) {}
+      if (onCancel) onCancel();
+      return;
+    }
+    // 📵 AdMob hazır değil / native plugin yok (ör. internet kapalı, dev ortamı):
+    // bedava ipucu verme — kullanıcıyı bilgilendir, ödül verme.
+    if (!admobReady || !AdMobPlugin) {
+      try { UI.toast('Reklam yüklenemedi — internet bağlantını kontrol et 📶', 3500); } catch(e) {}
+      if (onCancel) onCancel();
+      return;
+    }
+    rewardedBusy = true; // 🔒 kilidi kapat — bu işlem bitene kadar yeni reklam isteği alınmaz
     try {
       // ⚠️ Bu reklam birimi AdMob'da "Ödüllü geçiş reklamı" (Rewarded Interstitial)
       // formatında. Bu yüzden ödüllü VIDEO değil, ödüllü GEÇİŞ metotlarını kullanıyoruz.
       if (typeof AdMobPlugin.prepareRewardInterstitialAd !== 'function') {
-        if (onSuccess) onSuccess(); // plugin desteklemiyorsa kullanıcıyı mağdur etme
+        try { UI.toast('Reklam şu an gösterilemiyor 📶', 3000); } catch(e) {}
+        if (onCancel) onCancel(); // reklam yoksa ödül verme
         return;
       }
       await AdMobPlugin.prepareRewardInterstitialAd({ adId: AdConfig.adIds.rewarded });
       await AdMobPlugin.showRewardInterstitialAd();
       try { Analytics.trackAdShown('rewarded'); } catch(e) {}
       try { Analytics.trackAdRewarded('watched'); } catch(e) {}
+      lastRewardedTs = Date.now(); // ⏱️ cooldown sayacını başlat
       if (onSuccess) onSuccess();
     } catch(e) {
       // Reklam yüklenemedi/gösterilemedi → ödül verme
       try { Analytics.trackAdRewarded('failed'); } catch(e) {}
       if (onCancel) onCancel();
+    } finally {
+      rewardedBusy = false; // 🔓 işlem bitti (başarı/hata fark etmez) — kilidi aç
     }
   }
 
@@ -8622,7 +8765,7 @@ const Rating = (() => {
   // 📌 App Store linki: Uygulama App Store'da yayınlanınca buraya gerçek ID gelecek.
   //    Örn: 'https://apps.apple.com/app/id1234567890'
   //    Şu an placeholder — iOS'ta yayınlanmadığı için Play Store'a düşmez, güvenli davranır.
-  const APP_STORE_URL  = 'BURAYA_APP_STORE_LINKI_GELECEK';
+  const APP_STORE_URL  = 'https://apps.apple.com/us/app/zihin-%C3%BCss%C3%BC/id6774328782';
   // Platforma göre doğru mağazayı seç
   const STORE_URL = (typeof _IS_IOS !== 'undefined' && _IS_IOS) ? APP_STORE_URL : PLAY_STORE_URL;
 
@@ -14935,6 +15078,17 @@ const Word = (() => {
   let current = '';
   let done = false;
   let won = false;
+  let revealedHints = [];     // 💡 Bu kelimede açılan ipuçları (yeni kelimede sıfırlanır)
+
+  // 💡 İpucu kutusunu çiz (kalıcı — reklam kapatınca kaybolmaz, yeni kelimede temizlenir)
+  function renderHintBox() {
+    const box = document.getElementById('word-hint-box');
+    if (!box) return;
+    if (!revealedHints.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    box.style.display = '';
+    box.innerHTML = '💡 ' + revealedHints
+      .map(h => '<span class="whb-item">' + h + '</span>').join('');
+  }
   let duelMode = false;       // Düello modu aktif mi?
   let duelOpponent = null;    // Düelloyu kim attı?
   let inactivityTimer = null; // 💡 Comeback mechanic
@@ -15000,6 +15154,9 @@ const Word = (() => {
     if (duelMode && !done) {
       return;
     }
+    // ⚔️ Düello, klavyeyi geçici olarak TR'ye almış olabilir.
+    // Normal güne dönerken kullanıcının KAYITLI dilini geri yükle.
+    lang = loadSavedLang();
 
     // 🔧 Adım 2-3 fix: SLOT-TEMELLİ YÜKLEME (tek doğru kaynak = wordSlots)
     // TR ve EN birbirinden bağımsız slot'larda tutulur. init() her zaman
@@ -15078,6 +15235,10 @@ const Word = (() => {
 
     document.getElementById('word-day-label').textContent =
       `Bugünün Sözcüğü · #${getDayIndex() + 1} · ${lang.toUpperCase()}`;
+
+    // 💡 Yeni kelime → önceki ipuçlarını temizle
+    revealedHints = [];
+    renderHintBox();
 
     updateStatBar();
   }
@@ -15460,15 +15621,24 @@ const Word = (() => {
         if (g[i] === word[i]) guessedPositions.add(i);
       }
     });
+    // 💡 Daha önce ipucu verilen pozisyonları da hariç tut (aynı harf tekrarı olmasın)
+    revealedHints.forEach(h => {
+      const m = h.match(/^(\d+)\. harf/);
+      if (m) guessedPositions.add(parseInt(m[1], 10) - 1);
+    });
 
     const availablePositions = [];
     for (let i = 0; i < word.length; i++) {
       if (!guessedPositions.has(i)) availablePositions.push(i);
     }
-    if (!availablePositions.length) return;
+    if (!availablePositions.length) { try { UI.toast('Açılacak başka harf kalmadı 😊'); } catch(e) {} return; }
 
     const pos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-    UI.toast(`💡 İpucu: ${pos+1}. harf "${word[pos]}"`, 5000);
+    // 💡 Kalıcı ipucu kutusuna ekle (toast yerine — reklam kapatınca kaybolmasın)
+    try {
+      revealedHints.push(`${pos+1}. harf "${word[pos]}"`);
+      renderHintBox();
+    } catch(e) {}
     try { Sound.win(); } catch(e) {}
   }
 
@@ -15589,6 +15759,8 @@ const Word = (() => {
     if (!targetWord || targetWord.length !== 5) return;
     duelMode = true;
     duelOpponent = opponentName || 'Rakibin';
+    // ⚔️ Düello kelimeleri her zaman Türkçe → klavyeyi Türkçe'ye sabitle
+    lang = 'tr';
     word = targetWord.toUpperCase();
     guesses = [];
     current = '';
@@ -15815,7 +15987,7 @@ const Word = (() => {
         () => { showHint(); },
         () => { try { UI.toast('Reklam tamamlanmadı, ipucu verilmedi'); } catch(e) {} }
       );
-    } catch(e) { showHint(); }
+    } catch(e) { try { UI.toast('Reklam gösterilemedi, ipucu verilmedi'); } catch(_) {} }
   }
 
   return { init, setLang, share, startDuel, exitDuel, showHint, requestHint };
@@ -15936,14 +16108,14 @@ const Num = (() => {
 
   function submit() {
     if (answered) return;
-    const val = parseInt(document.getElementById('num-input').value);
+    const val = parseFloat(document.getElementById('num-input').value.replace(',', '.'));
     if (isNaN(val)) { UI.toast('Bir sayı gir'); return; }
     clearTimer();
     answered = true;
     document.getElementById('num-input').disabled = true;
 
     const q = sessionQs[qIdx];
-    const correct = val === q.ans;
+    const correct = Math.abs(val - q.ans) < 1e-9;
 
     if (correct) {
       sessionCorrect++;
@@ -16057,6 +16229,10 @@ const Num = (() => {
     typeText('num-fb-text', generateNumFeedback(sessionCorrect, sessionQs.length, sessionStreak));
 
     try { Leaderboard.addScore('number', sessionPoints || 0, sessionCorrect > 0); } catch(e) {}
+    // 💰 Geçiş reklamı — oturum bitince
+    setTimeout(() => {
+      try { AdManager.maybeShowInterstitial(() => {}); } catch(e) {}
+    }, 1000);
   }
 
   function pause() {
@@ -18481,6 +18657,7 @@ const SinirsizWord = (() => {
   let done = false;
   let won = false;
   let stats = { played: 0, wins: 0, streak: 0, maxStreak: 0 };
+  let revealedHints = [];     // 💡 Bu kelimede açılan ipuçları (yeni kelimede sıfırlanır)
 
   const LS_KEY = 'ah_sinirsiz_stats';
   const CONGRATS = ['Olağanüstü!','Mükemmel!','Harika!','Bravo!','İyi!','Kıl payı!'];
@@ -18512,11 +18689,14 @@ const SinirsizWord = (() => {
       renderAll();
       updateStatBar();
       toggleHintBtn(true); // aktif oyun → ipucu göster
+      renderHintBox();
     }
   }
 
   function newGame() {
     word = WORDS_TR[Math.floor(Math.random() * WORDS_TR.length)];
+    revealedHints = [];
+    renderHintBox();
     guesses = [];
     current = '';
     done = false;
@@ -18729,6 +18909,8 @@ const SinirsizWord = (() => {
       setTimeout(() => {
         refreshKeyboard();
         showGameOver();
+        // 🎯 Sınırsız mod: oyun bitince %50 ihtimalle geçiş reklamı (kazan/kaybet fark etmez)
+        try { AdManager.maybeShowInterstitial(() => {}, 0.50); } catch(e) {}
       }, guesses.length * 80 + 200);
     } else {
       refreshKeyboard();
@@ -18804,14 +18986,39 @@ const SinirsizWord = (() => {
         if (g[i] === word[i]) guessedPositions.add(i);
       }
     });
+    // 💡 Daha önce ipucu verilen pozisyonları da hariç tut (aynı harf tekrarı olmasın)
+    revealedHints.forEach(h => {
+      const m = h.match(/^(\d+)\. harf/);
+      if (m) guessedPositions.add(parseInt(m[1], 10) - 1);
+    });
     const avail = [];
     for (let i = 0; i < word.length; i++) {
       if (!guessedPositions.has(i)) avail.push(i);
     }
-    if (!avail.length) return;
+    if (!avail.length) { try { UI.toast('Açılacak başka harf kalmadı 😊'); } catch(e) {} return; }
     const pos = avail[Math.floor(Math.random() * avail.length)];
-    try { UI.toast(`💡 İpucu: ${pos+1}. harf "${word[pos]}"`, 5000); } catch(e) {}
+    // 💡 Kalıcı ipucu kutusuna ekle (toast yerine — reklam kapatınca kaybolmasın)
+    try {
+      revealedHints.push(`${pos+1}. harf "${word[pos]}"`);
+      renderHintBox();
+    } catch(e) {}
     try { Sound.win(); } catch(e) {}
+  }
+
+  // 💡 Sınırsız ipucu kutusunu çiz (kutu yoksa otomatik oluşturur)
+  function renderHintBox() {
+    let box = document.getElementById('sw-hint-box');
+    if (!box) {
+      const grid = document.getElementById('sw-grid');
+      if (!grid || !grid.parentNode) return;
+      box = document.createElement('div');
+      box.id = 'sw-hint-box';
+      box.style.cssText = 'display:none;max-width:310px;margin:8px auto;padding:8px 10px;background:rgba(255,255,255,0.06);border:1px solid #2a5;border-radius:10px;font-size:13px;line-height:1.6;text-align:center;';
+      grid.parentNode.insertBefore(box, grid);
+    }
+    if (!revealedHints.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    box.style.display = '';
+    box.innerHTML = '💡 ' + revealedHints.map(h => '<span style="display:inline-block;margin:0 4px;font-weight:600;">' + h + '</span>').join('');
   }
 
   // 💡 Reklam izle → ipucu ver
@@ -18830,7 +19037,7 @@ const SinirsizWord = (() => {
         () => { showHint(); },
         () => { try { UI.toast('Reklam tamamlanmadı, ipucu verilmedi'); } catch(e) {} }
       );
-    } catch(e) { showHint(); }
+    } catch(e) { try { UI.toast('Reklam gösterilemedi, ipucu verilmedi'); } catch(_) {} }
   }
 
   return { init, newGame, onKey, requestHint };
@@ -18899,10 +19106,22 @@ const UI = (() => {
         try { localStorage.setItem(VISITED_KEY, JSON.stringify(visited)); } catch(e) {}
       }
       Achievements.checkAllGames(new Set(visited));
-      // 📜 Quest: 3 farklı oyun
-      const playableTabs = visited.filter(t => ['word','number','sudoku','isimsehir','sinirsiz','mystery','cipher','duello'].includes(t));
-      if (playableTabs.length >= 3) {
-        try { Quests.addProgress('q_3_games', playableTabs.length); } catch(e) {}
+      // 📜 Quest: 3 farklı oyun — YENİ bir oyun sekmesine İLK kez girişte +1.
+      // (Eskiden 3'e ulaşana kadar hiç ilerlemiyor, sonra birden doluyordu.)
+      // GÜNLÜK görev olduğu için kalıcı 'ah_visited_tabs' yerine güne özel liste kullan.
+      const PLAYABLE = ['word','number','sudoku','isimsehir','sinirsiz','mystery','cipher','duello'];
+      if (PLAYABLE.includes(tab)) {
+        try {
+          const today = new Date().toISOString().slice(0,10);
+          const DKEY = 'ah_quest_games_' + today;
+          let dayVisited = [];
+          try { dayVisited = JSON.parse(localStorage.getItem(DKEY) || '[]'); } catch(e) {}
+          if (!dayVisited.includes(tab)) {
+            dayVisited.push(tab);
+            localStorage.setItem(DKEY, JSON.stringify(dayVisited));
+            Quests.addProgress('q_3_games', 1);
+          }
+        } catch(e) {}
       }
     } catch(e) {}
 
@@ -19046,6 +19265,10 @@ function updateTabState() {
     });
 
     document.getElementById('stats-modal').classList.add('open');
+    // Tam mod: sekme barı + profil header görünür, başlık "İstatistikler"
+    var bar = document.getElementById('lb-tabs-bar'); if (bar) bar.style.display = '';
+    var ph = document.getElementById('profile-header'); if (ph) ph.style.display = '';
+    var tt = document.getElementById('stats-modal-title'); if (tt) tt.textContent = 'İstatistikler';
     showLbTab('stats');
     renderProfileHeader();
   }
@@ -19060,6 +19283,18 @@ function updateTabState() {
     try { showLbTab('shop'); } catch(e) {}
   }
 
+  // 🏆 Sıralamayı doğrudan aç (hamburger menüsünden) — SADECE sıralama görünsün
+  function openLeaderboard() {
+    try { openStats(); } catch(e) {}                 // modalı açar (header/sekmeleri gösterir)
+    try {
+      showLbTab('weekly');                            // sıralama paneline geç
+      // Sıralama modu: üstteki sekmeleri + profil header'ı gizle, başlığı değiştir
+      var bar = document.getElementById('lb-tabs-bar'); if (bar) bar.style.display = 'none';
+      var ph = document.getElementById('profile-header'); if (ph) ph.style.display = 'none';
+      var tt = document.getElementById('stats-modal-title'); if (tt) tt.textContent = '🏆 Sıralama';
+    } catch(e) {}
+  }
+
   // ── Leaderboard sekme geçişi ──────────────────────────────
   function showLbTab(tab) {
     document.getElementById('lb-panel-stats').style.display   = tab === 'stats'  ? '' : 'none';
@@ -19071,7 +19306,9 @@ function updateTabState() {
     const insightsPanel = document.getElementById('lb-panel-insights');
     if (insightsPanel) insightsPanel.style.display = tab === 'insights' ? '' : 'none';
     document.querySelectorAll('.lb-tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('lb-tab-' + tab).classList.add('active');
+    // 'weekly' sekme butonu hamburger'a taşındığı için artık modalde yok — güvenli kontrol
+    const tabBtn = document.getElementById('lb-tab-' + tab);
+    if (tabBtn) tabBtn.classList.add('active');
     if (tab === 'weekly') showLbPeriod(currentLbPeriod || 'daily');
     if (tab === 'insights') renderInsights();
     if (tab === 'quests') renderQuests();
@@ -19783,7 +20020,7 @@ function updateTabState() {
   }
 
   return {
-    switchTab, toast, openStats, closeStats, openShop, showLbTab, showLbPeriod, saveLbName,
+    switchTab, toast, openStats, closeStats, openShop, openLeaderboard, showLbTab, showLbPeriod, saveLbName,
     openPremium, closePremium, unlockPremium, restorePremium, toggleSound,
     toggleColorBlind, loadColorBlind,
     toggleSettingsMenu, closeSettingsMenu, refreshSettingsMenu,
@@ -20018,6 +20255,8 @@ function boot() {
 
 // Asıl başlatma — köprü hazır olduktan sonra çağrılır
 function startApp() {
+  // ⬆️ Zorunlu güncelleme kontrolü (sadece native + internet varken engeller, yoksa oyun açılır)
+  try { ForceUpdate.check(); } catch(e) {}
   loadAll();
   initBg();
   Word.init();
